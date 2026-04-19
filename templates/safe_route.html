@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Route Suggestion</title>
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Leaflet Routing Machine -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+
+    <style>
+        body, html { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { height: 80vh; width: 100%; }
+        .controls {
+            padding: 10px;
+            background: white;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+            border-radius: 5px;
+        }
+        input, button { margin: 5px 0; padding: 8px; width: 250px; }
+        button {
+            background: #007bff; color: white; border: none; cursor: pointer;
+        }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <input type="text" id="startLocation" placeholder="Enter Start Location">
+        <input type="text" id="endLocation" placeholder="Enter Destination">
+        <button onclick="findSafeRoute()">Find Safe Route</button>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        var map = L.map('map').setView([20.5937, 78.9629], 5); // Center on India
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var routingControl;
+        var dangerZones = [];
+
+        // Load high-crime areas from Django API
+        fetch("{% url 'crime_data_api' %}")
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                var lat = parseFloat(item.Latitude);
+                var lon = parseFloat(item.Longitude);
+                
+                // Mark high-crime areas on the map
+                L.circle([lat, lon], {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5,
+                    radius: 2000 // Increased size for better detection
+                }).addTo(map);
+
+                // Store danger zones
+                dangerZones.push([lat, lon]);
+            });
+        });
+
+        async function getLatLon(address) {
+            let response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${address}`);
+            let data = await response.json();
+            if (data.length === 0) {
+                alert("Location not found. Try again.");
+                return null;
+            }
+            return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+        }
+
+        async function findSafeRoute() {
+            var startAddress = document.getElementById("startLocation").value;
+            var endAddress = document.getElementById("endLocation").value;
+
+            if (!startAddress || !endAddress) {
+                alert("Please enter both start and end locations.");
+                return;
+            }
+
+            let startCoords = await getLatLon(startAddress);
+            let endCoords = await getLatLon(endAddress);
+
+            if (!startCoords || !endCoords) return;
+
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            // Create initial route
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(startCoords[0], startCoords[1]),
+                    L.latLng(endCoords[0], endCoords[1])
+                ],
+                routeWhileDragging: true,
+                createMarker: function() { return null; },
+                lineOptions: {
+                    styles: [{ color: "blue", weight: 6 }]
+                }
+            }).addTo(map);
+
+            // Wait for route to be calculated, then check safety
+            setTimeout(() => checkRouteSafety(startCoords, endCoords), 3000);
+        }
+
+        function checkRouteSafety(startCoords, endCoords) {
+            let unsafe = false;
+            let alternativeWaypoints = [];
+
+            dangerZones.forEach(zone => {
+                let lat = zone[0], lon = zone[1];
+                let distanceToStart = getDistance(startCoords[0], startCoords[1], lat, lon);
+                let distanceToEnd = getDistance(endCoords[0], endCoords[1], lat, lon);
+
+                if (distanceToStart < 5000 || distanceToEnd < 5000) {
+                    unsafe = true;
+                    let shiftLat = lat + 0.08;  // Bigger shift for stronger avoidance
+                    let shiftLon = lon + 0.08;
+                    alternativeWaypoints.push([shiftLat, shiftLon]);
+                }
+            });
+
+            if (unsafe && alternativeWaypoints.length > 0) {
+                alert("🚨 Unsafe route detected! Calculating an alternative route...");
+
+                map.removeControl(routingControl);
+
+                let newWaypoints = [
+                    L.latLng(startCoords[0], startCoords[1]),
+                    ...alternativeWaypoints.map(pt => L.latLng(pt[0], pt[1])),
+                    L.latLng(endCoords[0], endCoords[1])
+                ];
+
+                routingControl = L.Routing.control({
+                    waypoints: newWaypoints,
+                    routeWhileDragging: true,
+                    createMarker: function() { return null; },
+                    lineOptions: {
+                        styles: [{ color: "green", weight: 6 }]  // Safe route in green
+                    }
+                }).addTo(map);
+            } else {
+                alert("✅ Route is already safe.");
+            }
+        }
+
+        function getDistance(lat1, lon1, lat2, lon2) {
+            var R = 6371; // Radius of Earth in km
+            var dLat = (lat2 - lat1) * Math.PI / 180;
+            var dLon = (lon2 - lon1) * Math.PI / 180;
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c * 1000; // Distance in meters
+        }
+    </script>
+
+</body>
+</html>

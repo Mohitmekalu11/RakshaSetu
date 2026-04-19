@@ -1,0 +1,481 @@
+{% comment %} {% extends "base(hire).html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard - Hire Freelancers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fff;
+            color: black;
+        }
+
+        .dashboard-header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .dashboard-sidebar {
+            background-color: #D7EAEE;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-sidebar a {
+            display: block;
+            padding: 10px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .dashboard-sidebar a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .dashboard-sidebar h5 {
+            color: black;
+        }
+
+        .dashboard-content {
+            padding: 20px;
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .placeholder-img {
+            width: 80px;
+            height: 80px;
+            background-color: #F69F2F;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .profile-section {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .freelancer-card {
+            background: linear-gradient(to bottom right, #e2f0fc, #c9e4f5);
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .freelancer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .freelancer-profile {
+            opacity: 0;
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: opacity 0.3s ease;
+        }
+
+        .freelancer-card:hover .freelancer-profile {
+            opacity: 1;
+        }
+
+        .btn-hire {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-hire:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+
+        .applied-freelancers-section {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message {
+            background-color: #E6F7F8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .welcome-message h2 {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .welcome-message p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .highlight {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .freelancer-list h3,
+        .job-applications h2 {
+            color: white;
+            background-color: #007bff;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .freelancer-list .card {
+            background-color: #f8f9fa;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .freelancer-list .card:hover {
+            transform: scale(1.05);
+        }
+
+        .freelancer-list .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .freelancer-list .placeholder-img {
+            width: 80px;
+            height: 80px;
+            background-color: #F69F2F;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .jobapplicants {
+            background-color: #fff;
+            color: black;
+            padding: 10px;
+            width: 200px;
+            margin-left: 450px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block sidebar dashboard-sidebar">
+                <div class="profile-section text-center">
+                    {% if request.user.profile.profile_image %}
+                    <img src="{{ request.user.profile.profile_image.url }}" class="profile-img mb-3"
+                        alt="Profile Image">
+                    {% else %}
+                    <div class="placeholder-img mb-3">
+                        {{ request.user.username|slice:":1" }}
+                    </div>
+                    {% endif %}
+                    <h5>{{ request.user.username }}</h5>
+                    <p>{{ request.user.profile.bio }}</p>
+                </div>
+                <hr>
+                <a href="#">Freelancer Listings</a>
+                <a href="{% url 'postjob' %}">Post a Job</a>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 dashboard-content">
+                <div class="dashboard-header">
+                    <h2>Client Dashboard</h2>
+                </div>
+
+                <div class="welcome-message">
+                    <h2>Welcome {{ request.user.username }}!</h2>
+                    <p>Let's help you connect with the best freelancers. Share your preferences so freelancers can
+                        better understand your needs.</p>
+                </div>
+
+                <!-- Freelancer Listings -->
+                <section id="Freelancers" class="mt-4">
+                    <h3 class="highlight">Freelancer Listings</h3>
+                    <div class="freelancer-list row">
+                        {% for freelancer in freelancers %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 freelancer-card">
+                                <div class="card-body d-flex flex-column align-items-center">
+                                    {% if freelancer.profile_image %}
+                                    <img src="{{ freelancer.profile_image.url }}"
+                                        alt="{{ freelancer.user.username }}'s profile image" class="profile-img mb-3">
+                                    {% else %}
+                                    <div class="placeholder-img mb-3">
+                                        {{ freelancer.user.username|slice:":1" }}
+                                    </div>
+                                    {% endif %}
+                                    <h5 class="card-title text-center">{{ freelancer.user.username }}</h5>
+                                    <hr style="width: 100%; border: 1px solid black;" />
+                                    <p class="text-muted text-center">{{ freelancer.bio }}</p>
+                                    <p class="card-text text-center">Skills:
+                                        {% for skill in freelancer.skills.all %}
+                                        {{ skill.name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                    <p class="card-text text-center">Rate :${{ freelancer.rate }}/hr</p>
+                                    <p class="card-text text-center">Experience: {{ freelancer.experience }}</p>
+                                    <a href="https://razorpay.me/@jineshshaileshjain" class="btn btn-hire mt-3">Hire</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>No freelancers found.</p>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <!-- Applied Freelancers Section -->
+                <section id="job-applications" class="mt-4">
+                    <h2 class="highlight">Your Job Applications</h2>
+                    <div class="row">
+                        {% if job_applications %}
+                        {% for application in job_applications %}
+                        <div class="col-md-4">
+                            <div class="freelancer-card">
+                                <h4>{{ application.freelancer.username }}</h4>
+                                <p><strong>Applied for Job:</strong> {{ application.job.title }}</p>
+                                <p>{{ application.cover_letter }}</p>
+                                <a href="{% url 'freelancer_profile' application.freelancer.id %}"
+                                    class="freelancer-profile">View Profile</a>
+
+                                <!-- Remove Job Button -->
+                                <form method="POST" action="{% url 'remove_job_application' application.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger mt-3">Remove Job</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="jobapplicants">
+                            <p>No applications yet !</p>
+                        </div>
+
+                        {% endif %}
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<script>
+    $.ajax({
+        url: "{% url 'jobs_available' %}",  // Replace with your URL to fetch jobs
+        type: 'GET',
+        success: function (data) {
+            // Update your jobs display area with the new jobs
+            $('#jobs-list').html(data);  // Adjust based on your HTML structure
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching jobs: " + error);
+        }
+    });
+</script>
+
+</html>
+{% endblock %} {% endcomment %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Rate Prediction</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background: #222;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            background: #444;
+            padding: 0.5rem;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+        section {
+            padding: 2rem;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+            margin: auto;
+        }
+        label, input, select, button {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .chart-container {
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Crime Rate Prediction Dashboard</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#predict">Predict</a></li>
+        </ul>
+    </nav>
+    
+    <section id="dashboard">
+        <h2>Crime Statistics</h2>
+        <div class="chart-container">
+            <canvas id="crimeChart"></canvas>
+        </div>
+    </section>
+    
+    <section id="predict">
+        <h2>Predict Crime Rate</h2>
+        <form>
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required>
+            
+            <label for="crime-type">Crime Type:</label>
+            <select id="crime-type" name="crime-type">
+                <option value="theft">Theft</option>
+                <option value="fraud">Fraud</option>
+                <option value="kidnapping">Kidnapping</option>
+            </select>
+            
+            <button type="submit">Predict</button>
+        </form>
+    </section>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/api/crime-data/')  // Ensure this endpoint is correctly mapped in Django
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error("Error fetching data:", data.error);
+                        return;
+                    }
+
+                    const ctx = document.getElementById('crimeChart').getContext('2d');
+
+                    const crimeChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels, // Crime Types from Django
+                            datasets: [{
+                                label: 'Crime Cases',
+                                data: data.values, // Crime Counts from Django
+                                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff'],
+                                borderColor: '#333',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("Error loading crime data:", error));
+        });
+    </script>
+</body>
+</html>

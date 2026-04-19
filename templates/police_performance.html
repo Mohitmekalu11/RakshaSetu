@@ -1,0 +1,411 @@
+  {% extends "police(base).html" %}
+  {% load static %}
+  {% block content %}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Officer Performance Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    
+
+    <style>
+      
+
+      section {
+        
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        animation: fadeIn 0.8s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+      }
+      .badge {
+        text-align: center;
+        color: #4b5563;
+        margin-bottom: 2rem;
+        font-weight: 500;
+      }
+
+      .charts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      }
+
+      .card h3 {
+        font-size: 1.25rem;
+        color: #1e40af;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        position: relative;
+      }
+      .card h3::after {
+        content: '';
+        display: block;
+        width: 3rem;
+        height: 0.25rem;
+        background: #6366f1;
+        border-radius: 2px;
+        margin-top: 0.5rem;
+      }
+
+      .card canvas {
+        flex: 1;
+        min-height: 200px;
+        animation: chartGrow 0.8s ease-out;
+      }
+      @keyframes chartGrow {
+        from { opacity: 0; transform: scaleY(0.8); }
+        to   { opacity: 1; transform: scaleY(1); }
+      }
+
+      .rating-card {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .rating-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      }
+      .rating-card h3 {
+        font-size: 1.25rem;
+        color: #1e40af;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+      }
+      .rating-card h3::after {
+        content: '';
+        display: block;
+        width: 3rem;
+        height: 0.25rem;
+        background: #6366f1;
+        border-radius: 2px;
+        margin-top: 0.5rem;
+      }
+      .stars {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .star {
+        font-size: 1.75rem;
+        color: #fbbf24;
+        transition: transform 0.2s;
+      }
+      .star:hover {
+        transform: scale(1.2);
+      }
+      .charts {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+    
+      /* ensure each card’s content doesn’t stretch */
+      .card, .rating-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      .card canvas {
+        /* remove flex:1 or width overrides that stretch it */
+        width: 100% !important;
+        height: 260px;        /* pick a fixed height */
+        max-height: 260px;
+        animation: chartGrow 0.8s ease-out;
+      }
+      .headersection{
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        height: 150px;
+
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .stars {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+      }
+      .star {
+        font-size: 5.5rem;
+        line-height: 1;
+        position: relative;
+        color: #e5e7eb; /* grey fallback */
+      }
+      .star.full {
+        color: #fbbf24; /* solid gold */
+      }
+      .star.partial {
+        /* text-gradient fill up to partial_percent% */
+        background: linear-gradient(
+          90deg,
+          #fbbf24 {{ partial_percent }}%,
+          #e5e7eb {{ partial_percent }}%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .star:hover {
+        transform: scale(1.2);
+        transition: transform 0.2s;
+      }
+      @keyframes starFill {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      
+      /* Apply this animation when stars are activated */
+      .star.animate {
+        animation: starFill 0.5s ease-out forwards;
+      }
+    </style>
+    <script>
+      // Animate stars on page load
+      window.addEventListener('DOMContentLoaded', () => {
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+          setTimeout(() => {
+            star.classList.add('animate');
+          }, index * 200); // delay each star by 200ms
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <section>
+      <div class= "headersection">
+      <h1>{{ officer_profile.user.username }}</h1>
+      <div class="badge">Badge ID: <strong>{{ officer_profile.badge_id }}</strong></div>
+      </div><br>
+
+      <div class="charts">
+        <!-- Case Counts -->
+        <div class="card">
+          <h3>Case Counts</h3>
+          <canvas id="casesBarChart"></canvas>
+        </div>
+
+        <!-- Status Distribution -->
+        <div class="card">
+          <h3>Status Distribution</h3>
+          <canvas id="statusPieChart"></canvas>
+        </div>
+
+        <div class="card">
+          <h3>Avg. Response vs SLA (hrs)</h3>
+          <canvas id="responseGaugeChart"></canvas>
+          <div
+            id="avgResponseText"
+            style="text-align:center; margin-top:8px; font-weight:bold; font-size:1rem;"
+          >
+            <span id="avgLabel" style="text-decoration:underline;">Avg Response Time:</span>
+            <span id="avgTimeValue"></span>
+          </div>
+        </div>
+
+        <!-- Officer Rating -->
+        <div class="rating-card">
+          <h3>Your Officer Rating</h3><br><br>
+          <div class="stars">
+             <div class="star-fill"></div>
+            {% for _ in "12345"|make_list %}
+              {% if forloop.counter <= full_stars %}
+                <span class="star full">&#9733;</span>
+              {% elif forloop.counter == full_stars|add:1 and partial_percent > 0 %}
+                <span class="star partial">&#9733;</span>
+              {% else %}
+                <span class="star">&#9733;</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div>{{ officer_rating|floatformat:1 }} / 5.0</div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const total = {{ performance.total|default:0 }};
+      const pending = {{ performance.pending|default:0 }};
+      const investigating = {{ performance.investigating|default:0 }};
+      const resolved = {{ performance.resolved|default:0 }};
+    
+      // Bar Chart - Case Counts
+      new Chart(document.getElementById('casesBarChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['Total', 'Pending', 'Investigating', 'Resolved'],
+          datasets: [{
+            data: [total, pending, investigating, resolved],
+            backgroundColor: ['#60a5fa', '#facc15', '#fb923c', '#34d399']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 1000, easing: 'easeOutQuart' },
+          scales: { y: { beginAtZero: true, ticks: { precision:0 } } },
+          plugins: {
+            tooltip: { callbacks: { label: ctx => ctx.parsed.y + ' cases' }},
+            legend: { display: false }
+          }
+        }
+      });
+    
+      // Pie Chart - Status Distribution
+      new Chart(document.getElementById('statusPieChart').getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: ['Pending', 'Investigating', 'Resolved'],
+          datasets: [{
+            data: [pending, investigating, resolved],
+            backgroundColor: ['#facc15', '#fb923c', '#34d399']
+          }]
+        },
+        options: {
+          responsive: true,
+          animation: { animateScale: true, duration: 800 },
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+    
+    
+      
+    </script>
+    <script>
+      const avgSecs = {{ performance.avg_response_secs|default:0 }};
+      const hours   = Math.floor(avgSecs / 3600);
+      const minutes = Math.floor((avgSecs % 3600) / 60);
+      const seconds = Math.floor(avgSecs % 60);   // integer seconds
+      const avgHrsDisplay = `${hours} hr ${minutes} min ${seconds} sec`;  // include seconds
+    
+      const avgHrsValue = avgSecs / 3600;
+      let responseColor = '#4ade80';
+      if (avgHrsValue > 3 && avgHrsValue <= 6) {
+        responseColor = '#facc15';
+      } else if (avgHrsValue > 6) {
+        responseColor = '#f87171';
+      }
+    
+      const maxResponseSecs = 4 * 3600;
+      const gaugeValue = (maxResponseSecs - avgSecs) / maxResponseSecs;
+      const gaugeFill = Math.max(0, Math.min(1, gaugeValue));
+    
+      const arrowPlugin = {
+        id: 'arrowPlugin',
+        afterDraw(chart) {
+          const { ctx, chartArea: { left, right, bottom } } = chart;
+          const cx = (left + right) / 2;
+          const cy = bottom;
+          const arc = chart.getDatasetMeta(0).data[0];
+          const r = (arc.outerRadius + arc.innerRadius) / 2;
+          const angle = arc.endAngle;
+    
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(angle);
+          ctx.beginPath();
+          ctx.moveTo(0, -6);
+          ctx.lineTo(r, 0);
+          ctx.lineTo(0, 6);
+          ctx.closePath();
+          ctx.fillStyle = '#000';
+          ctx.fill();
+          ctx.restore();
+        }
+      };
+    
+      new Chart(
+        document.getElementById('responseGaugeChart'),
+        {
+          type: 'doughnut',
+          data: {
+            labels: ['Avg Response', 'Remaining'],
+            datasets: [{
+              data: [gaugeFill, 1 - gaugeFill],
+              backgroundColor: [responseColor, '#e0e0e0'],
+              borderWidth: 0,
+              cutout: '80%',
+            }]
+          },
+          options: {
+            responsive: true,
+            rotation: -90,
+            circumference: 180,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => `${ctx.label}: ${avgHrsDisplay}`
+                }
+              },
+              datalabels: { display: false }
+            },
+            animation: { animateRotate: true, duration: 1000 }
+          },
+          plugins: [arrowPlugin]
+        }
+      );
+    
+      document.getElementById('avgTimeValue').innerText = avgHrsDisplay;
+    </script>
+    
+    
+  </body>
+  </html>
+  {% endblock %}

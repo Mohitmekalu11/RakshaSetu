@@ -1,0 +1,197 @@
+{% extends "police(base).html" %}
+{% load static %}
+{% block content %}
+
+<div class="feedback-section">
+  <h1 class="feedback-heading">
+    Feedbacks Received
+    <span class="underline"></span>
+  </h1>
+  <div class="rating-card">
+    <h3>Your Officer Rating</h3><br><br>
+    <div class="stars">
+       <div class="star-fill"></div>
+      {% for _ in "12345"|make_list %}
+        {% if forloop.counter <= full_stars %}
+          <span class="star full">&#9733;</span>
+        {% elif forloop.counter == full_stars|add:1 and partial_percent > 0 %}
+          <span class="star partial">&#9733;</span>
+        {% else %}
+          <span class="star">&#9733;</span>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div>{{ officer_rating|floatformat:1 }} / 5.0</div>
+  </div>
+
+  {% if feedbacks %}
+  {% for feedback in feedbacks %}
+  <div class="feedback-card animate-card">
+    {% if feedback.crime_report %}
+      <h3 class="case-title">Case: {{ feedback.crime_report.crime_type }}</h3>
+    {% else %}
+      <h3 class="case-title">Case: Unknown</h3>
+    {% endif %}
+    <div class="rating">
+      Rating: {{ feedback.rating }} ★
+    </div>
+    {% if feedback.comment %}
+      <div class="comment">
+        "{{ feedback.comment }}"
+      </div>
+    {% else %}
+      <div class="comment">No comment provided.</div>
+    {% endif %}
+  </div>
+{% endfor %}
+
+  {% else %}
+    <p class="no-feedback">No feedbacks received yet.</p>
+  {% endif %}
+</div>
+
+<style>
+  body{
+        background: rgba(113, 205, 248, 0.27);
+
+  }
+  /* Container */
+  .feedback-section {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  /* Heading */
+  .feedback-heading {
+    position: relative;
+    display: inline-block;
+    background: #ffffff;
+    color: #1E3050;
+    font-size: 42px;
+    font-weight: bold;
+    padding: 20px 40px;
+    border-radius: 10px;
+    margin-bottom: 50px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+
+  /* Animated underline */
+  .underline {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    height: 4px;
+    width: 0;
+    background:rgb(228, 199, 32);
+    transition: width 0.5s ease;
+  }
+
+  .feedback-heading:hover .underline {
+    width: 80%;
+  }
+
+  /* Feedback cards */
+  .feedback-card {
+    background: #ffffff;
+    border-left: 5px solid #FFD700;
+    border-radius: 10px;
+    width: 650px;
+    margin: 20px auto;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s forwards;
+  }
+
+  .feedback-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  }
+
+  /* Card animation */
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Text inside cards */
+  .case-title {
+    color: #1E3050;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .rating {
+    color:rgb(221, 188, 0);
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .comment {
+    font-style: italic;
+    color: #555;
+    font-size: 16px;
+  }
+
+  .no-feedback {
+    text-align: center;
+    color: #ccc;
+    font-size: 18px;
+    margin-top: 50px;
+  }
+  .stars {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+  .star {
+    font-size: 5.5rem;
+    line-height: 1;
+    position: relative;
+    color: #e5e7eb; /* grey fallback */
+  }
+  .star.full {
+    color: #fbbf24; /* solid gold */
+  }
+  .star.partial {
+    /* text-gradient fill up to partial_percent% */
+    background: linear-gradient(
+      90deg,
+      #fbbf24 {{ partial_percent }}%,
+      #e5e7eb {{ partial_percent }}%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .star:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s;
+  }
+  @keyframes starFill {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Apply this animation when stars are activated */
+  .star.animate {
+    animation: starFill 0.5s ease-out forwards;
+  }
+</style>
+
+{% endblock %}

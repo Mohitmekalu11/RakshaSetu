@@ -1,0 +1,324 @@
+[
+    {
+        "lgd_name": "Ward No.1",
+        "crime_count": 103,
+        "safety_score": 66.006600660066,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.2",
+        "crime_count": 24,
+        "safety_score": 92.07920792079207,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.5",
+        "crime_count": 87,
+        "safety_score": 71.2871287128713,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.3",
+        "crime_count": 26,
+        "safety_score": 91.41914191419141,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.9",
+        "crime_count": 59,
+        "safety_score": 80.52805280528052,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.13",
+        "crime_count": 12,
+        "safety_score": 96.03960396039604,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.6",
+        "crime_count": 162,
+        "safety_score": 46.53465346534653,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.8",
+        "crime_count": 303,
+        "safety_score": 0,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.4",
+        "crime_count": 13,
+        "safety_score": 95.7095709570957,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.7",
+        "crime_count": 12,
+        "safety_score": 96.03960396039604,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.11",
+        "crime_count": 8,
+        "safety_score": 97.35973597359737,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.23",
+        "crime_count": 13,
+        "safety_score": 95.7095709570957,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.24",
+        "crime_count": 16,
+        "safety_score": 94.71947194719472,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.12",
+        "crime_count": 3,
+        "safety_score": 99.00990099009901,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.18",
+        "crime_count": 3,
+        "safety_score": 99.00990099009901,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.28",
+        "crime_count": 10,
+        "safety_score": 96.6996699669967,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.25",
+        "crime_count": 2,
+        "safety_score": 99.33993399339934,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.21",
+        "crime_count": 4,
+        "safety_score": 98.67986798679868,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.40",
+        "crime_count": 3,
+        "safety_score": 99.00990099009901,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.37",
+        "crime_count": 21,
+        "safety_score": 93.06930693069307,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.27",
+        "crime_count": 10,
+        "safety_score": 96.6996699669967,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.22",
+        "crime_count": 7,
+        "safety_score": 97.6897689768977,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.10",
+        "crime_count": 10,
+        "safety_score": 96.6996699669967,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.15",
+        "crime_count": 1,
+        "safety_score": 99.66996699669967,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.16",
+        "crime_count": 7,
+        "safety_score": 97.6897689768977,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.30",
+        "crime_count": 12,
+        "safety_score": 96.03960396039604,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.31",
+        "crime_count": 4,
+        "safety_score": 98.67986798679868,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.29",
+        "crime_count": 6,
+        "safety_score": 98.01980198019803,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.20",
+        "crime_count": 7,
+        "safety_score": 97.6897689768977,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.19",
+        "crime_count": 5,
+        "safety_score": 98.34983498349835,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.32",
+        "crime_count": 5,
+        "safety_score": 98.34983498349835,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.17",
+        "crime_count": 5,
+        "safety_score": 98.34983498349835,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.33",
+        "crime_count": 8,
+        "safety_score": 97.35973597359737,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.47",
+        "crime_count": 23,
+        "safety_score": 92.40924092409242,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.41",
+        "crime_count": 4,
+        "safety_score": 98.67986798679868,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.44",
+        "crime_count": 41,
+        "safety_score": 86.46864686468646,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.42",
+        "crime_count": 8,
+        "safety_score": 97.35973597359737,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.39",
+        "crime_count": 4,
+        "safety_score": 98.67986798679868,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.14",
+        "crime_count": 2,
+        "safety_score": 99.33993399339934,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.26",
+        "crime_count": 0,
+        "safety_score": 100.0,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.43",
+        "crime_count": 31,
+        "safety_score": 89.76897689768977,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.38",
+        "crime_count": 13,
+        "safety_score": 95.7095709570957,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.45",
+        "crime_count": 27,
+        "safety_score": 91.08910891089108,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.34",
+        "crime_count": 7,
+        "safety_score": 97.6897689768977,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.35",
+        "crime_count": 23,
+        "safety_score": 92.40924092409242,
+        "trend": [],
+        "predicted_types": {}
+    },
+    {
+        "lgd_name": "Ward No.36",
+        "crime_count": 25,
+        "safety_score": 91.74917491749176,
+        "trend": [],
+        "predicted_types": {}
+    }
+]

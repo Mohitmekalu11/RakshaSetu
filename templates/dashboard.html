@@ -1,0 +1,269 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Risk Intelligence Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --accent-indigo: #4f46e5;
+            --glass: rgba(255, 255, 255, 0.9);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            background-color:rgba(176, 225, 213, 0.57);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.03) 0px, transparent 50%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        /* DIRECTORY VIEW: Ward Grid */
+        .ward-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .ward-command-tile {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ward-command-tile:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        .ward-command-tile i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        /* INTELLIGENCE VIEW: Canvas */
+        .intel-canvas {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .canvas-header {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 30px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: #f1f5f9;
+            transform: translateX(-5px);
+        }
+
+        /* CARDS */
+        .risk-card {
+            background: white;
+            border-radius: 24px;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .risk-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.1);
+        }
+
+        .risk-indicator {
+            height: 5px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    
+    <div id="directory-view" class="{% if selected_ward %}hidden{% endif %}">
+        <div class="text-center mb-5">
+            <h1 class="fw-800 display-5 mb-2">Command Directory</h1>
+            <p class="text-muted fs-5">Select an administrative ward to begin risk assessment</p>
+        </div>
+
+        <div class="ward-grid">
+            {% for ward in wards %}
+            <div class="ward-command-tile shadow-sm" onclick="selectWard('{{ ward }}')">
+                <i class="bi bi-geo-alt-fill"></i>
+                <h4 class="fw-700 mb-1">{{ ward }}</h4>
+                <span class="text-muted small">Access Sector Intelligence</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="intel-view" class="intel-canvas {% if not selected_ward %}hidden{% endif %}">
+        
+        <button class="back-btn" onclick="resetDirectory()">
+            <i class="bi bi-arrow-left me-2"></i>Back to Directory
+        </button>
+
+        <div class="canvas-header">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-4">
+                    <h2 class="fw-800 mb-0">{{ selected_ward }}</h2>
+                    <p class="text-muted mb-0 small">Operational Intelligence & Forecasting</p>
+                </div>
+                <div class="col-lg-8">
+                    <form method="get" id="filter-form" class="row g-2 align-items-end">
+                        <input type="hidden" name="ward" id="ward-input" value="{{ selected_ward }}">
+                        
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Offense Type</label>
+                            <select name="crime_type" class="form-select border-0 shadow-sm">
+                                <option value="">All Classifications</option>
+                                {% for crime in crime_types %}
+                                <option value="{{ crime }}" {% if selected_crime == crime %}selected{% endif %}>{{ crime }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Priority Level</label>
+                            <select name="risk_level" class="form-select border-0 shadow-sm">
+                                <option value="">All Tiers</option>
+                                {% for risk in risk_levels %}
+                                <option value="{{ risk }}" {% if selected_risk == risk %}selected{% endif %}>{{ risk }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-3">
+                                <i class="bi bi-search me-2"></i>Update Sector
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+            {% for panel in panels %}
+            <div class="col">
+                <div class="card risk-card h-100">
+                    <div class="risk-indicator 
+                        {% if panel.risk_level == 'HIGH' %}bg-danger
+                        {% elif panel.risk_level == 'MEDIUM' %}bg-warning
+                        {% else %}bg-success{% endif %}"></div>
+                    
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge rounded-pill bg-light text-dark border px-3">{{ panel.risk_level }} RISK</span>
+                            <i class="bi bi-shield-check text-primary"></i>
+                        </div>
+                        
+                        <h4 class="fw-700 mb-2">{{ panel.crime_type }}</h4>
+                        
+                        <div class="bg-light rounded-3 p-3 mb-4">
+                            <div class="small text-muted mb-1">Recommended Patrol:</div>
+                            <div class="fw-bold"><i class="bi bi-clock-history me-2"></i>{{ panel.peak_window }}</div>
+                        </div>
+
+                        {% if panel.can_forecast %}
+                        <a href="{{ panel.url }}" class="btn btn-dark w-100 rounded-3 py-2">
+                            View Detailed Analysis
+                        </a>
+                        {% else %}
+                        <button class="btn btn-light w-100 rounded-3 py-2 text-muted" disabled>
+                            Data Threshold Not Met
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="opacity-25 mb-3"><i class="bi bi-database-exclamation display-1"></i></div>
+                <h4 class="text-muted">No matching risk data found for this sector.</h4>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+    function selectWard(wardName) {
+        // Trigger page reload with the ward as a GET parameter
+        const url = new URL(window.location);
+        url.searchParams.set('ward', wardName);
+        window.location.href = url.href;
+    }
+
+    function resetDirectory() {
+        // Clear all parameters and return to main view
+        window.location.href = window.location.pathname;
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

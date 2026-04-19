@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrol AI | Strategic Command</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    
+    <style>
+        :root {
+            --primary: linear-gradient(to right,rgb(97, 126, 221),rgb(113, 69, 158));
+            --primary-hover:linear-gradient(to right,rgb(97, 126, 221),rgb(113, 69, 158));
+            --bg-dark: #0f172a;
+            --bg-gradient: radial-gradient(circle at top right,rgba(0, 46, 120, 0.91),rgb(18, 26, 44));
+            --glass-bg: rgba(252, 252, 252, 0.04);
+            --glass-border: rgba(240, 231, 231, 0.08);
+            --text-main: #f8fafc;
+            --text-dim:rgb(184, 192, 202);
+            
+            /* Risk Levels */
+            --risk-high: #ef4444;
+            --risk-mod:rgba(255, 166, 12, 0.91);
+            --risk-low: #10b981;
+            --risk-info: #3b82f6;
+        }
+
+        * { box-sizing: border-box; transition: all 0.25s ease; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        /* --- UI Elements --- */
+        header { text-align: center; margin-bottom: 50px; }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -1.5px;
+            background: linear-gradient(to right,rgb(255, 255, 255), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+        }
+
+        .instruction-tag {
+            background: rgba(150, 151, 237, 0.1);
+            color: var(--primary);
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- Form Styling --- */
+        .filter-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+        }
+
+        @media (max-width: 768px) { .filter-box { grid-template-columns: 1fr; } }
+
+        .input-group { position: relative; }
+        .input-group ion-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 1.2rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border-radius: 14px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            font-size: 0.95rem;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
+
+        button {
+            padding: 14px 30px;
+            border-radius: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+        /* --- Cards & Metrics --- */
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+            border-radius: 24px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .highlight-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 10px 0;
+        }
+
+        .confidence-badge {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge-high { background: rgba(16, 185, 129, 0.15); color: var(--risk-low); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .badge-mod { background: rgba(245, 158, 11, 0.15); color: var(--risk-mod); border: 1px solid rgba(245, 158, 11, 0.2); }
+
+        /* --- Tactical Timeline Table --- */
+        .table-container { margin-top: 20px; border-radius: 16px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; background: rgba(0,0,0,0.2); }
+        td { padding: 15px; border-bottom: 1px solid var(--glass-border); font-size: 0.95rem; }
+        tr:last-child td { border: none; }
+
+        /* --- Risk Bar --- */
+        .risk-bar-container { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .risk-bar-fill { height: 100%; border-radius: 10px; }
+
+        /* --- Loader --- */
+        #loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .loader-ring {
+            width: 60px; height: 60px;
+            border: 4px solid rgba(99, 102, 241, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* --- Netflix Style Rank Numbers --- */
+        #rankings-section { display: none; } /* Controlled by JS */
+
+        .ranked-card-container {
+            position: relative;
+            padding-left: 73px; 
+            margin-bottom: 40px;
+        }
+
+        .rank-number {
+            position: absolute;
+            left: -37px;
+            bottom: -20px;
+            font-size: 15rem; /* Increased size for Netflix feel */
+            font-weight: 900;
+            line-height: 1;
+            z-index: 0; /* Behind the card content */
+            color: transparent;
+            -webkit-text-stroke: 4px rgba(255, 255, 255, 0.67);
+            font-family: 'Archivo', sans-serif;
+            user-select: none;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .ranked-card {
+            position: relative;
+            z-index: 1; /* Above the number */
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+<div id="loader-overlay">
+    <div class="loader-ring"></div>
+    <h3 style="margin-top: 25px; letter-spacing: 1px;">COMPUTING TACTICAL DATA...</h3>
+    <p style="color: var(--text-dim);">Analyzing historical crime density and temporal patterns</p>
+</div>
+
+<div class="container">
+    <header>
+        <h1>Today's Patrol recommendation</h1>
+        <div class="instruction-tag">
+            <ion-icon name="options-outline"></ion-icon>
+            SYSTEM STATUS: READY FOR PARAMETERS
+        </div>
+    </header>
+
+    <form id="recommendation-form" method="get" class="filter-box">
+        <div class="input-group">
+            <ion-icon name="map-outline"></ion-icon>
+            <select name="ward" id="ward-select">
+                <option value="">All Wards (Regional Scan)</option>
+                {% for w in wards %}
+                    <option value="{{ w }}" {% if w == selected_ward %}selected{% endif %}>Ward {{ w }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="input-group">
+            <ion-icon name="shield-half-outline"></ion-icon>
+            <select name="crime_type" required>
+                <option value="">Type of Crime</option>
+                {% for c in crime_types %}
+                    <option value="{{ c }}" {% if c == selected_crime %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">
+            <ion-icon name="analytics-outline"></ion-icon>
+            GENERATE INTELLIGENCE
+        </button>
+    </form>
+
+    {% if recommendation %}
+    <div id="results-area">
+        <div class="card" style="border-top: 4px solid var(--primary);">
+            <div class="card-header">
+                <span style="color: var(--primary); font-weight: 700; font-size: 0.8rem; letter-spacing: 1.5px;">
+                    <ion-icon name="locate-outline" style="vertical-align: middle; margin-right: 5px;"></ion-icon>
+                    RECOMMENDED PATROL WINDOW
+                </span>
+                
+            </div>
+            <span class="confidence-badge {% if ward_rec.risk_level  == 'HIGH' %}badge-high{% else %}badge-mod{% endif %}">
+                Risk {{ recommendation.risk_level }} ({{ recommendation.patrol_risk_score }}%)</span>
+            
+            <div style="color: var(--text-dim); font-size: 0.9rem;">Deployment Zone</div>
+            <div style="font-size: 2.2rem; font-weight: 800; margin-bottom: 10px;">{{ recommendation.ward }}</div>
+            <div style="color: var(--text-dim); font-size: 0.9rem;">Crime Type</div>
+            <div style="font-size: 1.6rem; font-weight: 900; margin-bottom: 10px;">{{ recommendation.crime_type }}</div>
+            <div class="intelligence-card">
+                <div class="highlight-window">
+                  
+                  
+                <div class="highlight-window" style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.1); padding: 4px 10px; border-radius: 999px; display: flex; align-items: center; font-size: 1.8rem; font-weight: 700; color: var(--risk-mod); white-space: nowrap;">
+                    <ion-icon name="time-outline" style="margin-right: 4px; font-size: 1.8rem;"></ion-icon>
+                    {{ recommendation.recommended_window }}
+                </div>
+                </div>
+              
+                <div class="activity-header">
+                  
+                  <p class="activity-subtext">
+                    <ion-icon name="stats-chart-outline"></ion-icon>
+                    {{ recommendation.recent_activity.last_7_days }} incidents in last 7 days
+                  </p>
+                </div>
+              
+              
+              
+                
+              </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                <div>
+                    <span style="color: var(--text-dim); display: block; font-size: 0.75rem; text-transform: uppercase;">Incident Concentration</span>
+                    <span style="font-size: 1.2rem; font-weight: 700;">{{ recommendation.risk_percentage }}%</span>
+                    <div class="risk-bar-container">
+                        <div class="risk-bar-fill" style="width: {{ recommendation.risk_percentage }}%; background: var(--risk-high);"></div>
+                    </div>
+                </div>
+                <div>
+                    <div style="position: relative;">
+                        <span style="color: var(--text-dim); display: flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: uppercase;">
+                            Confidence Level
+                            <span title="Confidence indicates how reliable this assessment is, based on the amount and consistency of historical data available for this ward and crime type."
+                                  style="cursor: help; font-size: 0.7rem; opacity: 0.7;">
+                                ⓘ
+                            </span>
+                        </span>
+                    
+                        <span style="font-size: 1.2rem; font-weight: 700;">
+                            {{ recommendation.confidence }}
+                        </span>
+                    </div>
+                    
+                    <div class="risk-bar-container">
+                        <div class="risk-bar-fill" style="width: {% if recommendation.confidence == 'HIGH' %}90%{% else %}50%{% endif %}; background: var(--primary);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0; display: flex; align-items: center; gap: 10px; font-size: 1.1rem;">
+                <ion-icon name="bulb-outline" style="color:grey; font-size:32px"></ion-icon>
+                <div class="status-badge">
+                            <strong>Recent Activity Summary:</strong>
+                                      </div>
+            </h3>
+
+            <div class="status-badge">
+                <ion-icon name="pulse-outline" style="color: var(--risk-mod);"></ion-icon>
+                <strong> Trends:</strong>
+                <span class="status-text">{{ recommendation.recent_activity.recent_status }}</span>
+                
+            </div>
+            <div class="intel-summary">
+                
+                <ul class="intel-list">
+                  {% for reason in recommendation.reasons %}
+                  <li>
+                    
+                    <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+                    <span>{{ reason }}</span>
+                  </li>
+                  {% endfor %}
+                </ul>
+                
+                    <li>
+                        <strong>14-Day Density:</strong>
+                        {{ recommendation.recent_activity.last_14_days }} incidents
+                        ({{ recommendation.recent_activity.density_status }})
+                    </li>
+        
+                    <li>
+                        <strong>48-Hour Velocity:</strong>
+                        {{ recommendation.recent_activity.last_48_hours }} incidents
+                        ({{ recommendation.recent_activity.velocity_status }})
+                    </li>
+              </div>
+              
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0; display: flex; align-items: center; gap: 10px; font-size: 1.1rem;">
+                <ion-icon name="bar-chart-outline" style="color: var(--primary);"></ion-icon>
+                Hourly Risk Distribution
+            </h3>
+            <div class="table-container">
+                
+
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time Window</th>
+                            <th>Incident Count</th>
+                            <th>Probability Matrix</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in time_distribution %}
+                        <tr>
+                            <td style="font-weight: 600;">{{ row.time_bucket }}</td>
+                            <td>{{ row.count }} Cases</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="color: var(--primary); font-weight: 700; width: 45px;">{{ row.percentage }}%</span>
+                                    <div style="flex-grow: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 4px;">
+                                        <div style="width: {{ row.percentage }}%; height: 100%; background: var(--primary); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ===== BUTTON TO VIEW TOP 5 ===== -->
+{% if top_wards %}
+<div class="rank-toggle-btn">
+    <button onclick="toggleRankings()">
+        <ion-icon name="trophy-outline"></ion-icon>
+        High-Priority Strategic Wards
+    </button>
+</div>
+{% endif %}
+
+
+    {% if top_wards %}
+    <div id="rankings-section">
+    <div style="margin-top: 60px;">
+    
+    <h2 style="font-size: 1.5rem; display: flex; align-items: center; gap: 12px; margin-bottom: 40px;">
+        <ion-icon name="shield-checkmark-outline" style="color: var(--risk-low); font-size: 2rem;"></ion-icon>
+        High Priority Strategic Wards
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr; gap: 40px;">
+        {% for ward_rec in top_wards %}
+        <div class="ranked-card-container">
+            <div class="rank-number">{{ forloop.counter }}</div>
+            
+            <div class="ranked-card">
+                <div class="card-header">
+                    <h3 style="margin: 0; color: var(--primary); font-size: 1.2rem;">Ward {{ ward_rec.ward }}</h3>
+                    <span class="confidence-badge {% if ward_rec.risk_level  == 'HIGH' %}badge-high{% else %}badge-mod{% endif %}">
+                        Risk {{ ward_rec.risk_level }} ({{ ward_rec.patrol_risk_score }}%)</span>
+
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 8px; margin: 15px 0;">
+                    <ion-icon name="flash-outline" style="color: var(--risk-mod);"></ion-icon>
+                    <strong>Optimal Patrol:</strong> <span style="margin-left: 10px;">{{ ward_rec.recommended_window }}</span>
+                </div>
+
+                <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 10px;">
+                    <strong>Crime Type:</strong> {{ ward_rec.crime_type }}
+                </p>
+                <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 20px;">
+                    {{ ward_rec.reason }}
+                </p>
+
+                <details style="cursor: pointer; border-top: 1px solid var(--glass-border); padding-top: 15px;">
+                    <summary style="font-size: 0.8rem; color: var(--primary); font-weight: 700; list-style: none; display: flex; align-items: center; gap: 5px;">
+                        <ion-icon name="chevron-down-outline"></ion-icon>
+                        EXPAND RISK MATRIX
+                    </summary>
+                    <div style="margin-top: 15px;">
+                        <table style="background: rgba(0,0,0,0.2); border-radius: 12px; width: 100%;">
+                            {% for row in ward_rec.time_distribution %}
+                            <tr>
+                                <td style="font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.03);">{{ row.time_bucket }}</td>
+                                <td style="font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.03);">{{ row.count }} incidents</td>
+                                <td style="font-size: 0.8rem; text-align: right; color: var(--primary); font-weight: 700;">{{ row.percentage }}% Risk</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </details>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+</div>
+<script>
+    function toggleRankings(){
+        const section = document.getElementById('rankings-section');
+        section.style.display = section.style.display === 'block' ? 'none' : 'block';
+    }
+    </script>
+
+<script>
+    const form = document.getElementById('recommendation-form');
+    const loader = document.getElementById('loader-overlay');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        loader.style.display = 'flex';
+        
+        // Simulating deep analysis delay
+        setTimeout(() => {
+            form.submit();
+        }, 2000);
+    });
+</script>
+
+</body>
+<footer class="app-footer" style="margin-top: 30px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+    <div style="display: inline-flex; align-items: center; gap: 6px; color:rgb(255, 255, 255); font-size: 0.85rem;">
+      
+      <ion-icon name="information-circle-outline" style="font-size: 1.1rem; color: #94a3b8; flex-shrink: 0;"></ion-icon>
+      
+      <p style="margin: 0; line-height: 1.4; letter-spacing: 0.01em;">
+        <span style="color:rgb(160, 171, 186); font-weight: 600;">Disclaimer:</span> 
+        This system provides decision support only and does not replace human judgment.
+      </p>
+      
+    </div>
+  </footer>
+  
+</html>

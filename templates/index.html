@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RakshaSetu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            color: #e0e0e0;
+            line-height: 1.6;
+            background-color: #121212;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(18, 18, 18, 0.85);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar img.logo {
+            height: 60px;
+            width: auto;
+            transition: transform 0.3s ease;
+            margin-left: 0;
+        }
+
+        .navbar img.logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links ul li {
+            margin: 0 25px;
+        }
+
+        .nav-links ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #4285F4;
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .nav-links ul li a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links ul li a:hover {
+            color: #4285F4;
+        }
+
+        /* --- BUTTON STYLES --- */
+        .btn-primary, .btn-primary1, .btn-primary2 {
+            /* Common styles for all buttons */
+            background: linear-gradient(45deg, #4285F4, #67B3FF);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Adjustments for specific buttons */
+        .btn-primary1 {
+            background: linear-gradient(45deg, rgb(244, 37, 40), rgb(255, 145, 145));
+        }
+
+        .btn-primary2 {
+            background: linear-gradient(45deg, rgb(13, 255, 0), rgb(167, 255, 133));
+        }
+
+        /* Hover and active states */
+        .btn-primary:hover {
+            background: linear-gradient(45deg, rgb(0, 129, 129), #4285F4);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .btn-primary1:hover {
+            background: linear-gradient(45deg, rgb(165, 7, 7), rgb(255, 152, 152));
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .btn-primary2:hover {
+            background: linear-gradient(45deg, rgb(10, 67, 5), rgb(89, 228, 62));
+            transform: translateY(-5px) scale(0.6);
+        }
+
+        .btn-primary:active, .btn-primary1:active, .btn-primary2:active {
+            transform: translateY(-2px);
+        }
+
+        /* Shimmer effect for all buttons */
+        .btn-primary:before, .btn-primary1:before, .btn-primary2:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: -1;
+        }
+
+        .btn-primary:hover:before, .btn-primary1:hover:before, .btn-primary2:hover:before {
+            left: 100%;
+        }
+
+        .nav-buttons .btn-primary, .nav-buttons .btn-primary1 {
+            margin-left: 0;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .back-video {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            object-fit: cover;
+        }
+
+        .hero .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1;
+        }
+
+        .hero .hero-content {
+            z-index: 2;
+            max-width: 900px;
+            
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeInDown 1s ease-out;
+            
+        }
+
+        .hero p {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        .hero h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            font-weight: 400;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+            opacity: 0;
+            
+        }
+
+        .hero .cta-buttons button {
+            margin: 15px;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            animation: zoomIn 1s ease-out 0.9s forwards;
+            opacity: 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 0;
+            text-align: center;
+            background-color: #1a1a1a;
+            position: relative;
+            z-index: 5;
+        }
+
+        .features-section h2 {
+            font-size: 3rem;
+            color: #e0e0e0;
+            margin-bottom: 60px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .features-section h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: #4285F4;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .features-section .feature-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .features-section .feature-card {
+            background-color: #2a2a2a;
+            border-radius: 12px;
+            padding: 40px;
+            width: 320px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .features-section .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(66, 133, 244, 0.3);
+        }
+
+        .features-section .feature-icon {
+            font-size: 4rem;
+            color: #4285F4;
+            margin-bottom: 25px;
+            transition: color 0.3s ease;
+        }
+
+        .features-section .feature-card:hover .feature-icon {
+            color: #e0e0e0;
+        }
+
+        .features-section .feature-card h3 {
+            font-size: 1.9rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .features-section .feature-card p {
+            font-size: 1.05rem;
+            color: #b0b0b0;
+            line-height: 1.7;
+        }
+        
+        /* New Crime Map CTA Section */
+        .crime-map-cta-section {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 20px;
+            margin: 80px auto;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .crime-map-cta-section .cta-icon {
+            font-size: 4rem;
+            color: #67B3FF;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(103, 179, 255, 0.8);
+        }
+
+        .crime-map-cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .crime-map-cta-section p {
+            font-size: 1.1rem;
+            color: #c0c0c0;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 60px 0;
+            background-color: #0d0d0d;
+            color: #e0e0e0;
+            text-align: center;
+        }
+
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 30px;
+        }
+
+        .footer .footer-section {
+            margin: 0;
+            width: 280px;
+            text-align: left;
+        }
+
+        .footer .footer-logo h2 {
+            font-size: 2.2rem;
+            color: #4285F4;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .footer .footer-logo p {
+            color: #aaa;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .footer .footer-nav h3,
+        .footer .contact-info h3,
+        .footer .follow-us h3 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .footer .footer-nav h3::after,
+        .footer .contact-info h3::after,
+        .footer .follow-us h3::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: #4285F4;
+            bottom: 0;
+            left: 0;
+            border-radius: 1.5px;
+        }
+
+        .footer .footer-nav ul {
+            list-style: none;
+        }
+
+        .footer .footer-nav ul li {
+            margin: 12px 0;
+        }
+
+        .footer .footer-nav ul li a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer .footer-nav ul li a i {
+            margin-right: 10px;
+            color: #4285F4;
+        }
+
+        .footer .footer-nav ul li a:hover {
+            color: #4285F4;
+            transform: translateX(5px);
+        }
+
+        .footer .social-links {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 20px;
+        }
+
+        .footer .social-links a {
+            margin-right: 15px;
+            font-size: 1.8rem;
+            color: #4285F4;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .footer .social-links a:hover {
+            color: #ffffff;
+            transform: translateY(-5px);
+        }
+
+        /* Bottom section */
+        .footer-bottom {
+            margin-top: 40px;
+            border-top: 1px solid #222;
+            padding: 20px 0;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .navbar .container {
+                flex-direction: column;
+                padding: 10px 20px;
+            }
+
+            .nav-links ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links ul li {
+                margin: 5px 15px;
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .hero p {
+                font-size: 1.3rem;
+            }
+
+            .hero h3 {
+                font-size: 1rem;
+            }
+
+            .features-section .feature-card {
+                width: 45%;
+            }
+
+            .footer .container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .footer .footer-section {
+                width: 80%;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+
+            .footer .footer-nav h3::after,
+            .footer .contact-info h3::after,
+            .footer .follow-us h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .footer .social-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar img.logo {
+                height: 50px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .hero .cta-buttons button {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+
+            .features-section .feature-card {
+                width: 90%;
+            }
+        }
+
+        @media (min-aspect-ratio: 16/9) {
+            .back-video {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        @media (max-aspect-ratio: 16/9) {
+            .back-video {
+                width: auto;
+                height: 100%;
+            }
+        }
+
+        /* Floating Chat Button */
+
+        .floating-chat {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(45deg, #4285F4, #67B3FF);
+            color: white;
+            font-size: 22px;
+            padding: 18px;
+            border-radius: 50%;
+            text-decoration: none;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+            z-index: 999;
+            transition: 0.3s ease;
+        }
+
+        .floating-chat:hover {
+            transform: scale(1.1);
+            background: #2b6edb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <img src="{% static 'logo_rs.png' %}" class="logo">
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <a href="{% url 'admin_login' %}">
+                    <button class="btn-primary1">Admin Login</button>
+                </a>
+                <a href="{% url 'login' %}">
+                    <button class="btn-primary">Login</button>
+                </a>
+            </div>
+        </div>
+                <!-- Floating Chat Button -->
+        
+    </header>
+
+    <section class="hero">
+        <video autoplay loop muted plays-inline class="back-video">
+            <source src="{% static 'mp4crimecast.mp4' %}" type="video/mp4">
+        </video>
+
+        <div class="overlay"></div>
+        <div class="container hero-content">
+            <h1>Predict crime before it happens.</h1>
+            <p>Predict, Prevent, Protect.</p>
+            <h3>
+                <center>Don't have an account? Get Started Now!</center>
+            </h3>
+            <div class="cta-buttons">
+                <a href="{% url 'choose_pg' %}">
+                    <button class="btn-primary2">Get Started</button>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <h2>Our Core Features</h2>
+            <div class="feature-cards">
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Crime Trends & Insights</h3>
+                    <p>Visualize crime patterns over time with detailed graphs, heatmaps, and calendar-based analysis.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3>Report Crimes Instantly</h3>
+                    <p>Citizens can report crimes live from the map with options for anonymity and community verification.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>High-Risk Zone Alerts</h3>
+                    <p>Stay safe with alerts when you enter or navigate near high-crime or unsafe areas.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="crime-map-cta-section">
+        <div class="container">
+            <div class="cta-icon">
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <h2>Explore the Thane Crime Map</h2>
+            <p></p>
+            <a href="{% url 'monthly_crime_predictions' %}" class="btn-glass">
+                View Thane Crime Map
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-section footer-logo">
+                <h2>CrimeCast</h2>
+                <p>Empowering communities with predictive insights to foster safer environments and reduce crime rates.</p>
+            </div>
+
+            <div class="footer-section footer-nav">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                    <li><a href="#"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section contact-info">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><a href="mailto:crimecast@gmail.com"><i class="fas fa-at"></i> crimecast@gmail.com</a></li>
+                    <li><a href="tel:+1234567890"><i class="fas fa-phone"></i> +123 456 7890</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> 123 Main Street, Anytown, State</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section follow-us">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 CrimeCast. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

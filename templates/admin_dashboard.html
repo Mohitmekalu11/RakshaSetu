@@ -1,0 +1,868 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Enhanced & Dynamic</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Global & Typography --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f4f8; /* Light background for contrast with dark sidebar */
+            color: #1f2937;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar (Dark Themed) --- */
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            padding: 30px 20px; 
+            color: #e2e8f0;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 7px 0 20px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo img {
+            width: 100%;
+            max-width: 180px;
+            height: auto;
+            transition: transform 0.4s ease-in-out;
+            border-radius: 8px;
+        }
+        .logo img:hover {
+            transform: scale(1.05) rotate(-1deg);
+        }
+
+        .nav {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .nav li a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav li a ion-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: #64748b;
+            transition: color 0.3s ease;
+        }
+
+        .nav li a:hover,
+        .nav li.active a {
+            color: #ffffff;
+            background: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .nav li a:hover ion-icon,
+        .nav li.active a ion-icon {
+            color: #3b82f6;
+        }
+        
+        .nav li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .nav li a:hover::before {
+            left: 100%;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: 250px;
+            padding: 40px 30px;
+            min-height: 100vh;
+            transition: margin-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #1f2937;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1f2937;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-left: 5px solid #3b82f6;
+            padding-left: 15px;
+            font-size: 1.6rem;
+        }
+
+        /* --- Stat Cards --- */
+        .stat-card {
+            border: none;
+            border-radius: 15px;
+            color: #fff;
+            padding: 28px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.01);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+        }
+        
+        .stat-card h5 {
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .stat-card h3 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            animation: countUp 1.5s ease-out;
+        }
+        
+        @keyframes countUp {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .stat-card.users {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+        }
+        
+        .stat-card.cases {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .stat-card ion-icon {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            font-size: 7rem;
+            opacity: 0.18;
+            color: inherit;
+        }
+
+        /* --- Toggle Button Group --- */
+        .toggle-group {
+            display: inline-flex;
+            background: #e2e8f0;
+            border-radius: 50px;
+            padding: 6px;
+            text-align:center;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.15);
+            margin-bottom: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 50px;
+            background-color: transparent;
+            color: #64748b;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            outline: none !important;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .toggle-btn.active {
+            color: #ffffff;
+            background-color: #3b82f6;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+        }
+        
+        .toggle-btn ion-icon {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* --- Data Sections --- */
+        .data-section {
+            margin-top: 30px;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            opacity: 1;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .data-section.hidden {
+            display: none !important;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* --- UNBELIEVABLE TABLE STYLING --- */
+        .modern-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .modern-table thead th {
+            background: linear-gradient(90deg, #2563eb, #0284c7);
+            color: #ffffff;
+            padding: 18px 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.7px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .modern-table thead th:hover {
+            background: linear-gradient(90deg, #1d4ed8, #0ea5e9);
+        }
+
+        .modern-table tbody tr {
+            background-color: #ffffff;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .modern-table tbody tr:nth-child(odd) {
+            background-color: #f9fafb;
+        }
+
+        .modern-table tbody tr:hover {
+            background-color: #eff6ff;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .modern-table tbody td {
+            padding: 16px 15px;
+            vertical-align: middle;
+            font-size: 0.92rem;
+            color: #334155;
+            border: none;
+        }
+
+        /* Resolution Rate Gauge Styling */
+        .gauge-label {
+            margin-bottom: 5px;
+        }
+        .gauge-container {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .resolution-gauge {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #10b981);
+            border-radius: 5px;
+            transition: width 1s ease-out;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge {
+            font-weight: 600;
+            padding: 0.5em 1em;
+            border-radius: 20px;
+            font-size: 0.78rem;
+        }
+        .badge-primary { background-color: #3b82f6; color: white; }
+        .badge-success { background-color: #10b981; color: white; }
+        .badge-warning { background-color: #f59e0b; color: #333; }
+        .badge-info { background-color: #06b6d4; color: white; }
+        
+        .badge-label {
+            display: block;
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        /* End UNBELIEVABLE TABLE STYLING */
+
+        /* View More/Less Button Styling */
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .view-toggle-btn {
+            background-color: #e0f2fe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .view-toggle-btn:hover {
+            background-color: #bfdbfe;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        .view-toggle-btn ion-icon {
+            margin-left: 6px;
+        }
+
+        /* User Management Table Overrides */
+        .table-hover tbody tr:hover {
+             background-color: #f8f9fa;
+        }
+
+        .id-card-img {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #3b82f6;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        }
+        .id-card-img:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+        }
+        
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        
+        .modal-body video, .modal-body img {
+            max-height: 80vh;
+            width: auto;
+            border-radius: 10px;
+        }
+
+        /* Animation for the HR */
+        .animate-hr {
+            border: none;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            width: 0;
+            opacity: 0;
+            margin: 30px 0;
+            animation: hrReveal 1.5s forwards;
+        }
+        @keyframes hrReveal {
+            to {
+                width: 100%;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-none d-md-block sidebar">
+                <div class="logo">
+                    <img src="{% static 'logo_rs.png' %}" alt="Logo">
+                </div>
+                
+                <hr class="animate-hr">
+
+                <ul class="nav">
+                    <li class="active"><a href="{% url 'admin_dashboard' %}"><ion-icon name="grid-outline"></ion-icon> Dashboard</a></li>
+                    {% comment %} <li><a href="{% url 'admin_report' %}"><ion-icon name="document-text-outline"></ion-icon> Crime Reports</a></li>
+                    <li><a href="{% url 'admin_approved_cases' %}"><ion-icon name="checkmark-circle-outline"></ion-icon> Approved Cases</a></li> {% endcomment %}
+                    <li><a href="{% url 'index' %}"><ion-icon name="log-out-outline"></ion-icon> Logout</a></li>
+                </ul>
+            </nav>
+            
+            <main class="col-md-9 col-lg-10 ms-sm-auto main-content">
+                <h1 class="mb-4">Admin Control Panel</h1>
+                
+                <div class="row mt-4 mb-5">
+                    <div class="col-md-6 mb-4">
+                        <div class="stat-card users shadow">
+                            <ion-icon name="people-circle-outline"></ion-icon>
+                            <h5 class="card-title">Total Registered Users</h5>
+                            <h3 class="card-text">{{ total_users }}</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="stat-card cases shadow">
+                            <ion-icon name="receipt-outline"></ion-icon>
+                            <h5 class="card-title">Total Reported Cases</h5>
+                            <h3 class="card-text">{{ total_cases }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toggle-group" role="group" aria-label="Dashboard Toggle">
+                    <button id="stationReportsBtn" class="toggle-btn active">
+                        <ion-icon name="analytics-outline"></ion-icon> Station Reports
+                    </button>
+                    <button id="userManagementBtn" class="toggle-btn">
+                        <ion-icon name="finger-print-outline"></ion-icon> User Management
+                    </button>
+                </div>
+
+
+                <div id="stationReportsSection" class="data-section">
+                    <h2>Station Performance Analytics</h2>
+                    
+                    <div class="table-controls">
+                        <div class="badge-label">Viewing Summary Data (Click to expand columns)</div>
+                        <button id="viewMoreBtn" class="view-toggle-btn">
+                            View More Details 
+                            <ion-icon name="chevron-down-outline" id="viewMoreIcon"></ion-icon>
+                        </button>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="modern-table" id="stationPerformanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Station Name</th>
+                                    <th>Total Cases</th>
+                                    <th>Resolved</th>
+                                    <th>Pending</th>
+                                    <th>Resolution Rate (%)</th>
+                                    <th class="optional-col">Top Crime Type</th>
+                                    <th class="optional-col">Avg Resolution Time (Hours)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in stations %}
+                                <tr class="optional-row">
+                                    <td><ion-icon name="business-outline" class="me-2"></ion-icon> <strong>{{ s.name }}</strong></td>
+                                    <td><span class="badge badge-primary">{{ s.total_cases }}</span></td>
+                                    <td><span class="badge badge-success">{{ s.resolved_cases }}</span></td>
+                                    <td><span class="badge badge-warning text-dark">{{ s.pending_cases }}</span></td>
+                                    
+                                    <td>
+                                        <div class="gauge-label">
+                                            <span class="badge badge-info text-dark">{{ s.resolution_rate }}%</span>
+                                        </div>
+                                        <div class="gauge-container">
+                                            <div class="resolution-gauge" style="width: {{ s.resolution_rate }}%;"></div>
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="optional-col">{{ s.top_crime_type }}</td>
+                                    <td class="optional-col">{{ s.avg_resolution_display }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">No station data available</td>
+                                </tr>
+                                {% endfor %}
+                                
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="userManagementSection" class="data-section hidden">
+                    <h2>Pending Police Officer Approvals</h2>
+                    <div class="table-responsive">
+                     <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>ID Card</th>
+                                <th>Selfie Frame</th>
+                                <th>Liveness Video</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for officer in pending_officers %}
+                            <tr>
+                                <td><ion-icon name="person-circle-outline" class="me-2"></ion-icon> {{ officer.user.username }}</td>
+                                <td>
+                                    {% if officer.id_card %}
+                                        <button
+                                            type="button"
+                                            class="btn btn-info btn-sm btn-view view-idcard-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#sharedIDCardModal"
+                                            data-idcard-src="{{ officer.id_card.url }}"
+                                            >
+                                            <ion-icon name="id-card-outline"></ion-icon> View ID Card
+                                        </button>
+                                    {% else %}
+                                        <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if officer.liveness_frame %}
+                                        <button
+                                            type="button"
+                                            class="btn p-0 border-0 bg-transparent preview-img-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#sharedImageModal"
+                                            data-image-src="{{ officer.liveness_frame.url }}"
+                                            >
+                                            <img src="{{ officer.liveness_frame.url }}"
+                                                 alt="Selfie Frame"
+                                                 class="id-card-img shadow-sm"/>
+                                        </button>
+                                    {% else %}
+                                        <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if officer.liveness_video %}
+                                        <button
+                                            type="button"
+                                            class="btn btn-secondary btn-sm btn-view view-video-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#sharedVideoModal"
+                                            data-video-src="{{ officer.liveness_video.url }}"
+                                            data-poster="{{ officer.liveness_frame.url }}"
+                                            >
+                                            <ion-icon name="videocam-outline"></ion-icon> View Video
+                                        </button>
+                                    {% else %}
+                                        <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'approve_police' officer.user.id %}" class="btn btn-success btn-sm me-2"><ion-icon name="check-circle-outline"></ion-icon> Approve</a>
+                                    <button class="btn btn-danger btn-sm disapprove-btn" data-user-id="{{ officer.user.id }}"><ion-icon name="close-circle-outline"></ion-icon> Disapprove</button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">No pending approvals</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div class="modal fade" id="sharedVideoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><ion-icon name="videocam-outline"></ion-icon> Liveness Video Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <video id="sharedModalVideo" controls preload="metadata" class="img-fluid" style="opacity: 0; transition: opacity 0.5s;">
+                        <source src="" type="video/webm">
+                        Your browser does support HTML5 video.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="sharedImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><ion-icon name="camera-outline"></ion-icon> Selfie Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalSelfieImage" src="" alt="Selfie Preview" class="img-fluid" style="max-height: 70vh;"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="sharedIDCardModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><ion-icon name="id-card-outline"></ion-icon> ID Card Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalIDCardImage" src="" alt="ID Card" class="img-fluid" style="max-height: 80vh;"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      {% if messages %}
+        {% for message in messages %}
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            html: '{{ message|safe }}',
+            timer: 3000,
+            timerProgressBar: true
+          });
+        {% endfor %}
+      {% endif %}
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Dashboard Toggle Logic ---
+            const stationReportsBtn = document.getElementById('stationReportsBtn');
+            const userManagementBtn = document.getElementById('userManagementBtn');
+            const stationReportsSection = document.getElementById('stationReportsSection');
+            const userManagementSection = document.getElementById('userManagementSection');
+
+            function toggleDashboardView(view) {
+                if (view === 'reports') {
+                    stationReportsBtn.classList.add('active');
+                    userManagementBtn.classList.remove('active');
+                    
+                    userManagementSection.classList.add('hidden');
+                    // Use a slight delay to allow CSS transition on 'hidden' class to complete before setting display:none
+                    setTimeout(() => {
+                        userManagementSection.style.display = 'none';
+                        stationReportsSection.style.display = 'block';
+                        setTimeout(() => stationReportsSection.classList.remove('hidden'), 50);
+                    }, 500);
+                    
+                } else if (view === 'users') {
+                    userManagementBtn.classList.add('active');
+                    stationReportsBtn.classList.remove('active');
+
+                    stationReportsSection.classList.add('hidden');
+                    setTimeout(() => {
+                        stationReportsSection.style.display = 'none';
+                        userManagementSection.style.display = 'block';
+                        setTimeout(() => userManagementSection.classList.remove('hidden'), 50);
+                    }, 500);
+                }
+            }
+
+            // Initialize to reports view
+            toggleDashboardView('reports');
+            
+            stationReportsBtn.addEventListener('click', () => toggleDashboardView('reports'));
+            userManagementBtn.addEventListener('click', () => toggleDashboardView('users'));
+
+
+            // --- NEW: View More/View Less Logic for Station Table ---
+            const viewMoreBtn = document.getElementById('viewMoreBtn');
+            const viewMoreIcon = document.getElementById('viewMoreIcon');
+            const optionalCols = document.querySelectorAll('.optional-col');
+            const allTableRows = document.querySelectorAll('#stationPerformanceTable tbody tr');
+            const initialDisplayLimit = 10; // Only show the first 10 rows initially
+            let isExpanded = false;
+            
+            // 1. Hide optional columns initially for ALL rows
+            optionalCols.forEach(col => col.style.display = 'none');
+            allTableRows.forEach(row => {
+                Array.from(row.children).forEach((cell) => {
+                    if (cell.classList.contains('optional-col')) {
+                        cell.style.display = 'none';
+                    }
+                });
+            });
+            
+            // 2. Hide rows beyond the limit initially
+            allTableRows.forEach((row, index) => {
+                if (index >= initialDisplayLimit) {
+                    row.style.display = 'none';
+                }
+            });
+
+            function updateViewMoreButton(expanded) {
+                if (expanded) {
+                    viewMoreBtn.innerHTML = 'View Less Details <ion-icon name="chevron-up-outline"></ion-icon>';
+                    isExpanded = true;
+                } else {
+                    viewMoreBtn.innerHTML = 'View More Details <ion-icon name="chevron-down-outline"></ion-icon>';
+                    isExpanded = false;
+                }
+            }
+
+            viewMoreBtn.addEventListener('click', () => {
+                const newState = !isExpanded;
+                updateViewMoreButton(newState);
+
+                // Toggle visibility of optional columns
+                optionalCols.forEach(col => {
+                    col.style.display = newState ? 'table-cell' : 'none';
+                });
+
+                allTableRows.forEach(row => {
+                    Array.from(row.children).forEach((cell) => {
+                        if (cell.classList.contains('optional-col')) {
+                             cell.style.display = newState ? 'table-cell' : 'none';
+                        }
+                    });
+                    
+                    // Toggle visibility of rows *only if* we are switching back to 'Less'
+                    // If switching to 'More' (expanding columns), we keep all rows visible (as they were set to visible by default)
+                    if (!newState && row.rowIndex > initialDisplayLimit) { 
+                        row.style.display = 'none';
+                    } else if (newState) {
+                        row.style.display = 'table-row'; // Ensure all rows are visible when columns expand
+                    }
+                });
+
+                // Final check for row visibility on column expansion: if we are expanding columns, show all rows.
+                if (newState) {
+                    allTableRows.forEach((row, index) => {
+                        if (index >= initialDisplayLimit) {
+                            row.style.display = 'table-row'; 
+                        }
+                    });
+                }
+            });
+
+            // Initialize button text/state to 'View More' (columns are hidden)
+            updateViewMoreButton(false);
+
+
+            // --- Existing Logic (Disapprove, Modals) ---
+            
+            // Disapprove
+            document.querySelectorAll('.disapprove-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const userId = btn.dataset.userId;
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You are about to disapprove this officer.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#0d6efd',
+                        confirmButtonText: 'Yes, disapprove!'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            // NOTE: CSRF token is hardcoded placeholder in template, replace with actual mechanism if needed for real POST
+                            fetch(`/disapprove_police/${userId}/`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRFToken': '{{ csrf_token }}', 
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(r => r.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    Swal.fire('Disapproved!', 'The officer has been disapproved.', 'success');
+                                    
+                                    setTimeout(() => location.reload(), 1500);
+                                    
+                                } else {
+                                    Swal.fire('Error!', data.message, 'error');
+                                }
+                            })
+                            .catch(() => Swal.fire('Error!', 'Something went wrong during the action.', 'error'));
+                        }
+                    });
+                });
+            });
+            
+            // Video modal setup
+            const videoEl = document.getElementById('sharedModalVideo');
+            const videoModalEl = document.getElementById('sharedVideoModal');
+            document.querySelectorAll('.view-video-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    videoEl.style.opacity = 0;
+                    videoEl.pause();
+                    videoEl.setAttribute('poster', btn.dataset.poster);
+                    videoEl.querySelector('source').setAttribute('src', btn.dataset.videoSrc);
+                    videoEl.load();
+                });
+            });
+            videoEl.addEventListener('loadeddata', () => videoEl.style.opacity = 1);
+            videoModalEl.addEventListener('hidden.bs.modal', () => {
+                videoEl.pause();
+                videoEl.style.opacity = 0;
+            });
+
+            // Image/ID Card modal setups
+            const selfieEl = document.getElementById('modalSelfieImage');
+            document.querySelectorAll('.preview-img-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('modalSelfieImage').src = btn.dataset.imageSrc;
+                });
+            });
+            document.getElementById('sharedImageModal').addEventListener('hidden.bs.modal', () => {
+                selfieEl.src = '';
+            });
+
+            const idCardEl = document.getElementById('modalIDCardImage');
+            document.querySelectorAll('.view-idcard-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    idCardEl.src = btn.dataset.idcardSrc;
+                });
+            });
+            document.getElementById('sharedIDCardModal').addEventListener('hidden.bs.modal', () => {
+                idCardEl.src = '';
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

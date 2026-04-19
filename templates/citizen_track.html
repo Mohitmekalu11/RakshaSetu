@@ -1,0 +1,844 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Track Incident — CrimeCast</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f5;--surface:#fff;--surface2:#f8f9fb;
+  --border:#e4e7ed;--border2:#d0d5dd;
+  --text:#111827;--text2:#6b7280;--text3:#9ca3af;
+  --red:#ef4444;--orange:#f97316;--blue:#3b82f6;
+  --purple:#8b5cf6;--green:#22c55e;--amber:#f59e0b;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+  --s-pending:#6b7280;--s-accepted:#3b82f6;--s-enroute:#f97316;
+  --s-arrived:#8b5cf6;--s-resolved:#22c55e;--s-rejected:#ef4444;--s-escalated:#f59e0b;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+
+/* ── HEADER ── */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;letter-spacing:-.02em}
+.logo-box{width:28px;height:28px;background:#111827;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.live-badge{display:flex;align-items:center;gap:5px;padding:3px 10px;
+  background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:99px;
+  font-family:var(--mono);font-size:.58rem;color:#ef4444;letter-spacing:.1em;text-transform:uppercase}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#ef4444;animation:blink 1.4s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ── POLL BAR ── */
+.poll-bar{position:fixed;top:52px;left:0;right:0;height:2px;
+  background:rgba(59,130,246,.15);z-index:99}
+.poll-fill{height:100%;background:var(--blue);width:0%;transition:width linear}
+
+/* ── LAYOUT ── */
+.page{max-width:700px;margin:0 auto;padding:20px 16px 80px}
+
+/* ── EMERGENCY STRIP ── */
+.emergency-strip{display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:8px 14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);
+  border-radius:10px;margin-bottom:14px;font-size:.82rem;color:#b91c1c}
+.emergency-strip a{color:#b91c1c;font-weight:700;text-decoration:none}
+
+/* ── INCIDENT HEADER CARD ── */
+.inc-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:20px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.inc-id{font-family:var(--mono);font-size:.6rem;color:var(--text3);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.inc-title{font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:5px}
+.inc-sub{font-size:.86rem;color:var(--text2);line-height:1.55;margin-bottom:14px}
+.inc-meta{display:flex;flex-wrap:wrap;gap:7px}
+.meta-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;
+  font-size:.72rem;font-family:var(--mono);border:1px solid}
+.chip-sev-low     {border-color:rgba(34,197,94,.3);color:#15803d;background:rgba(34,197,94,.08)}
+.chip-sev-medium  {border-color:rgba(245,158,11,.3);color:#b45309;background:rgba(245,158,11,.08)}
+.chip-sev-high    {border-color:rgba(239,68,68,.3); color:#b91c1c;background:rgba(239,68,68,.08)}
+.chip-sev-critical{border-color:rgba(239,68,68,.5); color:#7f1d1d;background:rgba(239,68,68,.14);animation:critF 1.5s ease infinite}
+@keyframes critF{0%,100%{opacity:1}50%{opacity:.6}}
+.chip-type{border-color:rgba(59,130,246,.25);color:#1d4ed8;background:rgba(59,130,246,.07)}
+.chip-ward{border-color:rgba(139,92,246,.25);color:#6d28d9;background:rgba(139,92,246,.07)}
+
+/* ── STATUS BANNER ── */
+.status-banner{border-radius:14px;padding:18px 20px;margin-bottom:16px;
+  display:flex;align-items:center;gap:16px;transition:background .4s,border .4s}
+.status-banner.pending  {background:rgba(107,114,128,.07);border:1.5px solid rgba(107,114,128,.28)}
+.status-banner.accepted {background:rgba(59,130,246,.07); border:1.5px solid rgba(59,130,246,.32)}
+.status-banner.enroute  {background:rgba(249,115,22,.07); border:1.5px solid rgba(249,115,22,.32);animation:enroutePulse 2.5s ease infinite}
+@keyframes enroutePulse{0%,100%{border-color:rgba(249,115,22,.32)}50%{border-color:rgba(249,115,22,.65)}}
+.status-banner.arrived  {background:rgba(139,92,246,.07); border:1.5px solid rgba(139,92,246,.32)}
+.status-banner.resolved {background:rgba(34,197,94,.07);  border:1.5px solid rgba(34,197,94,.32)}
+.status-banner.rejected {background:rgba(239,68,68,.07);  border:1.5px solid rgba(239,68,68,.28)}
+.status-banner.escalated{background:rgba(245,158,11,.07); border:1.5px solid rgba(245,158,11,.32)}
+.status-icon{font-size:2rem;flex-shrink:0}
+.status-label{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;margin-bottom:2px}
+.status-desc {font-size:.84rem;color:var(--text2);line-height:1.5}
+
+/* ── LIVE MAP SECTION ── */
+.map-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);display:none}
+.map-section.visible{display:block}
+.map-header{padding:14px 16px 10px;display:flex;align-items:center;gap:10px}
+.map-title{font-size:.88rem;font-weight:600;flex:1}
+.map-live-indicator{display:flex;align-items:center;gap:5px;
+  font-family:var(--mono);font-size:.6rem;color:#f97316;letter-spacing:.08em}
+.map-live-dot{width:5px;height:5px;border-radius:50%;background:#f97316;animation:blink 1s ease infinite}
+.map-eta{font-family:var(--mono);font-size:.65rem;color:var(--text3)}
+#liveMap{height:280px;width:100%}
+
+/* Map legend */
+.map-legend{padding:10px 14px;display:flex;gap:16px;border-top:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.6rem;color:var(--text3)}
+.legend-dot{width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.2)}
+
+/* ── OFFICER CARD ── */
+.officer-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:16px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);
+  display:flex;align-items:center;gap:14px}
+.officer-avatar{width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,#1d4ed8,#3b82f6);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.officer-name{font-size:.95rem;font-weight:600;margin-bottom:2px}
+.officer-station{font-size:.8rem;color:var(--text2);margin-top:2px}
+.officer-meta{font-family:var(--mono);font-size:.62rem;color:var(--text3);margin-top:2px}
+.call-btn{margin-left:auto;padding:8px 16px;border-radius:9px;background:#111827;color:#fff;
+  font-family:var(--font);font-size:.8rem;font-weight:600;text-decoration:none;
+  transition:background .18s;flex-shrink:0}
+.call-btn:hover{background:#374151}
+.no-officer{background:var(--surface2);border:1px dashed var(--border2);border-radius:14px;
+  padding:16px;text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--text3);
+  margin-bottom:16px}
+
+/* ── PROGRESS STEPPER ── */
+.progress-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:16px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.progress-steps{display:flex;justify-content:space-between;align-items:center;
+  position:relative;margin-bottom:8px}
+.progress-steps::before{content:'';position:absolute;left:5%;right:5%;top:50%;height:2px;
+  background:var(--border);z-index:0}
+.ps-step{display:flex;flex-direction:column;align-items:center;gap:5px;
+  position:relative;z-index:1;flex:1}
+.ps-dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--border2);
+  background:var(--surface);display:flex;align-items:center;justify-content:center;
+  font-size:.58rem;font-family:var(--mono);color:var(--text3);transition:all .3s}
+.ps-dot.done  {background:var(--green);border-color:var(--green);color:#fff}
+.ps-dot.active{background:var(--blue);border-color:var(--blue);color:#fff;
+  box-shadow:0 0 0 4px rgba(59,130,246,.18)}
+.ps-label{font-family:var(--mono);font-size:.54rem;color:var(--text3);
+  letter-spacing:.05em;text-transform:uppercase;text-align:center}
+.ps-label.done  {color:var(--green)}
+.ps-label.active{color:var(--blue)}
+
+/* ── METRICS ── */
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:12px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.metric-label{font-family:var(--mono);font-size:.56rem;color:var(--text3);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.metric-val{font-size:1.2rem;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.metric-sub{font-size:.72rem;color:var(--text2);margin-top:2px}
+
+/* ── TIMELINE ── */
+.timeline-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:18px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.section-title{font-size:.68rem;font-family:var(--mono);letter-spacing:.15em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:9px;top:0;bottom:0;
+  width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:18px}
+.tl-item:last-child{margin-bottom:0}
+.tl-dot{position:absolute;left:-21px;top:2px;width:12px;height:12px;border-radius:50%;
+  border:2.5px solid var(--surface);box-shadow:0 0 0 2px var(--border)}
+.tl-item.done   .tl-dot{background:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,.3)}
+.tl-item.active .tl-dot{background:var(--blue);box-shadow:0 0 0 2px rgba(59,130,246,.3);
+  animation:dotPulse 1.5s ease infinite}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 2px rgba(59,130,246,.3)}50%{box-shadow:0 0 0 5px rgba(59,130,246,.1)}}
+.tl-item.future .tl-dot{background:var(--border2)}
+.tl-status{font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:1px}
+.tl-time  {font-family:var(--mono);font-size:.6rem;color:var(--text3)}
+.tl-note  {font-size:.8rem;color:var(--text2);margin-top:2px;line-height:1.5}
+
+/* ── FEEDBACK ── */
+.feedback-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.feedback-title{font-size:.9rem;font-weight:600;margin-bottom:12px}
+.stars{display:flex;gap:7px;margin-bottom:12px}
+.star{font-size:1.7rem;cursor:pointer;color:#d1d5db;transition:color .15s;user-select:none}
+.star.on{color:#f59e0b}
+.feedback-ta{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:9px;
+  padding:10px 12px;font-family:var(--font);font-size:.86rem;color:var(--text);
+  resize:none;outline:none;min-height:68px;transition:border-color .18s}
+.feedback-ta:focus{border-color:rgba(59,130,246,.5)}
+.feedback-ta::placeholder{color:var(--text3)}
+.submit-fb{margin-top:9px;width:100%;padding:11px;border:none;border-radius:9px;
+  background:#111827;color:#fff;font-family:var(--font);font-size:.88rem;
+  font-weight:600;cursor:pointer;transition:background .18s}
+.submit-fb:hover{background:#374151}
+.submit-fb:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── NOT FOUND ── */
+.not-found{text-align:center;padding:60px 20px;color:var(--text3);
+  font-family:var(--mono);font-size:.72rem}
+.not-found-icon{font-size:2.5rem;margin-bottom:12px;opacity:.25}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fu{opacity:0;animation:fadeUp .35s ease forwards}
+.officer-marker {
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#f97316;
+  border:3px solid #fff;
+  box-shadow:0 0 0 4px rgba(249,115,22,.25),0 0 12px rgba(249,115,22,.6);
+  animation: officerPing 1.5s ease infinite;
+}
+
+@keyframes officerPing {
+  0%,100% {
+    box-shadow:0 0 0 4px rgba(249,115,22,.25),0 0 12px rgba(249,115,22,.6);
+  }
+  50% {
+    box-shadow:0 0 0 8px rgba(249,115,22,0), 0 0 20px rgba(249,115,22,.3);
+  }
+}
+.citizen-marker {
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#3b82f6;
+  border:3px solid #fff;
+  box-shadow:0 0 10px rgba(59,130,246,.8);
+}
+</style>
+</head>
+<body>
+
+<div class="poll-bar"><div class="poll-fill" id="pollFill"></div></div>
+
+<div class="header">
+  <div class="logo"><div class="logo-box">🛡</div>CrimeCast</div>
+  <div class="live-badge"><span class="live-dot"></span>Live Tracking</div>
+</div>
+
+<div class="page">
+
+{% if not alert %}
+  <div class="not-found">
+    <div class="not-found-icon">🔍</div>
+    Incident not found. Check your link or call 112.
+  </div>
+{% else %}
+
+  <!-- Emergency strip -->
+  <div class="emergency-strip fu">
+    🚨 Emergency? Call <a href="tel:112">112</a> &nbsp;·&nbsp; Women: <a href="tel:1091">1091</a>
+  </div>
+
+  <!-- Incident header -->
+  <div class="inc-card fu" style="animation-delay:.05s">
+    <div class="inc-id">Incident #{{ alert.id }} · {{ alert.created_at|date:"d M Y, H:i" }}</div>
+    <div class="inc-title" id="incTitle">{{ alert.crime_type|title|default:"Incident" }}</div>
+    <div class="inc-sub"   id="incSummary">{{ alert.summary|default:alert.incident_text|truncatechars:140 }}</div>
+    <div class="inc-meta">
+      <span class="meta-chip chip-sev-{{ alert.severity }}" id="sevChip">{{ alert.severity|upper }}</span>
+      {% if alert.crime_type %}<span class="meta-chip chip-type">{{ alert.crime_type|title }}</span>{% endif %}
+      {% if alert.ward %}<span class="meta-chip chip-ward">{{ alert.ward }}</span>{% endif %}
+    </div>
+  </div>
+
+  <!-- Status banner -->
+  <div class="status-banner {{ alert.status }} fu" id="statusBanner" style="animation-delay:.1s">
+    <span class="status-icon" id="statusIcon">⏳</span>
+    <div>
+      <div class="status-label" id="statusLabel">Loading…</div>
+      <div class="status-desc"  id="statusDesc"></div>
+    </div>
+  </div>
+
+  <!-- LIVE MAP — shown only when enroute or arrived -->
+  <div class="map-section fu" id="mapSection" style="animation-delay:.12s">
+    <div class="map-header">
+      <div>
+        <div class="map-title">🚔 Officer Live Location</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="map-live-indicator"><span class="map-live-dot"></span>LIVE</div>
+        <div class="map-eta" id="mapEta"></div>
+      </div>
+    </div>
+    <div id="liveMap"></div>
+    <div class="map-legend">
+      <div class="legend-item"><span style="font-size:1rem">🚔</span> Officer</div>
+      <div class="legend-item"><span style="font-size:1rem">🙋</span> You</div>
+      <div class="legend-item"><span style="font-size:1rem">🚨</span> Incident</div>
+      <div class="legend-item" id="routeLegend" style="display:none">
+        <div style="width:20px;height:3px;background:#3b82f6;border-radius:2px"></div> Route
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress stepper -->
+  <div class="progress-section fu" style="animation-delay:.14s">
+    <div class="progress-steps" id="progressSteps"></div>
+  </div>
+
+  <!-- Officer card -->
+  <div id="officerWrap" class="fu" style="animation-delay:.16s">
+    <div class="no-officer">Waiting for officer assignment…</div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics-grid fu" style="animation-delay:.18s">
+    <div class="metric-card">
+      <div class="metric-label">Elapsed Time</div>
+      <div class="metric-val" id="elapsedVal">—</div>
+      <div class="metric-sub">since report</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Response Time</div>
+      <div class="metric-val" id="responseVal">—</div>
+      <div class="metric-sub">to officer accept</div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-section fu" style="animation-delay:.20s">
+    <div class="section-title">Incident Timeline</div>
+    <div class="timeline" id="timelineEl">
+      <div style="color:var(--text3);font-family:var(--mono);font-size:.7rem;text-align:center;padding:14px 0">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Feedback — shown only when resolved -->
+  <div class="feedback-card fu" id="feedbackCard" style="display:none;animation-delay:.22s">
+    <div class="feedback-title">How was your experience?</div>
+    <div class="stars" id="starRow">
+      <span class="star" onclick="rateStar(1)">★</span>
+      <span class="star" onclick="rateStar(2)">★</span>
+      <span class="star" onclick="rateStar(3)">★</span>
+      <span class="star" onclick="rateStar(4)">★</span>
+      <span class="star" onclick="rateStar(5)">★</span>
+    </div>
+    <textarea class="feedback-ta" id="feedbackText" placeholder="Tell us what happened…"></textarea>
+    <button class="submit-fb" onclick="submitFeedback()">Submit Feedback</button>
+  </div>
+
+{% endif %}
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+const ALERT_ID      = {{ alert.id|default:"null" }};
+const INCIDENT_LAT  = {{ alert.latitude|default:"null" }};
+const INCIDENT_LON  = {{ alert.longitude|default:"null" }};
+const POLL_INTERVAL = 2000;
+
+if (!ALERT_ID) { throw new Error('No alert ID'); }
+
+// ── State ────────────────────────────────────────────────────
+let pollTimer       = null;
+let selectedRating  = 0;
+let feedbackDone    = false;
+let leafMap         = null;         // Leaflet map instance
+let officerMarker   = null;         // moving blue dot
+let incidentMarker  = null;         // static red dot
+let routeLayer      = null;         // OSRM polyline
+let lastOfficerPos  = null;         // {lat, lon} — to skip redundant OSRM calls
+let mapInitialised  = false;
+let citizenMarker = null;
+let citizenPos = null;
+
+
+function sendLocation(lat, lon) {
+  fetch(`/api/incident/citizen-location/${ALERT_ID}/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCSRF()
+    },
+    body: JSON.stringify({ latitude: lat, longitude: lon })
+  }).catch(() => {});  // silent fail — don't break tracking
+}
+
+function startTracking() {
+  if (!navigator.geolocation) {
+    console.log("GPS not supported");
+    return;
+  }
+
+  navigator.geolocation.watchPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+
+      console.log("Sending location:", lat, lon);
+      citizenPos = { lat, lon };
+      updateCitizenMarker(lat, lon);
+      sendLocation(lat, lon);
+    },
+    (err) => console.error(err),
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 5000
+    }
+  );
+}
+
+document.addEventListener("DOMContentLoaded", startTracking);
+// ── Status config ────────────────────────────────────────────
+const STATUS_ICONS  = {
+  pending:'⏳', accepted:'✅', enroute:'🚔',
+  arrived:'👮', resolved:'✔️', rejected:'❌', escalated:'⚠️'
+};
+const STATUS_DESCS = {
+  pending:   'Your report is received. Assigning an officer…',
+  accepted:  'Officer has accepted. Preparing to respond.',
+  enroute:   'Officer is on the way — track their live location below.',
+  arrived:   'Officer is at the scene.',
+  resolved:  'Incident resolved. Thank you for reporting.',
+  rejected:  'Report rejected. If urgent call 112 directly.',
+  escalated: 'Escalated to Station Head Officer.',
+};
+const PROGRESS_STEPS = [
+  {key:'pending', label:'Reported'},
+  {key:'accepted',label:'Assigned'},
+  {key:'enroute', label:'En Route'},
+  {key:'arrived', label:'Arrived'},
+  {key:'resolved',label:'Resolved'},
+];
+const STEP_ORDER = ['pending','accepted','enroute','arrived','resolved'];
+
+function fmtSecs(s) {
+  if (s == null) return '—';
+  if (s < 60)   return s + 's';
+  if (s < 3600) return Math.floor(s/60) + 'm ' + (s%60) + 's';
+  return Math.floor(s/3600) + 'h ' + Math.floor((s%3600)/60) + 'm';
+}
+function getCSRF() {
+  const c = document.cookie.split('; ').find(r => r.startsWith('csrftoken='));
+  return c ? decodeURIComponent(c.split('=')[1]) : '';
+}
+
+// ── Leaflet map init ─────────────────────────────────────────
+function initMap() {
+  if (mapInitialised) return;
+  mapInitialised = true;
+
+  const center = INCIDENT_LAT ? [INCIDENT_LAT, INCIDENT_LON] : [19.2183, 72.9781];
+  leafMap = L.map('liveMap', { zoomControl: true, attributionControl: false })
+             .setView(center, 15);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO'
+  }).addTo(leafMap);
+
+  // Incident pin — static red
+  if (INCIDENT_LAT && INCIDENT_LON) {
+    const redIcon = L.divIcon({
+      html: `<div style="
+        display:flex;flex-direction:column;align-items:center;
+        filter:drop-shadow(0 2px 10px rgba(239,68,68,.8))">
+        <div style="
+          background:#ef4444;color:#fff;font-size:16px;
+          width:36px;height:36px;border-radius:50% 50% 50% 0;
+          transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;
+          border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.5)">
+          <span style="transform:rotate(45deg)">🚨</span>
+        </div>
+        <div style="width:2px;height:9px;background:#ef4444;margin-top:-1px"></div>
+      </div>`,
+      iconSize:[36,54], iconAnchor:[18,54], className:''
+    });
+  }
+}
+
+function updateCitizenMarker(lat, lon) {
+  if (!leafMap) return;
+
+  const blueIcon = L.divIcon({
+    html: `<div style="
+      display:flex;flex-direction:column;align-items:center;
+      filter:drop-shadow(0 2px 8px rgba(59,130,246,.7))">
+      <div style="
+        background:#3b82f6;color:#fff;font-size:16px;
+        width:34px;height:34px;border-radius:50% 50% 50% 0;
+        transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;
+        border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+        <span style="transform:rotate(45deg)">🙋</span>
+      </div>
+      <div style="width:2px;height:7px;background:#3b82f6;margin-top:-1px"></div>
+    </div>`,
+    iconSize:[34,49], iconAnchor:[17,49], className:''
+  });
+
+  if (citizenMarker) {
+    citizenMarker.setLatLng([lat, lon]);
+  } else {
+    citizenMarker = L.marker([lat, lon], {icon: blueIcon})
+      .addTo(leafMap)
+      .bindPopup('<b>📍 You (Citizen)</b>');
+  }
+}
+
+function animateMarker(from, to, duration = 1200) {
+  if (window.currentRouteCoords && window.currentRouteCoords.length > 2) {
+    animateAlongRoute(window.currentRouteCoords, duration);
+    return;
+  }
+
+
+  const start = performance.now();
+
+  function frame(now) {
+    const progress = Math.min((now - start) / duration, 1);
+
+    const lat = from.lat + (to.lat - from.lat) * progress;
+    const lon = from.lon + (to.lon - from.lon) * progress;
+
+    officerMarker.setLatLng([lat, lon]);
+
+    if (progress < 1) requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function animateAlongRoute(coords, duration) {
+  let i = 0;
+
+  function move() {
+    if (i >= coords.length) return;
+
+    officerMarker.setLatLng(coords[i]);
+    i++;
+
+    setTimeout(move, duration / coords.length);
+  }
+
+  move();
+}
+
+function rotateMarker(from, to) {
+  const angle = Math.atan2(to.lon - from.lon, to.lat - from.lat) * (180 / Math.PI);
+  const el = document.getElementById('officerIcon');
+  if (el) {
+    el.style.transform = `rotate(${angle}deg)`;
+  }
+}
+
+// ── Draw/update officer marker ────────────────────────────────
+function updateOfficerPin(lat, lon, officerName) {
+  if (!leafMap) return;
+
+  const orangeIcon = L.divIcon({
+    html: `<div style="
+      display:flex;flex-direction:column;align-items:center;
+      filter:drop-shadow(0 2px 8px rgba(249,115,22,.7))">
+      <div style="
+        background:#f97316;color:#fff;font-size:16px;
+        width:34px;height:34px;border-radius:50% 50% 50% 0;
+        transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;
+        border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+        <span style="transform:rotate(45deg)">🚔</span>
+      </div>
+      <div style="width:2px;height:7px;background:#f97316;margin-top:-1px"></div>
+    </div>`,
+    iconSize:[34,49], iconAnchor:[17,49], className:''
+  });
+
+  const newPos = { lat, lon };
+
+if (officerMarker) {
+  if (lastOfficerPos) {
+    rotateMarker(lastOfficerPos, newPos);   // 🔥 ADD THIS
+    animateMarker(lastOfficerPos, newPos);
+  } else {
+    officerMarker.setLatLng([lat, lon]);
+  }
+} else {
+    officerMarker = L.marker([lat, lon], {icon: orangeIcon})
+      .addTo(leafMap)
+      .bindPopup(`<b>🚔 ${officerName || 'Officer'}</b><br>En Route`);
+  }
+
+  // Pan map to show both pins
+  if (INCIDENT_LAT && INCIDENT_LON) {
+    const bounds = L.latLngBounds([[lat, lon],[INCIDENT_LAT, INCIDENT_LON]]);
+    leafMap.fitBounds(bounds, {padding:[40,40]});
+  } else {
+    leafMap.setView([lat, lon], 15);
+  }
+  lastOfficerPos = newPos;
+}
+
+// ── OSRM route — free, road-based, no API key ─────────────────
+async function drawRoute(oLat, oLon, iLat, iLon) {
+  if (!leafMap) return;
+
+  // Skip if officer barely moved (< ~10m)
+  if (window.lastRoutePos) {
+    const dx = Math.abs(oLat - window.lastRoutePos.lat);
+    const dy = Math.abs(oLon - window.lastRoutePos.lon);
+    if (dx < 0.0001 && dy < 0.0001) return;
+  }
+  window.lastRoutePos = { lat: oLat, lon: oLon };
+  
+
+  try {
+    // OSRM public API — completely free, OpenStreetMap roads
+    const url = `https://router.project-osrm.org/route/v1/driving/${oLon},${oLat};${iLon},${iLat}?overview=full&geometries=geojson`;
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    if (data.code !== 'Ok' || !data.routes?.length) return;
+
+    const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+    window.currentRouteCoords = coords;
+
+    // Remove old route
+    if (routeLayer) leafMap.removeLayer(routeLayer);
+
+    // Draw new route
+    routeLayer = L.polyline(coords, {
+      color:  '#3b82f6',
+      weight: 4,
+      opacity: 0.75,
+      lineCap:'round',
+      lineJoin:'round',
+    }).addTo(leafMap);
+
+    // Show route legend
+    document.getElementById('routeLegend').style.display = 'flex';
+
+    // ETA from OSRM
+    const durationSec = data.routes[0].duration;
+    const distanceKm  = (data.routes[0].distance / 1000).toFixed(1);
+    const etaMin      = Math.ceil(durationSec / 60);
+    document.getElementById('mapEta').textContent =
+      `~${etaMin} min · ${distanceKm} km via road`;
+
+  } catch(e) {
+    // OSRM failed — fallback to straight dashed line
+    if (routeLayer) leafMap.removeLayer(routeLayer);
+    routeLayer = L.polyline([[oLat,oLon],[iLat,iLon]], {
+      color:'#3b82f6', weight:2, opacity:.5, dashArray:'6 4'
+    }).addTo(leafMap);
+  }
+}
+
+// ── Poll officer location (separate from status poll) ─────────
+async function pollOfficerLocation() {
+  try {
+    const res  = await fetch(`/api/incident/officer-location/${ALERT_ID}/`);
+    const data = await res.json();
+
+    const mapSection = document.getElementById('mapSection');
+
+    if (!data.available) {
+      // 🔥 TEMP FIX: show map anyway for debugging
+      mapSection.classList.add('visible');
+    
+      if (!mapInitialised) {
+        initMap();
+        setTimeout(() => leafMap.invalidateSize(), 100);
+      }
+    
+      return;
+    }
+
+    // Show map section
+    mapSection.classList.add('visible');
+
+    // Init map once
+    if (!mapInitialised) {
+      initMap();
+      // Small delay to let DOM paint
+      await new Promise(r => setTimeout(r, 100));
+      leafMap.invalidateSize();
+    }
+
+    // Update officer pin
+    updateOfficerPin(data.latitude, data.longitude, data.officer_name);
+
+    // Draw road route (if incident location known)
+    if (data.incident_lat && data.incident_lon) {
+      drawRoute(data.latitude, data.longitude, data.incident_lat, data.incident_lon);
+    }
+
+  } catch(e) {
+    // Silently ignore — don't break main status poll
+  }
+}
+
+// ── Status + timeline polling ────────────────────────────────
+async function pollStatus() {
+  try {
+    const [liveRes, tlRes] = await Promise.all([
+      fetch(`/api/incident/live/${ALERT_ID}/`),
+      fetch(`/api/incident/timeline/${ALERT_ID}/`),
+    ]);
+    const live = await liveRes.json();
+    const tl   = await tlRes.json();
+
+    if (live.ok && live.alert) {
+      renderStatus(live.alert);
+      renderProgress(live.alert.status);
+      renderOfficer(live.alert.officer, live.alert.station);
+      renderMetrics(live.alert);
+      renderFeedback(live.alert.status);
+    }
+    if (tl.timeline) renderTimeline(tl.timeline);
+
+  } catch(e) {
+    console.error('[pollStatus]', e);
+  }
+}
+
+// ── Combined poll (status + officer location) ─────────────────
+async function tick() {
+  await Promise.all([pollStatus(), pollOfficerLocation()]);
+}
+
+// ── Render: status banner ────────────────────────────────────
+function renderStatus(alert) {
+  const banner = document.getElementById('statusBanner');
+  banner.className = `status-banner ${alert.status} fu`;
+  document.getElementById('statusIcon').textContent  = STATUS_ICONS[alert.status]  || '❓';
+  document.getElementById('statusLabel').textContent = alert.status_label           || alert.status;
+  document.getElementById('statusDesc').textContent  = STATUS_DESCS[alert.status]  || '';
+
+  const chip = document.getElementById('sevChip');
+  if (chip && alert.severity) {
+    chip.className   = `meta-chip chip-sev-${alert.severity}`;
+    chip.textContent = alert.severity.toUpperCase();
+  }
+  const sumEl = document.getElementById('incSummary');
+  if (sumEl && alert.summary) sumEl.textContent = alert.summary;
+}
+
+// ── Render: progress stepper ─────────────────────────────────
+function renderProgress(status) {
+  const el  = document.getElementById('progressSteps');
+  if (!el) return;
+  const cur = STEP_ORDER.indexOf(status);
+  el.innerHTML = PROGRESS_STEPS.map((step, i) => {
+    let cls = '';
+    if (i < cur)  cls = 'done';
+    if (i === cur) cls = 'active';
+    return `<div class="ps-step">
+      <div class="ps-dot ${cls}">${i < cur ? '✓' : i+1}</div>
+      <div class="ps-label ${cls}">${step.label}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Render: officer card ─────────────────────────────────────
+function renderOfficer(officer, station) {
+  const wrap = document.getElementById('officerWrap');
+  if (!officer) {
+    wrap.innerHTML = '<div class="no-officer">Waiting for officer assignment…</div>';
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="officer-card fu">
+      <div class="officer-avatar">👮</div>
+      <div style="flex:1;min-width:0">
+        <div class="officer-name">${officer.name}</div>
+        <div class="officer-station">${officer.station || (station && station.name) || ''}</div>
+        <div class="officer-meta">${officer.specialty || ''}</div>
+      </div>
+      ${officer.phone
+        ? `<a class="call-btn" href="tel:${officer.phone}">📞 Call</a>`
+        : ''}
+    </div>`;
+}
+
+// ── Render: metrics ──────────────────────────────────────────
+function renderMetrics(alert) {
+  document.getElementById('elapsedVal').textContent  = fmtSecs(alert.elapsed_seconds);
+  document.getElementById('responseVal').textContent = fmtSecs(alert.response_time_secs);
+}
+
+// ── Render: timeline ─────────────────────────────────────────
+function renderTimeline(entries) {
+  const el = document.getElementById('timelineEl');
+  if (!el || !entries.length) return;
+  el.innerHTML = entries.map((e, i) => {
+    const isLast = i === entries.length - 1;
+    const cls    = isLast ? 'active' : 'done';
+    return `
+      <div class="tl-item ${cls}">
+        <div class="tl-dot"></div>
+        <div class="tl-status">${e.status_label || e.status}</div>
+        <div class="tl-time">${e.timestamp_fmt} · ${e.actor}</div>
+        ${e.note ? `<div class="tl-note">${e.note}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+// ── Render: feedback ─────────────────────────────────────────
+function renderFeedback(status) {
+  if (status === 'resolved' && !feedbackDone) {
+    document.getElementById('feedbackCard').style.display = 'block';
+  }
+}
+
+// ── Star rating ──────────────────────────────────────────────
+function rateStar(n) {
+  selectedRating = n;
+  document.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('on', i < n));
+}
+
+// ── Feedback submit ──────────────────────────────────────────
+async function submitFeedback() {
+  const btn  = document.querySelector('.submit-fb');
+  const text = document.getElementById('feedbackText').value.trim();
+  btn.disabled = true;
+  try {
+    await fetch('/api/incident/feedback/', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+      body: JSON.stringify({alert_id:ALERT_ID, rating:selectedRating, feedback_text:text}),
+    });
+    feedbackDone = true;
+    document.getElementById('feedbackCard').innerHTML =
+      '<div style="text-align:center;padding:14px;font-family:var(--mono);font-size:.75rem;color:var(--green)">✓ Thank you for your feedback!</div>';
+  } catch(e) {
+    btn.disabled = false;
+  }
+}
+
+// ── Poll progress bar animation ──────────────────────────────
+function animatePollBar() {
+  const fill = document.getElementById('pollFill');
+  if (!fill) return;
+  fill.style.transition = 'none';
+  fill.style.width = '0%';
+  requestAnimationFrame(() => {
+    fill.style.transition = `width ${POLL_INTERVAL}ms linear`;
+    fill.style.width = '100%';
+  });
+}
+
+// ── Boot ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  tick();
+  animatePollBar();
+  pollTimer = setInterval(() => {
+    tick();
+    animatePollBar();
+  }, POLL_INTERVAL);
+});
+</script>
+</body>
+</html>

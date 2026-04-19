@@ -1,0 +1,178 @@
+{% extends "police(base).html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Review Investigation — Case #{{ report.id }}</title>
+  <style>
+    :root { --navy: #0d1b2a; --teal: #00796b; --border: #e0e4ed; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; }
+    .review-page { max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+    .back-link {
+      display:inline-flex;align-items:center;gap:.4rem;color:var(--teal);
+      font-weight:600;font-size:.9rem;text-decoration:none;margin-bottom:1.25rem;
+    }
+    .back-link:hover { text-decoration:underline; }
+    h2 { font-size:1.4rem;color:var(--navy);margin-bottom:1.5rem; }
+
+    .card {
+      background:#fff;border:1px solid var(--border);border-radius:12px;
+      padding:1.25rem 1.5rem;margin-bottom:1.5rem;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);
+    }
+    .card h3 { font-size:.95rem;font-weight:700;color:var(--navy);margin:0 0 1rem;
+               border-bottom:1px solid var(--border);padding-bottom:.5rem; }
+
+    .field-row { margin-bottom:.85rem;font-size:.9rem; }
+    .field-row label { display:block;font-size:.72rem;font-weight:700;
+                       text-transform:uppercase;letter-spacing:.06em;
+                       color:#6c757d;margin-bottom:.2rem; }
+    .field-row p { margin:0;color:#1a233a; }
+
+    .severity-chip {
+      display:inline-block;padding:.2rem .75rem;border-radius:50px;
+      font-size:.78rem;font-weight:700;
+    }
+    .chip-low  { background:#d1e7dd;color:#0a3622; }
+    .chip-mid  { background:#fff3cd;color:#856404; }
+    .chip-high { background:#f8d7da;color:#58151c; }
+
+    .decision-section { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+    @media(max-width:600px){ .decision-section { grid-template-columns:1fr; } }
+
+    .decision-card {
+      border:1px solid var(--border);border-radius:10px;padding:1rem;
+      cursor:pointer;transition:border-color .15s,box-shadow .15s;
+    }
+    .decision-card:hover { border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,121,107,.15); }
+    .decision-card h4 { margin:0 0 .4rem;font-size:1rem; }
+    .decision-card p  { font-size:.82rem;color:#555;margin:0; }
+    .card-approve h4 { color:#0a3622; }
+    .card-reject  h4 { color:#58151c; }
+
+    .note-field {
+      width:100%;border:1px solid var(--border);border-radius:6px;
+      padding:.6rem .8rem;font-size:.88rem;resize:vertical;min-height:80px;
+      font-family:inherit;box-sizing:border-box;margin-top:.75rem;
+    }
+    .note-field:focus { outline:none;border-color:var(--teal); }
+
+    .btn-approve {
+      background:#0a3622;color:#fff;border:none;padding:.65rem 1.5rem;
+      border-radius:6px;font-size:.9rem;font-weight:700;cursor:pointer;width:100%;
+      margin-top:.75rem;
+    }
+    .btn-approve:hover { background:#0d4a2f; }
+    .btn-reject {
+      background:#58151c;color:#fff;border:none;padding:.65rem 1.5rem;
+      border-radius:6px;font-size:.9rem;font-weight:700;cursor:pointer;width:100%;
+      margin-top:.75rem;
+    }
+    .btn-reject:hover { background:#7c1e26; }
+  </style>
+</head>
+<body>
+<div class="review-page">
+  <a href="{% url 'sho_approved_cases' %}" class="back-link">← Back to Cases</a>
+  <h2>Review Investigation Report — Case #{{ report.id }}</h2>
+
+  {# Case overview #}
+  <div class="card">
+    <h3>Case Details</h3>
+    <div class="field-row">
+      <label>Crime type</label>
+      <p>{{ report.crime_type }}</p>
+    </div>
+    <div class="field-row">
+      <label>Address</label>
+      <p>{{ report.address }}</p>
+    </div>
+    <div class="field-row">
+      <label>Assigned officer</label>
+      <p>{{ report.assigned_officer.full_name }} (Badge: {{ report.assigned_officer.badge_id|default:"N/A" }})</p>
+    </div>
+    <div class="field-row">
+      <label>Severity</label>
+      <p>
+        {% if report.severity_score < 4 %}
+          <span class="severity-chip chip-low">{{ report.severity_score|floatformat:1 }} — Low</span>
+        {% elif report.severity_score < 7 %}
+          <span class="severity-chip chip-mid">{{ report.severity_score|floatformat:1 }} — Medium</span>
+        {% else %}
+          <span class="severity-chip chip-high">{{ report.severity_score|floatformat:1 }} — High</span>
+        {% endif %}
+      </p>
+    </div>
+    <div class="field-row">
+      <label>Description</label>
+      <p>{{ report.description }}</p>
+    </div>
+  </div>
+
+  {# Investigation report #}
+  <div class="card">
+    <h3>Officer's Investigation Report</h3>
+    <div class="field-row">
+      <label>Summary</label>
+      <p>{{ inv.summary }}</p>
+    </div>
+    <div class="field-row">
+      <label>Actions taken</label>
+      <p>{{ inv.action_taken }}</p>
+    </div>
+    {% if inv.evidence_notes %}
+    <div class="field-row">
+      <label>Evidence notes</label>
+      <p>{{ inv.evidence_notes }}</p>
+    </div>
+    {% endif %}
+    <div class="field-row">
+      <label>Filed at</label>
+      <p>{{ inv.submitted_at|date:"d M Y, H:i" }}</p>
+    </div>
+  </div>
+
+  {# Decision #}
+  <div class="card">
+    <h3>Your Decision</h3>
+    <div class="decision-section">
+
+      {# Approve #}
+      <div>
+        <div class="decision-card card-approve">
+          <h4>✅ Approve &amp; Close</h4>
+          <p>Mark case as resolved. The citizen will be notified and
+             can submit feedback on the officer.</p>
+        </div>
+        <form method="post" action="{% url 'sho_review_investigation' report.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="decision" value="approve">
+          <button type="submit" class="btn-approve">Approve — Close Case</button>
+        </form>
+      </div>
+
+      {# Reject #}
+      <div>
+        <div class="decision-card card-reject">
+          <h4>↩️ Return for Re-investigation</h4>
+          <p>Send the case back to the officer with your feedback.</p>
+        </div>
+        <form method="post" action="{% url 'sho_review_investigation' report.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="decision" value="reject">
+          <textarea class="note-field" name="note"
+            placeholder="Explain what the officer needs to do (required before returning)..."></textarea>
+          <button type="submit" class="btn-reject">Return to Officer</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
+{% endblock %}

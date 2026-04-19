@@ -1,0 +1,3411 @@
+ward,crime_type,month,crime_count
+Brahmand,Assault,2018-02,1
+Brahmand,Assault,2019-07,1
+Brahmand,Assault,2019-11,1
+Brahmand,Assault,2019-12,1
+Brahmand,Assault,2020-02,1
+Brahmand,Assault,2020-06,1
+Brahmand,Assault,2020-10,1
+Brahmand,Assault,2021-01,1
+Brahmand,Assault,2021-04,1
+Brahmand,Assault,2021-06,1
+Brahmand,Assault,2022-02,1
+Brahmand,Assault,2023-03,1
+Brahmand,Assault,2023-07,2
+Brahmand,Assault,2023-12,1
+Brahmand,Assault,2024-01,1
+Brahmand,Assault,2024-12,1
+Brahmand,Assault,2025-05,1
+Brahmand,Assault,2025-06,1
+Brahmand,Assault,2025-09,1
+Brahmand,Cheating,2018-04,2
+Brahmand,Cheating,2019-04,1
+Brahmand,Cheating,2019-09,1
+Brahmand,Cheating,2019-11,1
+Brahmand,Cheating,2020-03,1
+Brahmand,Cheating,2020-07,1
+Brahmand,Cheating,2020-10,1
+Brahmand,Cheating,2021-01,1
+Brahmand,Cheating,2022-02,1
+Brahmand,Cheating,2022-05,1
+Brahmand,Cheating,2022-11,1
+Brahmand,Cheating,2023-03,1
+Brahmand,Cheating,2023-09,2
+Brahmand,Cheating,2024-01,1
+Brahmand,Cheating,2024-02,1
+Brahmand,Cheating,2024-06,1
+Brahmand,Cheating,2024-09,1
+Brahmand,Cheating,2024-11,1
+Brahmand,Cheating,2025-02,1
+Brahmand,Cheating,2025-03,2
+Brahmand,Cheating,2025-06,1
+Brahmand,Cheating,2025-10,1
+Brahmand,Cybercrime,2018-07,1
+Brahmand,Cybercrime,2019-01,1
+Brahmand,Cybercrime,2019-03,1
+Brahmand,Cybercrime,2019-09,1
+Brahmand,Cybercrime,2020-04,1
+Brahmand,Cybercrime,2020-07,1
+Brahmand,Cybercrime,2020-10,1
+Brahmand,Cybercrime,2020-12,1
+Brahmand,Cybercrime,2021-05,1
+Brahmand,Cybercrime,2021-06,1
+Brahmand,Cybercrime,2021-11,1
+Brahmand,Cybercrime,2022-04,1
+Brahmand,Cybercrime,2023-06,1
+Brahmand,Cybercrime,2023-09,1
+Brahmand,Cybercrime,2023-10,2
+Brahmand,Cybercrime,2024-09,1
+Brahmand,Cybercrime,2024-11,1
+Brahmand,Cybercrime,2025-03,1
+Brahmand,Domestic Violence,2018-09,1
+Brahmand,Domestic Violence,2019-01,1
+Brahmand,Domestic Violence,2020-10,1
+Brahmand,Domestic Violence,2021-01,1
+Brahmand,Domestic Violence,2021-02,1
+Brahmand,Domestic Violence,2021-10,1
+Brahmand,Domestic Violence,2021-11,2
+Brahmand,Domestic Violence,2021-12,1
+Brahmand,Domestic Violence,2022-01,1
+Brahmand,Domestic Violence,2023-03,1
+Brahmand,Domestic Violence,2023-04,1
+Brahmand,Domestic Violence,2023-08,1
+Brahmand,Domestic Violence,2024-02,1
+Brahmand,Domestic Violence,2025-01,1
+Brahmand,Domestic Violence,2025-07,1
+Brahmand,Drug Offense,2018-02,1
+Brahmand,Drug Offense,2020-01,1
+Brahmand,Drug Offense,2020-05,1
+Brahmand,Drug Offense,2020-06,2
+Brahmand,Drug Offense,2020-11,1
+Brahmand,Drug Offense,2021-02,1
+Brahmand,Drug Offense,2021-07,2
+Brahmand,Drug Offense,2021-10,1
+Brahmand,Drug Offense,2022-07,1
+Brahmand,Drug Offense,2022-10,1
+Brahmand,Drug Offense,2022-11,1
+Brahmand,Drug Offense,2023-06,1
+Brahmand,Drug Offense,2024-01,1
+Brahmand,Drug Offense,2024-09,1
+Brahmand,Drug Offense,2024-12,1
+Brahmand,Drug Offense,2025-07,1
+Brahmand,Drug Offense,2025-08,1
+Brahmand,Drug Offense,2025-12,1
+Brahmand,Fraud,2018-11,1
+Brahmand,Fraud,2019-01,1
+Brahmand,Fraud,2019-07,1
+Brahmand,Fraud,2019-08,1
+Brahmand,Fraud,2020-04,1
+Brahmand,Fraud,2020-08,1
+Brahmand,Fraud,2020-10,1
+Brahmand,Fraud,2020-11,1
+Brahmand,Fraud,2022-08,1
+Brahmand,Fraud,2022-12,1
+Brahmand,Fraud,2023-02,1
+Brahmand,Fraud,2023-11,1
+Brahmand,Fraud,2024-12,1
+Brahmand,Fraud,2025-05,1
+Brahmand,Fraud,2025-11,1
+Brahmand,Fraud,2025-12,1
+Brahmand,Kidnapping,2018-06,1
+Brahmand,Kidnapping,2018-08,2
+Brahmand,Kidnapping,2019-02,1
+Brahmand,Kidnapping,2019-06,1
+Brahmand,Kidnapping,2019-08,1
+Brahmand,Kidnapping,2019-09,1
+Brahmand,Kidnapping,2020-09,1
+Brahmand,Kidnapping,2021-04,1
+Brahmand,Kidnapping,2023-01,2
+Brahmand,Kidnapping,2023-06,1
+Brahmand,Kidnapping,2024-03,2
+Brahmand,Kidnapping,2024-04,1
+Brahmand,Kidnapping,2024-06,1
+Brahmand,Kidnapping,2024-08,1
+Brahmand,Kidnapping,2024-10,1
+Brahmand,Kidnapping,2024-11,1
+Brahmand,Kidnapping,2025-03,1
+Brahmand,Kidnapping,2025-04,1
+Brahmand,Kidnapping,2025-09,1
+Brahmand,Kidnapping,2025-10,1
+Brahmand,Murder,2019-01,1
+Brahmand,Murder,2019-04,1
+Brahmand,Murder,2020-12,1
+Brahmand,Murder,2021-03,1
+Brahmand,Murder,2021-05,1
+Brahmand,Murder,2024-01,1
+Brahmand,Murder,2024-07,1
+Brahmand,Murder,2024-08,1
+Brahmand,Murder,2024-10,1
+Brahmand,Murder,2025-02,1
+Brahmand,Robbery,2018-01,1
+Brahmand,Robbery,2018-10,1
+Brahmand,Robbery,2019-04,2
+Brahmand,Robbery,2019-06,1
+Brahmand,Robbery,2019-11,1
+Brahmand,Robbery,2020-02,2
+Brahmand,Robbery,2020-05,1
+Brahmand,Robbery,2021-09,3
+Brahmand,Robbery,2021-10,1
+Brahmand,Robbery,2021-11,1
+Brahmand,Robbery,2022-03,1
+Brahmand,Robbery,2022-06,1
+Brahmand,Robbery,2022-12,1
+Brahmand,Robbery,2023-02,1
+Brahmand,Robbery,2023-10,1
+Brahmand,Robbery,2024-01,1
+Brahmand,Robbery,2025-04,1
+Brahmand,Robbery,2025-05,1
+Brahmand,Robbery,2025-12,1
+Brahmand,Theft,2018-01,1
+Brahmand,Theft,2018-07,1
+Brahmand,Theft,2019-05,1
+Brahmand,Theft,2019-06,1
+Brahmand,Theft,2019-12,1
+Brahmand,Theft,2020-08,1
+Brahmand,Theft,2021-11,1
+Brahmand,Theft,2023-01,1
+Brahmand,Theft,2023-05,2
+Brahmand,Theft,2023-10,1
+Brahmand,Theft,2024-02,1
+Brahmand,Theft,2024-07,1
+Brahmand,Theft,2025-03,1
+Brahmand,Theft,2025-11,1
+Charai,Assault,2018-06,1
+Charai,Assault,2018-07,2
+Charai,Assault,2018-11,1
+Charai,Assault,2019-07,1
+Charai,Assault,2019-08,1
+Charai,Assault,2020-02,1
+Charai,Assault,2020-07,1
+Charai,Assault,2021-03,1
+Charai,Assault,2021-09,1
+Charai,Assault,2021-12,1
+Charai,Assault,2022-06,1
+Charai,Assault,2022-09,1
+Charai,Assault,2022-11,1
+Charai,Assault,2023-08,1
+Charai,Assault,2023-10,1
+Charai,Assault,2024-01,1
+Charai,Assault,2024-02,2
+Charai,Assault,2024-08,1
+Charai,Assault,2025-03,1
+Charai,Assault,2025-06,2
+Charai,Assault,2025-10,1
+Charai,Cheating,2018-01,1
+Charai,Cheating,2018-08,1
+Charai,Cheating,2018-10,1
+Charai,Cheating,2018-12,2
+Charai,Cheating,2019-04,1
+Charai,Cheating,2020-05,1
+Charai,Cheating,2020-06,1
+Charai,Cheating,2020-08,1
+Charai,Cheating,2020-09,1
+Charai,Cheating,2020-11,1
+Charai,Cheating,2021-02,1
+Charai,Cheating,2021-07,1
+Charai,Cheating,2021-10,1
+Charai,Cheating,2022-05,2
+Charai,Cheating,2022-08,1
+Charai,Cheating,2022-11,2
+Charai,Cheating,2023-04,1
+Charai,Cheating,2025-01,1
+Charai,Cheating,2025-06,1
+Charai,Cheating,2025-09,1
+Charai,Cheating,2025-11,1
+Charai,Cybercrime,2018-08,1
+Charai,Cybercrime,2018-11,2
+Charai,Cybercrime,2019-04,1
+Charai,Cybercrime,2019-06,1
+Charai,Cybercrime,2019-07,1
+Charai,Cybercrime,2020-01,1
+Charai,Cybercrime,2020-02,1
+Charai,Cybercrime,2020-06,1
+Charai,Cybercrime,2020-12,1
+Charai,Cybercrime,2021-03,1
+Charai,Cybercrime,2021-04,1
+Charai,Cybercrime,2021-08,2
+Charai,Cybercrime,2021-11,1
+Charai,Cybercrime,2021-12,1
+Charai,Cybercrime,2022-02,1
+Charai,Cybercrime,2022-12,1
+Charai,Cybercrime,2023-01,2
+Charai,Cybercrime,2023-07,1
+Charai,Cybercrime,2023-10,1
+Charai,Cybercrime,2024-06,1
+Charai,Cybercrime,2024-11,1
+Charai,Cybercrime,2025-07,2
+Charai,Domestic Violence,2018-01,1
+Charai,Domestic Violence,2018-04,1
+Charai,Domestic Violence,2018-08,1
+Charai,Domestic Violence,2019-02,1
+Charai,Domestic Violence,2019-09,1
+Charai,Domestic Violence,2020-03,1
+Charai,Domestic Violence,2020-06,2
+Charai,Domestic Violence,2021-03,1
+Charai,Domestic Violence,2022-02,1
+Charai,Domestic Violence,2022-07,1
+Charai,Domestic Violence,2022-09,1
+Charai,Domestic Violence,2022-11,1
+Charai,Domestic Violence,2022-12,1
+Charai,Domestic Violence,2024-04,1
+Charai,Domestic Violence,2024-07,1
+Charai,Domestic Violence,2024-09,1
+Charai,Domestic Violence,2024-10,1
+Charai,Domestic Violence,2025-03,1
+Charai,Drug Offense,2018-01,1
+Charai,Drug Offense,2018-03,1
+Charai,Drug Offense,2018-06,1
+Charai,Drug Offense,2018-10,1
+Charai,Drug Offense,2019-04,1
+Charai,Drug Offense,2019-05,1
+Charai,Drug Offense,2020-07,1
+Charai,Drug Offense,2020-08,1
+Charai,Drug Offense,2021-06,1
+Charai,Drug Offense,2021-07,2
+Charai,Drug Offense,2021-09,2
+Charai,Drug Offense,2021-10,2
+Charai,Drug Offense,2022-08,1
+Charai,Drug Offense,2022-12,1
+Charai,Drug Offense,2023-02,1
+Charai,Drug Offense,2025-04,2
+Charai,Drug Offense,2025-06,1
+Charai,Drug Offense,2025-07,1
+Charai,Drug Offense,2025-09,1
+Charai,Drug Offense,2025-11,1
+Charai,Drug Offense,2025-12,1
+Charai,Fraud,2018-03,1
+Charai,Fraud,2018-06,1
+Charai,Fraud,2018-08,1
+Charai,Fraud,2019-04,1
+Charai,Fraud,2019-05,2
+Charai,Fraud,2019-07,1
+Charai,Fraud,2019-10,1
+Charai,Fraud,2020-08,1
+Charai,Fraud,2020-12,1
+Charai,Fraud,2021-05,1
+Charai,Fraud,2022-04,1
+Charai,Fraud,2022-07,1
+Charai,Fraud,2023-02,1
+Charai,Fraud,2024-06,1
+Charai,Fraud,2024-10,1
+Charai,Fraud,2025-01,1
+Charai,Fraud,2025-03,1
+Charai,Fraud,2025-04,1
+Charai,Kidnapping,2018-01,3
+Charai,Kidnapping,2018-05,1
+Charai,Kidnapping,2018-11,1
+Charai,Kidnapping,2018-12,1
+Charai,Kidnapping,2019-01,1
+Charai,Kidnapping,2019-02,1
+Charai,Kidnapping,2021-01,1
+Charai,Kidnapping,2021-09,1
+Charai,Kidnapping,2022-05,1
+Charai,Kidnapping,2023-07,1
+Charai,Kidnapping,2024-02,1
+Charai,Kidnapping,2024-08,1
+Charai,Kidnapping,2024-11,1
+Charai,Kidnapping,2024-12,1
+Charai,Kidnapping,2025-01,1
+Charai,Kidnapping,2025-08,1
+Charai,Kidnapping,2025-10,1
+Charai,Murder,2018-01,1
+Charai,Murder,2018-03,2
+Charai,Murder,2018-04,1
+Charai,Murder,2018-05,1
+Charai,Murder,2018-06,1
+Charai,Murder,2018-11,2
+Charai,Murder,2019-04,1
+Charai,Murder,2019-05,1
+Charai,Murder,2019-09,1
+Charai,Murder,2019-12,1
+Charai,Murder,2020-01,1
+Charai,Murder,2020-02,1
+Charai,Murder,2020-06,1
+Charai,Murder,2021-02,2
+Charai,Murder,2021-06,1
+Charai,Murder,2021-08,1
+Charai,Murder,2021-10,2
+Charai,Murder,2023-04,1
+Charai,Murder,2024-10,1
+Charai,Murder,2025-05,1
+Charai,Murder,2025-09,1
+Charai,Murder,2025-12,1
+Charai,Robbery,2018-11,1
+Charai,Robbery,2018-12,1
+Charai,Robbery,2019-05,1
+Charai,Robbery,2019-11,1
+Charai,Robbery,2020-01,1
+Charai,Robbery,2020-04,1
+Charai,Robbery,2020-10,1
+Charai,Robbery,2021-01,1
+Charai,Robbery,2021-03,1
+Charai,Robbery,2021-07,1
+Charai,Robbery,2022-07,1
+Charai,Robbery,2022-12,1
+Charai,Robbery,2023-05,1
+Charai,Robbery,2023-07,1
+Charai,Robbery,2024-08,1
+Charai,Robbery,2025-02,1
+Charai,Robbery,2025-05,1
+Charai,Robbery,2025-08,1
+Charai,Theft,2018-03,1
+Charai,Theft,2018-09,1
+Charai,Theft,2019-02,1
+Charai,Theft,2019-11,2
+Charai,Theft,2020-06,1
+Charai,Theft,2021-05,1
+Charai,Theft,2021-11,1
+Charai,Theft,2022-06,1
+Charai,Theft,2023-02,1
+Charai,Theft,2023-04,1
+Charai,Theft,2024-01,1
+Charai,Theft,2024-06,1
+Charai,Theft,2024-08,1
+Charai,Theft,2025-04,1
+Charai,Theft,2025-07,1
+Dhokali,Assault,2018-05,1
+Dhokali,Assault,2018-09,1
+Dhokali,Assault,2019-06,1
+Dhokali,Assault,2019-11,1
+Dhokali,Assault,2020-01,1
+Dhokali,Assault,2020-04,1
+Dhokali,Assault,2021-03,1
+Dhokali,Assault,2022-01,1
+Dhokali,Assault,2022-09,1
+Dhokali,Assault,2022-11,1
+Dhokali,Assault,2023-05,1
+Dhokali,Assault,2024-02,1
+Dhokali,Assault,2024-11,1
+Dhokali,Cheating,2018-04,1
+Dhokali,Cheating,2018-06,2
+Dhokali,Cheating,2019-03,1
+Dhokali,Cheating,2019-04,2
+Dhokali,Cheating,2019-06,1
+Dhokali,Cheating,2019-07,1
+Dhokali,Cheating,2020-01,1
+Dhokali,Cheating,2020-09,2
+Dhokali,Cheating,2020-12,1
+Dhokali,Cheating,2021-02,1
+Dhokali,Cheating,2021-08,1
+Dhokali,Cheating,2021-09,1
+Dhokali,Cheating,2022-08,1
+Dhokali,Cheating,2023-06,1
+Dhokali,Cheating,2023-09,1
+Dhokali,Cheating,2023-10,1
+Dhokali,Cheating,2024-04,1
+Dhokali,Cheating,2024-06,1
+Dhokali,Cheating,2025-04,2
+Dhokali,Cheating,2025-08,1
+Dhokali,Cybercrime,2018-01,1
+Dhokali,Cybercrime,2018-10,1
+Dhokali,Cybercrime,2018-11,1
+Dhokali,Cybercrime,2018-12,1
+Dhokali,Cybercrime,2019-06,1
+Dhokali,Cybercrime,2019-07,1
+Dhokali,Cybercrime,2021-02,1
+Dhokali,Cybercrime,2021-05,1
+Dhokali,Cybercrime,2021-09,1
+Dhokali,Cybercrime,2021-11,1
+Dhokali,Cybercrime,2022-01,1
+Dhokali,Cybercrime,2022-02,1
+Dhokali,Cybercrime,2023-04,2
+Dhokali,Cybercrime,2024-03,1
+Dhokali,Cybercrime,2024-05,1
+Dhokali,Cybercrime,2025-04,1
+Dhokali,Cybercrime,2025-12,1
+Dhokali,Domestic Violence,2018-02,1
+Dhokali,Domestic Violence,2018-04,1
+Dhokali,Domestic Violence,2018-10,1
+Dhokali,Domestic Violence,2019-11,1
+Dhokali,Domestic Violence,2019-12,1
+Dhokali,Domestic Violence,2020-01,1
+Dhokali,Domestic Violence,2020-05,2
+Dhokali,Domestic Violence,2020-09,1
+Dhokali,Domestic Violence,2020-12,1
+Dhokali,Domestic Violence,2021-05,1
+Dhokali,Domestic Violence,2022-04,1
+Dhokali,Domestic Violence,2022-11,1
+Dhokali,Domestic Violence,2023-01,1
+Dhokali,Domestic Violence,2023-05,1
+Dhokali,Domestic Violence,2023-06,1
+Dhokali,Domestic Violence,2023-12,1
+Dhokali,Domestic Violence,2024-04,1
+Dhokali,Domestic Violence,2024-09,1
+Dhokali,Domestic Violence,2025-04,1
+Dhokali,Domestic Violence,2025-05,2
+Dhokali,Domestic Violence,2025-09,1
+Dhokali,Drug Offense,2018-03,1
+Dhokali,Drug Offense,2018-10,1
+Dhokali,Drug Offense,2019-12,2
+Dhokali,Drug Offense,2020-07,1
+Dhokali,Drug Offense,2020-10,2
+Dhokali,Drug Offense,2022-03,1
+Dhokali,Drug Offense,2022-08,1
+Dhokali,Drug Offense,2022-11,1
+Dhokali,Drug Offense,2022-12,1
+Dhokali,Drug Offense,2023-08,2
+Dhokali,Drug Offense,2023-11,1
+Dhokali,Drug Offense,2024-06,1
+Dhokali,Drug Offense,2025-01,1
+Dhokali,Drug Offense,2025-05,1
+Dhokali,Fraud,2018-01,1
+Dhokali,Fraud,2018-02,2
+Dhokali,Fraud,2018-09,1
+Dhokali,Fraud,2018-10,1
+Dhokali,Fraud,2018-11,1
+Dhokali,Fraud,2019-03,1
+Dhokali,Fraud,2020-02,1
+Dhokali,Fraud,2020-11,1
+Dhokali,Fraud,2021-06,1
+Dhokali,Fraud,2022-05,1
+Dhokali,Fraud,2022-09,1
+Dhokali,Fraud,2022-12,1
+Dhokali,Fraud,2023-01,1
+Dhokali,Fraud,2023-05,1
+Dhokali,Fraud,2023-08,1
+Dhokali,Fraud,2023-11,1
+Dhokali,Fraud,2024-09,1
+Dhokali,Fraud,2025-02,1
+Dhokali,Kidnapping,2018-01,1
+Dhokali,Kidnapping,2018-08,1
+Dhokali,Kidnapping,2018-09,1
+Dhokali,Kidnapping,2018-10,1
+Dhokali,Kidnapping,2019-02,1
+Dhokali,Kidnapping,2020-01,1
+Dhokali,Kidnapping,2020-03,1
+Dhokali,Kidnapping,2020-09,1
+Dhokali,Kidnapping,2021-03,2
+Dhokali,Kidnapping,2021-07,1
+Dhokali,Kidnapping,2022-01,1
+Dhokali,Kidnapping,2022-03,1
+Dhokali,Kidnapping,2022-05,1
+Dhokali,Kidnapping,2022-12,1
+Dhokali,Kidnapping,2023-03,1
+Dhokali,Kidnapping,2023-06,2
+Dhokali,Kidnapping,2023-07,1
+Dhokali,Kidnapping,2023-08,1
+Dhokali,Kidnapping,2023-11,1
+Dhokali,Kidnapping,2024-03,1
+Dhokali,Kidnapping,2024-10,1
+Dhokali,Kidnapping,2025-03,1
+Dhokali,Kidnapping,2025-07,1
+Dhokali,Murder,2018-01,1
+Dhokali,Murder,2018-03,1
+Dhokali,Murder,2018-10,2
+Dhokali,Murder,2018-11,1
+Dhokali,Murder,2018-12,1
+Dhokali,Murder,2019-01,1
+Dhokali,Murder,2019-04,1
+Dhokali,Murder,2019-05,1
+Dhokali,Murder,2019-06,1
+Dhokali,Murder,2019-11,2
+Dhokali,Murder,2020-02,1
+Dhokali,Murder,2020-04,1
+Dhokali,Murder,2020-05,1
+Dhokali,Murder,2020-07,1
+Dhokali,Murder,2020-12,1
+Dhokali,Murder,2021-01,1
+Dhokali,Murder,2021-02,1
+Dhokali,Murder,2021-05,2
+Dhokali,Murder,2022-05,2
+Dhokali,Murder,2023-08,1
+Dhokali,Murder,2023-11,1
+Dhokali,Murder,2024-07,1
+Dhokali,Murder,2024-11,1
+Dhokali,Murder,2025-02,1
+Dhokali,Murder,2025-03,1
+Dhokali,Murder,2025-04,1
+Dhokali,Murder,2025-10,1
+Dhokali,Murder,2025-12,1
+Dhokali,Robbery,2018-03,1
+Dhokali,Robbery,2018-05,1
+Dhokali,Robbery,2018-08,1
+Dhokali,Robbery,2019-10,1
+Dhokali,Robbery,2020-02,1
+Dhokali,Robbery,2020-05,1
+Dhokali,Robbery,2020-09,1
+Dhokali,Robbery,2020-11,1
+Dhokali,Robbery,2021-07,1
+Dhokali,Robbery,2022-11,1
+Dhokali,Robbery,2023-01,2
+Dhokali,Robbery,2023-10,1
+Dhokali,Robbery,2024-03,1
+Dhokali,Robbery,2024-04,1
+Dhokali,Robbery,2024-05,1
+Dhokali,Robbery,2024-06,1
+Dhokali,Theft,2018-01,1
+Dhokali,Theft,2018-02,1
+Dhokali,Theft,2019-01,1
+Dhokali,Theft,2019-03,1
+Dhokali,Theft,2019-04,1
+Dhokali,Theft,2019-05,1
+Dhokali,Theft,2019-12,1
+Dhokali,Theft,2020-03,1
+Dhokali,Theft,2021-03,1
+Dhokali,Theft,2021-06,2
+Dhokali,Theft,2021-11,1
+Dhokali,Theft,2022-01,1
+Dhokali,Theft,2022-06,1
+Dhokali,Theft,2022-08,1
+Dhokali,Theft,2022-09,1
+Dhokali,Theft,2023-01,2
+Dhokali,Theft,2023-03,1
+Dhokali,Theft,2023-05,1
+Dhokali,Theft,2023-06,2
+Dhokali,Theft,2024-03,1
+Dhokali,Theft,2025-08,1
+Dhokali,Theft,2025-11,1
+Ghodbunder Road,Assault,2018-04,1
+Ghodbunder Road,Assault,2020-06,1
+Ghodbunder Road,Assault,2020-07,2
+Ghodbunder Road,Assault,2020-11,3
+Ghodbunder Road,Assault,2021-02,1
+Ghodbunder Road,Assault,2021-06,1
+Ghodbunder Road,Assault,2022-05,1
+Ghodbunder Road,Assault,2022-08,1
+Ghodbunder Road,Assault,2023-01,2
+Ghodbunder Road,Assault,2023-03,1
+Ghodbunder Road,Assault,2023-04,1
+Ghodbunder Road,Assault,2024-09,1
+Ghodbunder Road,Assault,2024-11,2
+Ghodbunder Road,Assault,2024-12,2
+Ghodbunder Road,Assault,2025-01,1
+Ghodbunder Road,Assault,2025-02,2
+Ghodbunder Road,Assault,2025-03,1
+Ghodbunder Road,Assault,2025-06,1
+Ghodbunder Road,Burglary,2023-02,4
+Ghodbunder Road,Burglary,2024-05,1
+Ghodbunder Road,Burglary,2024-07,2
+Ghodbunder Road,Cheating,2018-02,1
+Ghodbunder Road,Cheating,2018-03,1
+Ghodbunder Road,Cheating,2018-05,1
+Ghodbunder Road,Cheating,2018-07,1
+Ghodbunder Road,Cheating,2018-10,1
+Ghodbunder Road,Cheating,2019-03,1
+Ghodbunder Road,Cheating,2019-04,1
+Ghodbunder Road,Cheating,2019-09,1
+Ghodbunder Road,Cheating,2019-10,1
+Ghodbunder Road,Cheating,2020-02,1
+Ghodbunder Road,Cheating,2020-05,1
+Ghodbunder Road,Cheating,2021-01,1
+Ghodbunder Road,Cheating,2021-05,2
+Ghodbunder Road,Cheating,2021-11,1
+Ghodbunder Road,Cheating,2022-07,1
+Ghodbunder Road,Cheating,2022-11,1
+Ghodbunder Road,Cheating,2023-03,1
+Ghodbunder Road,Cheating,2024-03,1
+Ghodbunder Road,Cheating,2024-11,1
+Ghodbunder Road,Cheating,2025-02,1
+Ghodbunder Road,Cheating,2025-09,1
+Ghodbunder Road,Cheating,2025-10,1
+Ghodbunder Road,Cheating,2025-11,2
+Ghodbunder Road,Cybercrime,2018-01,1
+Ghodbunder Road,Cybercrime,2018-04,2
+Ghodbunder Road,Cybercrime,2018-05,1
+Ghodbunder Road,Cybercrime,2018-07,1
+Ghodbunder Road,Cybercrime,2018-09,1
+Ghodbunder Road,Cybercrime,2019-02,1
+Ghodbunder Road,Cybercrime,2020-02,1
+Ghodbunder Road,Cybercrime,2020-07,1
+Ghodbunder Road,Cybercrime,2021-01,1
+Ghodbunder Road,Cybercrime,2021-02,1
+Ghodbunder Road,Cybercrime,2021-07,1
+Ghodbunder Road,Cybercrime,2022-01,1
+Ghodbunder Road,Cybercrime,2022-08,2
+Ghodbunder Road,Cybercrime,2023-05,1
+Ghodbunder Road,Cybercrime,2023-07,1
+Ghodbunder Road,Cybercrime,2023-12,2
+Ghodbunder Road,Cybercrime,2024-03,1
+Ghodbunder Road,Cybercrime,2024-12,1
+Ghodbunder Road,Cybercrime,2025-03,1
+Ghodbunder Road,Domestic Violence,2018-03,1
+Ghodbunder Road,Domestic Violence,2018-12,2
+Ghodbunder Road,Domestic Violence,2019-01,1
+Ghodbunder Road,Domestic Violence,2019-02,2
+Ghodbunder Road,Domestic Violence,2020-02,1
+Ghodbunder Road,Domestic Violence,2020-04,2
+Ghodbunder Road,Domestic Violence,2020-06,1
+Ghodbunder Road,Domestic Violence,2020-07,2
+Ghodbunder Road,Domestic Violence,2020-08,1
+Ghodbunder Road,Domestic Violence,2020-09,2
+Ghodbunder Road,Domestic Violence,2020-10,1
+Ghodbunder Road,Domestic Violence,2021-03,2
+Ghodbunder Road,Domestic Violence,2021-08,1
+Ghodbunder Road,Domestic Violence,2021-11,1
+Ghodbunder Road,Domestic Violence,2021-12,1
+Ghodbunder Road,Domestic Violence,2022-06,2
+Ghodbunder Road,Domestic Violence,2022-11,1
+Ghodbunder Road,Domestic Violence,2023-04,1
+Ghodbunder Road,Domestic Violence,2023-05,1
+Ghodbunder Road,Domestic Violence,2024-07,1
+Ghodbunder Road,Domestic Violence,2024-09,2
+Ghodbunder Road,Domestic Violence,2024-11,2
+Ghodbunder Road,Domestic Violence,2025-03,1
+Ghodbunder Road,Domestic Violence,2025-09,1
+Ghodbunder Road,Domestic Violence,2025-10,1
+Ghodbunder Road,Drug Offense,2019-02,1
+Ghodbunder Road,Drug Offense,2019-04,1
+Ghodbunder Road,Drug Offense,2019-05,1
+Ghodbunder Road,Drug Offense,2019-07,1
+Ghodbunder Road,Drug Offense,2019-08,1
+Ghodbunder Road,Drug Offense,2019-09,1
+Ghodbunder Road,Drug Offense,2022-11,1
+Ghodbunder Road,Drug Offense,2022-12,1
+Ghodbunder Road,Drug Offense,2023-07,1
+Ghodbunder Road,Drug Offense,2023-10,1
+Ghodbunder Road,Drug Offense,2024-05,1
+Ghodbunder Road,Drug Offense,2025-11,1
+Ghodbunder Road,Fraud,2018-08,1
+Ghodbunder Road,Fraud,2019-05,1
+Ghodbunder Road,Fraud,2019-07,1
+Ghodbunder Road,Fraud,2019-09,1
+Ghodbunder Road,Fraud,2019-12,2
+Ghodbunder Road,Fraud,2020-02,1
+Ghodbunder Road,Fraud,2022-05,1
+Ghodbunder Road,Fraud,2022-07,1
+Ghodbunder Road,Fraud,2022-08,1
+Ghodbunder Road,Fraud,2022-09,2
+Ghodbunder Road,Fraud,2023-02,1
+Ghodbunder Road,Fraud,2023-03,3
+Ghodbunder Road,Fraud,2023-07,1
+Ghodbunder Road,Fraud,2023-08,2
+Ghodbunder Road,Fraud,2023-11,2
+Ghodbunder Road,Fraud,2024-01,2
+Ghodbunder Road,Fraud,2024-06,1
+Ghodbunder Road,Fraud,2024-07,1
+Ghodbunder Road,Fraud,2024-10,1
+Ghodbunder Road,Fraud,2025-02,1
+Ghodbunder Road,Fraud,2025-07,1
+Ghodbunder Road,Fraud,2025-12,1
+Ghodbunder Road,Kidnapping,2018-03,1
+Ghodbunder Road,Kidnapping,2018-04,1
+Ghodbunder Road,Kidnapping,2018-05,1
+Ghodbunder Road,Kidnapping,2018-06,1
+Ghodbunder Road,Kidnapping,2018-07,1
+Ghodbunder Road,Kidnapping,2019-01,1
+Ghodbunder Road,Kidnapping,2019-06,1
+Ghodbunder Road,Kidnapping,2020-03,3
+Ghodbunder Road,Kidnapping,2020-07,1
+Ghodbunder Road,Kidnapping,2021-01,1
+Ghodbunder Road,Kidnapping,2021-04,1
+Ghodbunder Road,Kidnapping,2021-08,1
+Ghodbunder Road,Kidnapping,2023-04,1
+Ghodbunder Road,Kidnapping,2023-07,2
+Ghodbunder Road,Kidnapping,2023-08,1
+Ghodbunder Road,Kidnapping,2023-10,1
+Ghodbunder Road,Kidnapping,2023-11,1
+Ghodbunder Road,Kidnapping,2024-09,1
+Ghodbunder Road,Kidnapping,2025-03,2
+Ghodbunder Road,Kidnapping,2025-10,1
+Ghodbunder Road,Murder,2018-10,1
+Ghodbunder Road,Murder,2018-12,1
+Ghodbunder Road,Murder,2020-01,1
+Ghodbunder Road,Murder,2020-11,1
+Ghodbunder Road,Murder,2021-07,1
+Ghodbunder Road,Murder,2021-09,1
+Ghodbunder Road,Murder,2022-03,1
+Ghodbunder Road,Murder,2022-04,1
+Ghodbunder Road,Murder,2023-09,1
+Ghodbunder Road,Murder,2023-11,2
+Ghodbunder Road,Murder,2024-03,1
+Ghodbunder Road,Murder,2024-04,1
+Ghodbunder Road,Murder,2024-09,1
+Ghodbunder Road,Murder,2024-11,1
+Ghodbunder Road,Murder,2025-12,1
+Ghodbunder Road,Robbery,2018-04,1
+Ghodbunder Road,Robbery,2019-04,1
+Ghodbunder Road,Robbery,2019-06,1
+Ghodbunder Road,Robbery,2019-07,1
+Ghodbunder Road,Robbery,2019-10,1
+Ghodbunder Road,Robbery,2020-09,1
+Ghodbunder Road,Robbery,2020-10,1
+Ghodbunder Road,Robbery,2021-04,1
+Ghodbunder Road,Robbery,2022-05,2
+Ghodbunder Road,Robbery,2023-04,1
+Ghodbunder Road,Robbery,2023-05,1
+Ghodbunder Road,Robbery,2023-06,1
+Ghodbunder Road,Robbery,2024-08,1
+Ghodbunder Road,Robbery,2024-09,1
+Ghodbunder Road,Robbery,2025-01,1
+Ghodbunder Road,Robbery,2025-11,1
+Ghodbunder Road,Theft,2018-09,2
+Ghodbunder Road,Theft,2018-10,1
+Ghodbunder Road,Theft,2019-11,1
+Ghodbunder Road,Theft,2020-04,1
+Ghodbunder Road,Theft,2020-07,1
+Ghodbunder Road,Theft,2021-02,1
+Ghodbunder Road,Theft,2021-09,1
+Ghodbunder Road,Theft,2021-10,1
+Ghodbunder Road,Theft,2021-11,1
+Ghodbunder Road,Theft,2022-06,1
+Ghodbunder Road,Theft,2022-11,3
+Ghodbunder Road,Theft,2022-12,1
+Ghodbunder Road,Theft,2023-01,1
+Ghodbunder Road,Theft,2023-06,3
+Ghodbunder Road,Theft,2023-11,1
+Ghodbunder Road,Theft,2023-12,1
+Ghodbunder Road,Theft,2024-06,2
+Ghodbunder Road,Theft,2024-08,1
+Ghodbunder Road,Theft,2024-10,1
+Ghodbunder Road,Theft,2024-11,1
+Ghodbunder Road,Theft,2025-08,1
+Ghodbunder Road,Theft,2025-12,1
+Kasarvadavali,Assault,2018-07,1
+Kasarvadavali,Assault,2018-08,1
+Kasarvadavali,Assault,2018-09,1
+Kasarvadavali,Assault,2019-07,1
+Kasarvadavali,Assault,2020-06,1
+Kasarvadavali,Assault,2020-07,2
+Kasarvadavali,Assault,2020-11,2
+Kasarvadavali,Assault,2021-07,1
+Kasarvadavali,Assault,2022-02,1
+Kasarvadavali,Assault,2022-07,1
+Kasarvadavali,Assault,2022-08,1
+Kasarvadavali,Assault,2023-01,1
+Kasarvadavali,Assault,2024-01,1
+Kasarvadavali,Assault,2024-06,1
+Kasarvadavali,Assault,2024-09,1
+Kasarvadavali,Assault,2024-10,1
+Kasarvadavali,Assault,2024-12,2
+Kasarvadavali,Assault,2025-04,1
+Kasarvadavali,Assault,2025-07,2
+Kasarvadavali,Assault,2025-11,1
+Kasarvadavali,Burglary,2023-02,2
+Kasarvadavali,Burglary,2024-07,1
+Kasarvadavali,Cheating,2018-04,1
+Kasarvadavali,Cheating,2018-05,1
+Kasarvadavali,Cheating,2018-06,1
+Kasarvadavali,Cheating,2019-05,1
+Kasarvadavali,Cheating,2019-06,1
+Kasarvadavali,Cheating,2019-09,1
+Kasarvadavali,Cheating,2019-10,1
+Kasarvadavali,Cheating,2020-07,1
+Kasarvadavali,Cheating,2020-08,1
+Kasarvadavali,Cheating,2020-11,1
+Kasarvadavali,Cheating,2020-12,1
+Kasarvadavali,Cheating,2021-05,1
+Kasarvadavali,Cheating,2021-08,1
+Kasarvadavali,Cheating,2022-12,1
+Kasarvadavali,Cheating,2023-03,1
+Kasarvadavali,Cheating,2023-06,1
+Kasarvadavali,Cheating,2024-02,1
+Kasarvadavali,Cheating,2024-03,1
+Kasarvadavali,Cheating,2024-08,1
+Kasarvadavali,Cheating,2024-10,1
+Kasarvadavali,Cheating,2025-06,1
+Kasarvadavali,Cheating,2025-09,2
+Kasarvadavali,Cheating,2025-11,1
+Kasarvadavali,Cybercrime,2018-03,1
+Kasarvadavali,Cybercrime,2018-08,1
+Kasarvadavali,Cybercrime,2018-10,1
+Kasarvadavali,Cybercrime,2019-04,1
+Kasarvadavali,Cybercrime,2019-07,1
+Kasarvadavali,Cybercrime,2020-01,1
+Kasarvadavali,Cybercrime,2021-01,1
+Kasarvadavali,Cybercrime,2021-02,2
+Kasarvadavali,Cybercrime,2021-05,1
+Kasarvadavali,Cybercrime,2021-06,1
+Kasarvadavali,Cybercrime,2022-07,1
+Kasarvadavali,Cybercrime,2022-12,1
+Kasarvadavali,Cybercrime,2023-02,1
+Kasarvadavali,Cybercrime,2023-06,1
+Kasarvadavali,Cybercrime,2024-03,1
+Kasarvadavali,Cybercrime,2025-01,1
+Kasarvadavali,Cybercrime,2025-07,1
+Kasarvadavali,Domestic Violence,2018-02,1
+Kasarvadavali,Domestic Violence,2018-03,1
+Kasarvadavali,Domestic Violence,2018-04,1
+Kasarvadavali,Domestic Violence,2018-07,1
+Kasarvadavali,Domestic Violence,2018-11,1
+Kasarvadavali,Domestic Violence,2019-01,1
+Kasarvadavali,Domestic Violence,2019-11,1
+Kasarvadavali,Domestic Violence,2019-12,1
+Kasarvadavali,Domestic Violence,2020-12,1
+Kasarvadavali,Domestic Violence,2021-08,1
+Kasarvadavali,Domestic Violence,2022-01,1
+Kasarvadavali,Domestic Violence,2022-07,1
+Kasarvadavali,Domestic Violence,2023-04,3
+Kasarvadavali,Domestic Violence,2024-01,2
+Kasarvadavali,Domestic Violence,2025-06,2
+Kasarvadavali,Drug Offense,2018-01,1
+Kasarvadavali,Drug Offense,2018-02,2
+Kasarvadavali,Drug Offense,2018-06,1
+Kasarvadavali,Drug Offense,2018-07,1
+Kasarvadavali,Drug Offense,2018-08,1
+Kasarvadavali,Drug Offense,2018-09,1
+Kasarvadavali,Drug Offense,2018-10,1
+Kasarvadavali,Drug Offense,2019-06,1
+Kasarvadavali,Drug Offense,2019-09,1
+Kasarvadavali,Drug Offense,2020-02,1
+Kasarvadavali,Drug Offense,2020-09,1
+Kasarvadavali,Drug Offense,2020-12,3
+Kasarvadavali,Drug Offense,2021-04,1
+Kasarvadavali,Drug Offense,2021-09,1
+Kasarvadavali,Drug Offense,2021-10,1
+Kasarvadavali,Drug Offense,2021-12,2
+Kasarvadavali,Drug Offense,2022-02,1
+Kasarvadavali,Drug Offense,2022-04,1
+Kasarvadavali,Drug Offense,2022-10,2
+Kasarvadavali,Drug Offense,2023-07,1
+Kasarvadavali,Drug Offense,2024-05,1
+Kasarvadavali,Drug Offense,2025-01,3
+Kasarvadavali,Drug Offense,2025-02,1
+Kasarvadavali,Drug Offense,2025-04,1
+Kasarvadavali,Drug Offense,2025-06,1
+Kasarvadavali,Fraud,2018-05,1
+Kasarvadavali,Fraud,2018-12,1
+Kasarvadavali,Fraud,2019-04,1
+Kasarvadavali,Fraud,2019-05,1
+Kasarvadavali,Fraud,2019-08,1
+Kasarvadavali,Fraud,2019-10,1
+Kasarvadavali,Fraud,2020-09,1
+Kasarvadavali,Fraud,2020-10,1
+Kasarvadavali,Fraud,2021-03,1
+Kasarvadavali,Fraud,2021-05,1
+Kasarvadavali,Fraud,2021-08,1
+Kasarvadavali,Fraud,2021-09,1
+Kasarvadavali,Fraud,2022-01,1
+Kasarvadavali,Fraud,2022-05,1
+Kasarvadavali,Fraud,2022-06,1
+Kasarvadavali,Fraud,2023-02,2
+Kasarvadavali,Fraud,2023-03,4
+Kasarvadavali,Fraud,2023-09,1
+Kasarvadavali,Fraud,2023-10,1
+Kasarvadavali,Fraud,2023-11,3
+Kasarvadavali,Fraud,2024-01,1
+Kasarvadavali,Fraud,2024-04,1
+Kasarvadavali,Fraud,2024-05,1
+Kasarvadavali,Fraud,2024-06,1
+Kasarvadavali,Fraud,2025-03,2
+Kasarvadavali,Fraud,2025-06,1
+Kasarvadavali,Fraud,2025-08,1
+Kasarvadavali,Fraud,2025-09,1
+Kasarvadavali,Kidnapping,2018-02,2
+Kasarvadavali,Kidnapping,2018-03,1
+Kasarvadavali,Kidnapping,2018-07,1
+Kasarvadavali,Kidnapping,2018-11,1
+Kasarvadavali,Kidnapping,2018-12,2
+Kasarvadavali,Kidnapping,2020-01,1
+Kasarvadavali,Kidnapping,2020-06,1
+Kasarvadavali,Kidnapping,2020-07,1
+Kasarvadavali,Kidnapping,2020-08,2
+Kasarvadavali,Kidnapping,2020-10,1
+Kasarvadavali,Kidnapping,2020-11,1
+Kasarvadavali,Kidnapping,2020-12,2
+Kasarvadavali,Kidnapping,2021-01,4
+Kasarvadavali,Kidnapping,2021-07,1
+Kasarvadavali,Kidnapping,2022-05,1
+Kasarvadavali,Kidnapping,2022-11,1
+Kasarvadavali,Kidnapping,2023-03,1
+Kasarvadavali,Kidnapping,2023-11,1
+Kasarvadavali,Kidnapping,2024-06,1
+Kasarvadavali,Kidnapping,2024-07,1
+Kasarvadavali,Kidnapping,2024-08,1
+Kasarvadavali,Kidnapping,2025-05,1
+Kasarvadavali,Kidnapping,2025-06,1
+Kasarvadavali,Kidnapping,2025-07,1
+Kasarvadavali,Murder,2018-02,1
+Kasarvadavali,Murder,2018-03,1
+Kasarvadavali,Murder,2018-08,3
+Kasarvadavali,Murder,2018-09,1
+Kasarvadavali,Murder,2018-10,1
+Kasarvadavali,Murder,2018-12,1
+Kasarvadavali,Murder,2019-03,1
+Kasarvadavali,Murder,2019-09,1
+Kasarvadavali,Murder,2020-02,1
+Kasarvadavali,Murder,2020-08,1
+Kasarvadavali,Murder,2020-11,1
+Kasarvadavali,Murder,2021-01,1
+Kasarvadavali,Murder,2021-07,3
+Kasarvadavali,Murder,2021-11,4
+Kasarvadavali,Murder,2022-02,1
+Kasarvadavali,Murder,2023-02,1
+Kasarvadavali,Murder,2023-03,2
+Kasarvadavali,Murder,2023-07,1
+Kasarvadavali,Murder,2024-01,1
+Kasarvadavali,Murder,2024-03,1
+Kasarvadavali,Murder,2024-05,1
+Kasarvadavali,Murder,2025-12,1
+Kasarvadavali,Robbery,2018-04,1
+Kasarvadavali,Robbery,2018-11,1
+Kasarvadavali,Robbery,2019-01,1
+Kasarvadavali,Robbery,2019-02,1
+Kasarvadavali,Robbery,2019-04,1
+Kasarvadavali,Robbery,2019-10,2
+Kasarvadavali,Robbery,2020-01,1
+Kasarvadavali,Robbery,2020-03,2
+Kasarvadavali,Robbery,2020-04,1
+Kasarvadavali,Robbery,2020-11,1
+Kasarvadavali,Robbery,2020-12,1
+Kasarvadavali,Robbery,2021-05,1
+Kasarvadavali,Robbery,2021-06,1
+Kasarvadavali,Robbery,2021-11,2
+Kasarvadavali,Robbery,2022-03,1
+Kasarvadavali,Robbery,2022-07,1
+Kasarvadavali,Robbery,2022-12,2
+Kasarvadavali,Robbery,2023-01,1
+Kasarvadavali,Robbery,2024-05,1
+Kasarvadavali,Robbery,2024-08,1
+Kasarvadavali,Robbery,2024-09,1
+Kasarvadavali,Robbery,2024-10,2
+Kasarvadavali,Robbery,2024-12,1
+Kasarvadavali,Robbery,2025-04,1
+Kasarvadavali,Robbery,2025-07,1
+Kasarvadavali,Theft,2018-03,1
+Kasarvadavali,Theft,2018-06,1
+Kasarvadavali,Theft,2018-08,1
+Kasarvadavali,Theft,2019-04,1
+Kasarvadavali,Theft,2019-08,2
+Kasarvadavali,Theft,2019-10,1
+Kasarvadavali,Theft,2020-04,2
+Kasarvadavali,Theft,2020-07,2
+Kasarvadavali,Theft,2021-09,1
+Kasarvadavali,Theft,2021-11,1
+Kasarvadavali,Theft,2022-02,1
+Kasarvadavali,Theft,2022-03,1
+Kasarvadavali,Theft,2022-06,2
+Kasarvadavali,Theft,2022-09,1
+Kasarvadavali,Theft,2022-11,1
+Kasarvadavali,Theft,2023-02,1
+Kasarvadavali,Theft,2023-06,1
+Kasarvadavali,Theft,2023-09,1
+Kasarvadavali,Theft,2024-02,1
+Kasarvadavali,Theft,2024-03,1
+Kasarvadavali,Theft,2024-06,1
+Kasarvadavali,Theft,2024-12,1
+Kasarvadavali,Theft,2025-04,1
+Kasarvadavali,Theft,2025-09,1
+Kolshet,Assault,2018-06,2
+Kolshet,Assault,2018-07,1
+Kolshet,Assault,2018-08,2
+Kolshet,Assault,2019-04,2
+Kolshet,Assault,2019-07,2
+Kolshet,Assault,2019-09,1
+Kolshet,Assault,2020-01,1
+Kolshet,Assault,2020-07,3
+Kolshet,Assault,2020-09,1
+Kolshet,Assault,2021-01,2
+Kolshet,Assault,2021-06,1
+Kolshet,Assault,2021-11,1
+Kolshet,Assault,2021-12,1
+Kolshet,Assault,2022-07,1
+Kolshet,Assault,2022-10,1
+Kolshet,Assault,2022-12,1
+Kolshet,Assault,2023-01,2
+Kolshet,Assault,2023-02,1
+Kolshet,Assault,2023-03,1
+Kolshet,Assault,2023-10,1
+Kolshet,Assault,2024-04,1
+Kolshet,Assault,2024-05,1
+Kolshet,Assault,2025-01,1
+Kolshet,Assault,2025-08,2
+Kolshet,Assault,2025-12,1
+Kolshet,Burglary,2023-02,2
+Kolshet,Burglary,2024-05,2
+Kolshet,Burglary,2024-07,4
+Kolshet,Cheating,2018-09,1
+Kolshet,Cheating,2018-11,1
+Kolshet,Cheating,2018-12,1
+Kolshet,Cheating,2019-04,2
+Kolshet,Cheating,2019-10,1
+Kolshet,Cheating,2019-12,1
+Kolshet,Cheating,2020-04,1
+Kolshet,Cheating,2020-11,1
+Kolshet,Cheating,2021-01,1
+Kolshet,Cheating,2021-08,1
+Kolshet,Cheating,2022-04,1
+Kolshet,Cheating,2023-11,1
+Kolshet,Cheating,2023-12,1
+Kolshet,Cheating,2024-08,1
+Kolshet,Cheating,2025-03,1
+Kolshet,Cheating,2025-06,1
+Kolshet,Cybercrime,2018-07,1
+Kolshet,Cybercrime,2018-08,1
+Kolshet,Cybercrime,2019-02,1
+Kolshet,Cybercrime,2019-05,1
+Kolshet,Cybercrime,2019-10,1
+Kolshet,Cybercrime,2020-07,1
+Kolshet,Cybercrime,2020-11,2
+Kolshet,Cybercrime,2022-04,1
+Kolshet,Cybercrime,2022-10,1
+Kolshet,Cybercrime,2022-11,1
+Kolshet,Cybercrime,2023-02,1
+Kolshet,Cybercrime,2023-05,2
+Kolshet,Cybercrime,2023-09,1
+Kolshet,Cybercrime,2024-01,2
+Kolshet,Cybercrime,2025-03,1
+Kolshet,Cybercrime,2025-04,1
+Kolshet,Domestic Violence,2018-01,1
+Kolshet,Domestic Violence,2018-09,1
+Kolshet,Domestic Violence,2019-07,1
+Kolshet,Domestic Violence,2020-01,1
+Kolshet,Domestic Violence,2020-04,1
+Kolshet,Domestic Violence,2021-12,1
+Kolshet,Domestic Violence,2022-01,1
+Kolshet,Domestic Violence,2022-02,1
+Kolshet,Domestic Violence,2022-04,1
+Kolshet,Domestic Violence,2022-12,1
+Kolshet,Domestic Violence,2023-07,1
+Kolshet,Domestic Violence,2025-01,1
+Kolshet,Domestic Violence,2025-04,1
+Kolshet,Domestic Violence,2025-08,1
+Kolshet,Domestic Violence,2025-12,1
+Kolshet,Drug Offense,2018-07,1
+Kolshet,Drug Offense,2018-09,2
+Kolshet,Drug Offense,2019-08,1
+Kolshet,Drug Offense,2020-02,1
+Kolshet,Drug Offense,2020-06,1
+Kolshet,Drug Offense,2020-08,1
+Kolshet,Drug Offense,2021-03,1
+Kolshet,Drug Offense,2021-11,1
+Kolshet,Drug Offense,2022-03,1
+Kolshet,Drug Offense,2023-03,1
+Kolshet,Drug Offense,2023-08,1
+Kolshet,Drug Offense,2024-02,1
+Kolshet,Drug Offense,2024-04,2
+Kolshet,Drug Offense,2024-07,1
+Kolshet,Drug Offense,2025-06,1
+Kolshet,Drug Offense,2025-07,1
+Kolshet,Drug Offense,2025-11,1
+Kolshet,Fraud,2018-05,1
+Kolshet,Fraud,2018-08,1
+Kolshet,Fraud,2019-02,1
+Kolshet,Fraud,2019-03,1
+Kolshet,Fraud,2019-04,1
+Kolshet,Fraud,2021-02,1
+Kolshet,Fraud,2021-04,2
+Kolshet,Fraud,2021-12,1
+Kolshet,Fraud,2022-02,1
+Kolshet,Fraud,2022-05,3
+Kolshet,Fraud,2022-10,1
+Kolshet,Fraud,2022-11,1
+Kolshet,Fraud,2023-02,2
+Kolshet,Fraud,2023-11,1
+Kolshet,Fraud,2023-12,1
+Kolshet,Fraud,2024-01,2
+Kolshet,Fraud,2025-05,1
+Kolshet,Fraud,2025-10,2
+Kolshet,Fraud,2025-11,1
+Kolshet,Fraud,2025-12,1
+Kolshet,Kidnapping,2019-01,1
+Kolshet,Kidnapping,2019-06,1
+Kolshet,Kidnapping,2019-08,2
+Kolshet,Kidnapping,2020-02,1
+Kolshet,Kidnapping,2020-03,1
+Kolshet,Kidnapping,2020-07,1
+Kolshet,Kidnapping,2021-01,2
+Kolshet,Kidnapping,2022-04,1
+Kolshet,Kidnapping,2023-03,1
+Kolshet,Kidnapping,2023-04,1
+Kolshet,Kidnapping,2023-08,1
+Kolshet,Kidnapping,2024-02,1
+Kolshet,Kidnapping,2024-05,1
+Kolshet,Kidnapping,2024-07,1
+Kolshet,Kidnapping,2024-08,1
+Kolshet,Kidnapping,2025-02,2
+Kolshet,Kidnapping,2025-05,1
+Kolshet,Kidnapping,2025-06,1
+Kolshet,Kidnapping,2025-12,1
+Kolshet,Murder,2018-02,2
+Kolshet,Murder,2018-04,1
+Kolshet,Murder,2018-12,1
+Kolshet,Murder,2019-01,1
+Kolshet,Murder,2019-02,1
+Kolshet,Murder,2019-06,1
+Kolshet,Murder,2019-07,1
+Kolshet,Murder,2019-09,1
+Kolshet,Murder,2019-10,1
+Kolshet,Murder,2019-12,2
+Kolshet,Murder,2020-05,1
+Kolshet,Murder,2021-03,1
+Kolshet,Murder,2021-04,1
+Kolshet,Murder,2021-07,2
+Kolshet,Murder,2021-11,1
+Kolshet,Murder,2021-12,1
+Kolshet,Murder,2022-05,1
+Kolshet,Murder,2022-10,1
+Kolshet,Murder,2022-11,1
+Kolshet,Murder,2022-12,1
+Kolshet,Murder,2023-04,1
+Kolshet,Murder,2023-06,5
+Kolshet,Murder,2024-05,1
+Kolshet,Murder,2024-08,1
+Kolshet,Murder,2024-10,1
+Kolshet,Murder,2025-07,1
+Kolshet,Murder,2025-12,1
+Kolshet,Robbery,2018-07,1
+Kolshet,Robbery,2018-11,2
+Kolshet,Robbery,2018-12,1
+Kolshet,Robbery,2019-01,1
+Kolshet,Robbery,2019-03,1
+Kolshet,Robbery,2019-06,1
+Kolshet,Robbery,2019-08,1
+Kolshet,Robbery,2019-09,1
+Kolshet,Robbery,2019-10,1
+Kolshet,Robbery,2020-04,1
+Kolshet,Robbery,2020-07,2
+Kolshet,Robbery,2020-09,1
+Kolshet,Robbery,2020-11,1
+Kolshet,Robbery,2021-01,1
+Kolshet,Robbery,2023-08,1
+Kolshet,Robbery,2023-11,1
+Kolshet,Robbery,2023-12,1
+Kolshet,Robbery,2025-02,1
+Kolshet,Robbery,2025-11,2
+Kolshet,Theft,2018-03,1
+Kolshet,Theft,2018-12,1
+Kolshet,Theft,2019-10,1
+Kolshet,Theft,2020-03,1
+Kolshet,Theft,2020-05,1
+Kolshet,Theft,2020-08,1
+Kolshet,Theft,2020-10,1
+Kolshet,Theft,2020-11,1
+Kolshet,Theft,2021-11,1
+Kolshet,Theft,2022-03,1
+Kolshet,Theft,2022-07,1
+Kolshet,Theft,2022-08,1
+Kolshet,Theft,2022-10,1
+Kolshet,Theft,2022-11,1
+Kolshet,Theft,2023-01,2
+Kolshet,Theft,2023-06,2
+Kolshet,Theft,2024-02,1
+Kolshet,Theft,2024-03,1
+Kolshet,Theft,2024-06,2
+Kolshet,Theft,2024-09,1
+Kolshet,Theft,2024-10,1
+Kolshet,Theft,2024-11,1
+Kolshet,Theft,2025-01,1
+Kolshet,Theft,2025-05,1
+Kolshet,Theft,2025-06,1
+Kolshet,Theft,2025-07,1
+Kopri,Assault,2018-03,1
+Kopri,Assault,2018-09,1
+Kopri,Assault,2018-11,1
+Kopri,Assault,2019-10,1
+Kopri,Assault,2019-12,1
+Kopri,Assault,2020-03,1
+Kopri,Assault,2021-02,1
+Kopri,Assault,2021-06,1
+Kopri,Assault,2021-10,1
+Kopri,Assault,2021-12,1
+Kopri,Assault,2022-02,1
+Kopri,Assault,2022-06,1
+Kopri,Assault,2022-07,1
+Kopri,Assault,2023-09,1
+Kopri,Assault,2024-01,1
+Kopri,Assault,2024-05,1
+Kopri,Assault,2024-09,1
+Kopri,Assault,2024-12,1
+Kopri,Assault,2025-05,1
+Kopri,Assault,2025-08,1
+Kopri,Cheating,2018-04,1
+Kopri,Cheating,2019-02,1
+Kopri,Cheating,2019-07,1
+Kopri,Cheating,2019-11,1
+Kopri,Cheating,2020-05,1
+Kopri,Cheating,2020-08,1
+Kopri,Cheating,2021-04,1
+Kopri,Cheating,2021-06,2
+Kopri,Cheating,2021-11,3
+Kopri,Cheating,2021-12,1
+Kopri,Cheating,2022-01,1
+Kopri,Cheating,2022-02,1
+Kopri,Cheating,2022-03,2
+Kopri,Cheating,2023-03,1
+Kopri,Cheating,2023-10,1
+Kopri,Cheating,2024-06,1
+Kopri,Cheating,2025-07,1
+Kopri,Cheating,2025-08,1
+Kopri,Cheating,2025-09,1
+Kopri,Cybercrime,2018-02,1
+Kopri,Cybercrime,2018-03,1
+Kopri,Cybercrime,2018-11,1
+Kopri,Cybercrime,2020-03,1
+Kopri,Cybercrime,2020-06,1
+Kopri,Cybercrime,2021-05,1
+Kopri,Cybercrime,2021-11,1
+Kopri,Cybercrime,2022-03,1
+Kopri,Cybercrime,2023-03,3
+Kopri,Cybercrime,2023-05,1
+Kopri,Cybercrime,2023-07,1
+Kopri,Cybercrime,2024-01,1
+Kopri,Cybercrime,2025-01,1
+Kopri,Cybercrime,2025-03,1
+Kopri,Domestic Violence,2018-03,1
+Kopri,Domestic Violence,2018-08,2
+Kopri,Domestic Violence,2019-06,1
+Kopri,Domestic Violence,2019-11,1
+Kopri,Domestic Violence,2020-09,2
+Kopri,Domestic Violence,2020-12,1
+Kopri,Domestic Violence,2021-07,1
+Kopri,Domestic Violence,2022-06,1
+Kopri,Domestic Violence,2022-11,1
+Kopri,Domestic Violence,2023-02,1
+Kopri,Domestic Violence,2023-10,2
+Kopri,Domestic Violence,2024-03,1
+Kopri,Domestic Violence,2024-05,1
+Kopri,Domestic Violence,2025-02,1
+Kopri,Domestic Violence,2025-07,1
+Kopri,Drug Offense,2018-02,1
+Kopri,Drug Offense,2018-06,1
+Kopri,Drug Offense,2019-03,1
+Kopri,Drug Offense,2019-04,1
+Kopri,Drug Offense,2019-11,1
+Kopri,Drug Offense,2020-04,1
+Kopri,Drug Offense,2020-12,2
+Kopri,Drug Offense,2021-01,1
+Kopri,Drug Offense,2021-05,2
+Kopri,Drug Offense,2021-11,2
+Kopri,Drug Offense,2022-03,1
+Kopri,Drug Offense,2023-04,1
+Kopri,Drug Offense,2023-10,1
+Kopri,Drug Offense,2023-11,1
+Kopri,Drug Offense,2023-12,1
+Kopri,Drug Offense,2024-01,1
+Kopri,Drug Offense,2024-03,1
+Kopri,Drug Offense,2024-04,1
+Kopri,Drug Offense,2024-07,1
+Kopri,Drug Offense,2025-08,3
+Kopri,Drug Offense,2025-10,1
+Kopri,Fraud,2018-03,1
+Kopri,Fraud,2018-10,1
+Kopri,Fraud,2019-01,1
+Kopri,Fraud,2019-07,1
+Kopri,Fraud,2020-08,1
+Kopri,Fraud,2020-09,1
+Kopri,Fraud,2020-11,1
+Kopri,Fraud,2023-06,1
+Kopri,Fraud,2023-09,2
+Kopri,Fraud,2023-10,2
+Kopri,Fraud,2024-02,1
+Kopri,Fraud,2024-08,2
+Kopri,Fraud,2025-02,1
+Kopri,Kidnapping,2018-02,1
+Kopri,Kidnapping,2018-08,1
+Kopri,Kidnapping,2019-10,1
+Kopri,Kidnapping,2020-01,1
+Kopri,Kidnapping,2020-04,1
+Kopri,Kidnapping,2020-06,1
+Kopri,Kidnapping,2020-09,1
+Kopri,Kidnapping,2020-10,1
+Kopri,Kidnapping,2020-11,1
+Kopri,Kidnapping,2021-03,1
+Kopri,Kidnapping,2021-08,1
+Kopri,Kidnapping,2022-02,1
+Kopri,Kidnapping,2022-09,1
+Kopri,Kidnapping,2023-11,1
+Kopri,Kidnapping,2023-12,1
+Kopri,Kidnapping,2024-07,1
+Kopri,Kidnapping,2025-01,2
+Kopri,Kidnapping,2025-07,1
+Kopri,Kidnapping,2025-08,1
+Kopri,Murder,2018-06,1
+Kopri,Murder,2020-01,1
+Kopri,Murder,2021-01,1
+Kopri,Murder,2021-03,1
+Kopri,Murder,2021-08,1
+Kopri,Murder,2021-10,1
+Kopri,Murder,2021-12,1
+Kopri,Murder,2023-02,2
+Kopri,Murder,2023-04,1
+Kopri,Murder,2023-08,1
+Kopri,Murder,2023-09,1
+Kopri,Murder,2024-04,1
+Kopri,Murder,2024-05,1
+Kopri,Murder,2025-01,1
+Kopri,Murder,2025-03,1
+Kopri,Murder,2025-05,1
+Kopri,Murder,2025-06,2
+Kopri,Robbery,2018-01,1
+Kopri,Robbery,2018-04,1
+Kopri,Robbery,2018-06,1
+Kopri,Robbery,2019-01,1
+Kopri,Robbery,2019-07,1
+Kopri,Robbery,2019-12,1
+Kopri,Robbery,2020-01,2
+Kopri,Robbery,2020-04,1
+Kopri,Robbery,2020-07,2
+Kopri,Robbery,2020-08,1
+Kopri,Robbery,2020-10,1
+Kopri,Robbery,2022-08,1
+Kopri,Robbery,2023-03,1
+Kopri,Robbery,2024-09,1
+Kopri,Robbery,2025-01,1
+Kopri,Robbery,2025-03,1
+Kopri,Theft,2018-03,1
+Kopri,Theft,2019-01,1
+Kopri,Theft,2019-05,1
+Kopri,Theft,2019-12,1
+Kopri,Theft,2020-04,1
+Kopri,Theft,2020-08,2
+Kopri,Theft,2020-11,1
+Kopri,Theft,2021-01,1
+Kopri,Theft,2021-11,1
+Kopri,Theft,2022-01,2
+Kopri,Theft,2022-06,1
+Kopri,Theft,2022-07,1
+Kopri,Theft,2022-08,1
+Kopri,Theft,2022-09,1
+Kopri,Theft,2022-10,1
+Kopri,Theft,2023-05,1
+Kopri,Theft,2024-05,1
+Kopri,Theft,2024-07,1
+Kopri,Theft,2024-08,1
+Kopri,Theft,2025-04,2
+Kopri,Theft,2025-09,1
+Kopri,Theft,2025-11,1
+Louis Wadi,Assault,2018-04,1
+Louis Wadi,Assault,2019-01,1
+Louis Wadi,Assault,2019-09,1
+Louis Wadi,Assault,2019-10,1
+Louis Wadi,Assault,2020-01,1
+Louis Wadi,Assault,2020-06,1
+Louis Wadi,Assault,2020-11,1
+Louis Wadi,Assault,2021-01,1
+Louis Wadi,Assault,2021-11,3
+Louis Wadi,Assault,2021-12,1
+Louis Wadi,Assault,2022-01,1
+Louis Wadi,Assault,2022-06,1
+Louis Wadi,Assault,2022-08,1
+Louis Wadi,Assault,2022-11,1
+Louis Wadi,Assault,2023-03,1
+Louis Wadi,Assault,2023-07,2
+Louis Wadi,Assault,2023-10,1
+Louis Wadi,Assault,2023-11,1
+Louis Wadi,Assault,2024-05,1
+Louis Wadi,Assault,2024-10,1
+Louis Wadi,Assault,2025-01,1
+Louis Wadi,Assault,2025-06,1
+Louis Wadi,Assault,2025-10,1
+Louis Wadi,Assault,2025-11,1
+Louis Wadi,Cheating,2018-05,2
+Louis Wadi,Cheating,2018-10,1
+Louis Wadi,Cheating,2019-01,1
+Louis Wadi,Cheating,2019-06,1
+Louis Wadi,Cheating,2019-11,3
+Louis Wadi,Cheating,2020-01,1
+Louis Wadi,Cheating,2020-02,1
+Louis Wadi,Cheating,2020-07,1
+Louis Wadi,Cheating,2021-07,1
+Louis Wadi,Cheating,2021-09,1
+Louis Wadi,Cheating,2021-12,1
+Louis Wadi,Cheating,2022-03,1
+Louis Wadi,Cheating,2022-06,1
+Louis Wadi,Cheating,2023-01,1
+Louis Wadi,Cheating,2023-04,1
+Louis Wadi,Cheating,2023-05,2
+Louis Wadi,Cheating,2023-08,1
+Louis Wadi,Cheating,2024-02,1
+Louis Wadi,Cheating,2024-06,1
+Louis Wadi,Cheating,2024-11,1
+Louis Wadi,Cheating,2025-04,1
+Louis Wadi,Cheating,2025-05,1
+Louis Wadi,Cheating,2025-06,1
+Louis Wadi,Cheating,2025-09,1
+Louis Wadi,Cheating,2025-11,2
+Louis Wadi,Cybercrime,2018-03,1
+Louis Wadi,Cybercrime,2018-04,1
+Louis Wadi,Cybercrime,2018-11,2
+Louis Wadi,Cybercrime,2018-12,1
+Louis Wadi,Cybercrime,2020-03,1
+Louis Wadi,Cybercrime,2020-04,2
+Louis Wadi,Cybercrime,2022-11,1
+Louis Wadi,Cybercrime,2023-02,1
+Louis Wadi,Cybercrime,2023-06,1
+Louis Wadi,Cybercrime,2023-11,1
+Louis Wadi,Cybercrime,2024-02,1
+Louis Wadi,Cybercrime,2025-07,1
+Louis Wadi,Cybercrime,2025-12,1
+Louis Wadi,Domestic Violence,2018-02,1
+Louis Wadi,Domestic Violence,2018-08,1
+Louis Wadi,Domestic Violence,2018-10,1
+Louis Wadi,Domestic Violence,2018-12,1
+Louis Wadi,Domestic Violence,2019-09,1
+Louis Wadi,Domestic Violence,2020-01,1
+Louis Wadi,Domestic Violence,2020-04,1
+Louis Wadi,Domestic Violence,2020-11,1
+Louis Wadi,Domestic Violence,2021-05,2
+Louis Wadi,Domestic Violence,2021-07,1
+Louis Wadi,Domestic Violence,2021-09,1
+Louis Wadi,Domestic Violence,2021-12,1
+Louis Wadi,Domestic Violence,2022-04,1
+Louis Wadi,Domestic Violence,2022-05,1
+Louis Wadi,Domestic Violence,2022-08,1
+Louis Wadi,Domestic Violence,2022-09,1
+Louis Wadi,Domestic Violence,2022-10,1
+Louis Wadi,Domestic Violence,2023-02,1
+Louis Wadi,Domestic Violence,2023-03,1
+Louis Wadi,Domestic Violence,2023-10,1
+Louis Wadi,Domestic Violence,2024-04,2
+Louis Wadi,Domestic Violence,2024-05,1
+Louis Wadi,Domestic Violence,2024-06,2
+Louis Wadi,Domestic Violence,2024-09,1
+Louis Wadi,Domestic Violence,2024-12,1
+Louis Wadi,Domestic Violence,2025-03,1
+Louis Wadi,Domestic Violence,2025-11,1
+Louis Wadi,Drug Offense,2018-01,2
+Louis Wadi,Drug Offense,2018-05,1
+Louis Wadi,Drug Offense,2018-06,2
+Louis Wadi,Drug Offense,2018-07,1
+Louis Wadi,Drug Offense,2019-04,1
+Louis Wadi,Drug Offense,2020-02,1
+Louis Wadi,Drug Offense,2020-04,1
+Louis Wadi,Drug Offense,2020-05,1
+Louis Wadi,Drug Offense,2020-06,2
+Louis Wadi,Drug Offense,2021-08,1
+Louis Wadi,Drug Offense,2021-09,1
+Louis Wadi,Drug Offense,2022-06,1
+Louis Wadi,Drug Offense,2022-10,1
+Louis Wadi,Drug Offense,2023-07,1
+Louis Wadi,Drug Offense,2023-12,1
+Louis Wadi,Drug Offense,2024-06,1
+Louis Wadi,Drug Offense,2025-03,1
+Louis Wadi,Drug Offense,2025-08,1
+Louis Wadi,Fraud,2018-08,1
+Louis Wadi,Fraud,2019-01,1
+Louis Wadi,Fraud,2019-02,1
+Louis Wadi,Fraud,2019-03,1
+Louis Wadi,Fraud,2019-08,1
+Louis Wadi,Fraud,2019-10,1
+Louis Wadi,Fraud,2019-12,1
+Louis Wadi,Fraud,2020-02,1
+Louis Wadi,Fraud,2021-01,1
+Louis Wadi,Fraud,2021-04,1
+Louis Wadi,Fraud,2022-03,1
+Louis Wadi,Fraud,2022-06,1
+Louis Wadi,Fraud,2022-09,1
+Louis Wadi,Fraud,2022-11,1
+Louis Wadi,Fraud,2022-12,1
+Louis Wadi,Fraud,2023-01,2
+Louis Wadi,Fraud,2023-02,1
+Louis Wadi,Fraud,2023-04,2
+Louis Wadi,Fraud,2023-06,1
+Louis Wadi,Fraud,2023-11,2
+Louis Wadi,Fraud,2024-03,1
+Louis Wadi,Fraud,2025-12,1
+Louis Wadi,Kidnapping,2019-06,1
+Louis Wadi,Kidnapping,2019-08,1
+Louis Wadi,Kidnapping,2019-11,1
+Louis Wadi,Kidnapping,2020-04,1
+Louis Wadi,Kidnapping,2020-12,1
+Louis Wadi,Kidnapping,2021-04,1
+Louis Wadi,Kidnapping,2021-08,1
+Louis Wadi,Kidnapping,2022-07,2
+Louis Wadi,Kidnapping,2023-03,1
+Louis Wadi,Kidnapping,2023-07,1
+Louis Wadi,Kidnapping,2023-11,1
+Louis Wadi,Kidnapping,2025-10,2
+Louis Wadi,Murder,2018-04,1
+Louis Wadi,Murder,2019-08,1
+Louis Wadi,Murder,2019-10,2
+Louis Wadi,Murder,2020-01,1
+Louis Wadi,Murder,2020-06,1
+Louis Wadi,Murder,2020-10,1
+Louis Wadi,Murder,2020-12,1
+Louis Wadi,Murder,2021-02,1
+Louis Wadi,Murder,2021-04,1
+Louis Wadi,Murder,2022-01,2
+Louis Wadi,Murder,2022-02,1
+Louis Wadi,Murder,2022-05,1
+Louis Wadi,Murder,2022-06,1
+Louis Wadi,Murder,2022-07,1
+Louis Wadi,Murder,2022-08,1
+Louis Wadi,Murder,2022-12,1
+Louis Wadi,Murder,2023-01,1
+Louis Wadi,Murder,2023-02,1
+Louis Wadi,Murder,2023-03,1
+Louis Wadi,Murder,2024-01,1
+Louis Wadi,Murder,2024-05,1
+Louis Wadi,Murder,2024-11,1
+Louis Wadi,Murder,2025-02,1
+Louis Wadi,Murder,2025-06,1
+Louis Wadi,Murder,2025-09,1
+Louis Wadi,Robbery,2018-02,1
+Louis Wadi,Robbery,2018-04,1
+Louis Wadi,Robbery,2018-06,1
+Louis Wadi,Robbery,2018-12,1
+Louis Wadi,Robbery,2019-04,1
+Louis Wadi,Robbery,2020-02,1
+Louis Wadi,Robbery,2020-05,1
+Louis Wadi,Robbery,2020-06,2
+Louis Wadi,Robbery,2021-02,1
+Louis Wadi,Robbery,2021-04,1
+Louis Wadi,Robbery,2021-07,1
+Louis Wadi,Robbery,2021-11,1
+Louis Wadi,Robbery,2022-02,1
+Louis Wadi,Robbery,2022-08,1
+Louis Wadi,Robbery,2022-11,1
+Louis Wadi,Robbery,2022-12,1
+Louis Wadi,Robbery,2023-11,2
+Louis Wadi,Robbery,2024-06,1
+Louis Wadi,Robbery,2024-07,1
+Louis Wadi,Robbery,2025-02,1
+Louis Wadi,Robbery,2025-07,1
+Louis Wadi,Theft,2018-01,1
+Louis Wadi,Theft,2019-01,1
+Louis Wadi,Theft,2019-06,1
+Louis Wadi,Theft,2019-07,1
+Louis Wadi,Theft,2019-08,3
+Louis Wadi,Theft,2020-04,1
+Louis Wadi,Theft,2020-07,1
+Louis Wadi,Theft,2020-09,1
+Louis Wadi,Theft,2020-10,1
+Louis Wadi,Theft,2021-03,1
+Louis Wadi,Theft,2021-05,1
+Louis Wadi,Theft,2021-12,1
+Louis Wadi,Theft,2022-03,1
+Louis Wadi,Theft,2022-04,1
+Louis Wadi,Theft,2022-07,1
+Louis Wadi,Theft,2022-10,1
+Louis Wadi,Theft,2023-09,1
+Louis Wadi,Theft,2023-10,2
+Louis Wadi,Theft,2024-06,1
+Louis Wadi,Theft,2024-08,1
+Louis Wadi,Theft,2025-01,1
+Louis Wadi,Theft,2025-03,1
+Louis Wadi,Theft,2025-04,3
+Louis Wadi,Theft,2025-08,1
+Louis Wadi,Theft,2025-09,1
+Majiwada,Assault,2018-03,1
+Majiwada,Assault,2018-07,1
+Majiwada,Assault,2018-12,1
+Majiwada,Assault,2019-08,1
+Majiwada,Assault,2020-07,2
+Majiwada,Assault,2020-08,1
+Majiwada,Assault,2020-11,3
+Majiwada,Assault,2021-03,1
+Majiwada,Assault,2021-05,1
+Majiwada,Assault,2021-09,2
+Majiwada,Assault,2021-11,1
+Majiwada,Assault,2022-04,1
+Majiwada,Assault,2022-09,1
+Majiwada,Assault,2023-01,1
+Majiwada,Assault,2023-02,1
+Majiwada,Assault,2023-07,1
+Majiwada,Assault,2023-08,1
+Majiwada,Assault,2024-02,1
+Majiwada,Assault,2024-05,1
+Majiwada,Assault,2024-07,1
+Majiwada,Assault,2024-08,1
+Majiwada,Assault,2024-09,3
+Majiwada,Assault,2024-11,1
+Majiwada,Assault,2025-01,1
+Majiwada,Assault,2025-05,1
+Majiwada,Assault,2025-10,1
+Majiwada,Burglary,2023-02,2
+Majiwada,Burglary,2024-05,1
+Majiwada,Burglary,2024-07,1
+Majiwada,Cheating,2018-02,1
+Majiwada,Cheating,2018-04,1
+Majiwada,Cheating,2018-05,1
+Majiwada,Cheating,2018-08,1
+Majiwada,Cheating,2019-01,1
+Majiwada,Cheating,2019-06,1
+Majiwada,Cheating,2019-07,1
+Majiwada,Cheating,2020-04,1
+Majiwada,Cheating,2020-09,1
+Majiwada,Cheating,2020-11,1
+Majiwada,Cheating,2020-12,1
+Majiwada,Cheating,2021-05,1
+Majiwada,Cheating,2021-08,1
+Majiwada,Cheating,2022-01,1
+Majiwada,Cheating,2022-07,1
+Majiwada,Cheating,2022-08,1
+Majiwada,Cheating,2022-11,1
+Majiwada,Cheating,2023-05,1
+Majiwada,Cheating,2024-07,1
+Majiwada,Cheating,2024-09,1
+Majiwada,Cheating,2024-10,1
+Majiwada,Cheating,2025-04,1
+Majiwada,Cheating,2025-06,1
+Majiwada,Cheating,2025-08,1
+Majiwada,Cheating,2025-11,3
+Majiwada,Cybercrime,2018-02,1
+Majiwada,Cybercrime,2018-09,1
+Majiwada,Cybercrime,2019-11,1
+Majiwada,Cybercrime,2020-11,1
+Majiwada,Cybercrime,2020-12,1
+Majiwada,Cybercrime,2021-04,1
+Majiwada,Cybercrime,2021-05,1
+Majiwada,Cybercrime,2021-06,1
+Majiwada,Cybercrime,2022-01,1
+Majiwada,Cybercrime,2022-05,2
+Majiwada,Cybercrime,2024-04,1
+Majiwada,Cybercrime,2024-07,1
+Majiwada,Cybercrime,2024-12,1
+Majiwada,Cybercrime,2025-04,1
+Majiwada,Cybercrime,2025-08,1
+Majiwada,Domestic Violence,2018-08,1
+Majiwada,Domestic Violence,2018-09,1
+Majiwada,Domestic Violence,2019-01,1
+Majiwada,Domestic Violence,2019-02,1
+Majiwada,Domestic Violence,2020-02,1
+Majiwada,Domestic Violence,2020-03,1
+Majiwada,Domestic Violence,2020-04,1
+Majiwada,Domestic Violence,2021-04,1
+Majiwada,Domestic Violence,2021-08,1
+Majiwada,Domestic Violence,2021-11,1
+Majiwada,Domestic Violence,2021-12,1
+Majiwada,Domestic Violence,2022-08,1
+Majiwada,Domestic Violence,2022-09,2
+Majiwada,Domestic Violence,2023-05,1
+Majiwada,Domestic Violence,2023-06,1
+Majiwada,Domestic Violence,2023-08,1
+Majiwada,Domestic Violence,2023-09,1
+Majiwada,Domestic Violence,2025-01,1
+Majiwada,Domestic Violence,2025-05,1
+Majiwada,Domestic Violence,2025-06,1
+Majiwada,Domestic Violence,2025-07,1
+Majiwada,Drug Offense,2018-04,1
+Majiwada,Drug Offense,2018-06,1
+Majiwada,Drug Offense,2018-08,1
+Majiwada,Drug Offense,2019-05,1
+Majiwada,Drug Offense,2019-06,1
+Majiwada,Drug Offense,2019-07,1
+Majiwada,Drug Offense,2020-04,1
+Majiwada,Drug Offense,2020-07,1
+Majiwada,Drug Offense,2020-09,1
+Majiwada,Drug Offense,2020-10,1
+Majiwada,Drug Offense,2020-11,1
+Majiwada,Drug Offense,2020-12,1
+Majiwada,Drug Offense,2021-11,1
+Majiwada,Drug Offense,2022-04,1
+Majiwada,Drug Offense,2022-09,1
+Majiwada,Drug Offense,2023-06,1
+Majiwada,Drug Offense,2023-12,2
+Majiwada,Drug Offense,2025-03,1
+Majiwada,Fraud,2018-07,2
+Majiwada,Fraud,2019-01,1
+Majiwada,Fraud,2019-05,1
+Majiwada,Fraud,2019-06,1
+Majiwada,Fraud,2019-09,1
+Majiwada,Fraud,2019-10,2
+Majiwada,Fraud,2020-02,2
+Majiwada,Fraud,2020-04,1
+Majiwada,Fraud,2020-12,1
+Majiwada,Fraud,2021-03,1
+Majiwada,Fraud,2021-07,1
+Majiwada,Fraud,2021-12,2
+Majiwada,Fraud,2022-04,1
+Majiwada,Fraud,2022-05,3
+Majiwada,Fraud,2022-06,1
+Majiwada,Fraud,2022-09,1
+Majiwada,Fraud,2023-02,2
+Majiwada,Fraud,2023-03,1
+Majiwada,Fraud,2023-11,2
+Majiwada,Fraud,2024-01,3
+Majiwada,Fraud,2024-12,1
+Majiwada,Fraud,2025-01,1
+Majiwada,Fraud,2025-02,1
+Majiwada,Fraud,2025-06,1
+Majiwada,Fraud,2025-07,1
+Majiwada,Fraud,2025-11,1
+Majiwada,Fraud,2025-12,1
+Majiwada,Kidnapping,2018-01,1
+Majiwada,Kidnapping,2019-01,1
+Majiwada,Kidnapping,2019-04,1
+Majiwada,Kidnapping,2019-06,1
+Majiwada,Kidnapping,2019-09,1
+Majiwada,Kidnapping,2019-12,1
+Majiwada,Kidnapping,2020-03,3
+Majiwada,Kidnapping,2021-01,2
+Majiwada,Kidnapping,2021-04,1
+Majiwada,Kidnapping,2021-06,1
+Majiwada,Kidnapping,2021-07,1
+Majiwada,Kidnapping,2022-04,1
+Majiwada,Kidnapping,2022-08,1
+Majiwada,Kidnapping,2023-03,1
+Majiwada,Kidnapping,2023-06,1
+Majiwada,Kidnapping,2023-08,1
+Majiwada,Kidnapping,2024-03,2
+Majiwada,Kidnapping,2024-08,1
+Majiwada,Kidnapping,2024-10,2
+Majiwada,Kidnapping,2025-06,1
+Majiwada,Kidnapping,2025-10,1
+Majiwada,Murder,2018-01,1
+Majiwada,Murder,2018-05,1
+Majiwada,Murder,2018-06,2
+Majiwada,Murder,2019-09,1
+Majiwada,Murder,2019-11,1
+Majiwada,Murder,2019-12,1
+Majiwada,Murder,2020-07,1
+Majiwada,Murder,2021-02,2
+Majiwada,Murder,2021-07,1
+Majiwada,Murder,2021-08,1
+Majiwada,Murder,2021-10,1
+Majiwada,Murder,2021-11,2
+Majiwada,Murder,2022-01,1
+Majiwada,Murder,2022-02,2
+Majiwada,Murder,2022-06,2
+Majiwada,Murder,2022-11,1
+Majiwada,Murder,2023-03,1
+Majiwada,Murder,2023-06,1
+Majiwada,Murder,2024-02,2
+Majiwada,Murder,2024-04,1
+Majiwada,Murder,2024-12,1
+Majiwada,Murder,2025-02,1
+Majiwada,Murder,2025-03,1
+Majiwada,Murder,2025-04,1
+Majiwada,Murder,2025-10,1
+Majiwada,Robbery,2018-09,1
+Majiwada,Robbery,2019-01,1
+Majiwada,Robbery,2019-06,1
+Majiwada,Robbery,2020-03,1
+Majiwada,Robbery,2020-08,1
+Majiwada,Robbery,2021-07,2
+Majiwada,Robbery,2021-09,1
+Majiwada,Robbery,2021-12,1
+Majiwada,Robbery,2023-12,1
+Majiwada,Robbery,2025-05,1
+Majiwada,Robbery,2025-06,1
+Majiwada,Robbery,2025-07,1
+Majiwada,Robbery,2025-08,1
+Majiwada,Robbery,2025-12,1
+Majiwada,Theft,2018-02,2
+Majiwada,Theft,2018-10,1
+Majiwada,Theft,2019-03,1
+Majiwada,Theft,2019-06,1
+Majiwada,Theft,2019-09,1
+Majiwada,Theft,2020-02,1
+Majiwada,Theft,2020-04,1
+Majiwada,Theft,2020-07,3
+Majiwada,Theft,2021-02,1
+Majiwada,Theft,2021-07,1
+Majiwada,Theft,2021-09,1
+Majiwada,Theft,2021-10,1
+Majiwada,Theft,2021-12,2
+Majiwada,Theft,2022-08,1
+Majiwada,Theft,2022-11,2
+Majiwada,Theft,2023-05,1
+Majiwada,Theft,2023-06,2
+Majiwada,Theft,2023-12,1
+Majiwada,Theft,2024-09,1
+Majiwada,Theft,2025-04,1
+Majiwada,Theft,2025-08,1
+Manpada,Assault,2018-03,1
+Manpada,Assault,2018-05,1
+Manpada,Assault,2018-07,1
+Manpada,Assault,2018-10,2
+Manpada,Assault,2019-07,1
+Manpada,Assault,2020-07,1
+Manpada,Assault,2020-10,1
+Manpada,Assault,2020-11,2
+Manpada,Assault,2021-01,1
+Manpada,Assault,2021-02,1
+Manpada,Assault,2021-05,1
+Manpada,Assault,2022-01,1
+Manpada,Assault,2022-06,3
+Manpada,Assault,2022-07,1
+Manpada,Assault,2022-08,2
+Manpada,Assault,2023-01,3
+Manpada,Assault,2023-12,1
+Manpada,Assault,2024-05,1
+Manpada,Assault,2024-08,1
+Manpada,Assault,2024-09,1
+Manpada,Assault,2024-10,1
+Manpada,Assault,2025-05,1
+Manpada,Burglary,2023-02,4
+Manpada,Burglary,2024-05,1
+Manpada,Burglary,2024-07,1
+Manpada,Cheating,2018-03,1
+Manpada,Cheating,2018-07,1
+Manpada,Cheating,2018-08,1
+Manpada,Cheating,2018-10,1
+Manpada,Cheating,2018-12,1
+Manpada,Cheating,2019-06,1
+Manpada,Cheating,2019-12,1
+Manpada,Cheating,2020-01,1
+Manpada,Cheating,2020-02,1
+Manpada,Cheating,2020-03,1
+Manpada,Cheating,2021-01,1
+Manpada,Cheating,2021-12,1
+Manpada,Cheating,2022-05,1
+Manpada,Cheating,2022-09,1
+Manpada,Cheating,2022-10,1
+Manpada,Cheating,2022-12,1
+Manpada,Cheating,2023-06,1
+Manpada,Cheating,2023-07,3
+Manpada,Cheating,2023-11,1
+Manpada,Cheating,2024-01,1
+Manpada,Cheating,2024-03,1
+Manpada,Cheating,2024-10,1
+Manpada,Cheating,2025-02,1
+Manpada,Cheating,2025-04,1
+Manpada,Cheating,2025-07,1
+Manpada,Cheating,2025-08,1
+Manpada,Cheating,2025-10,1
+Manpada,Cybercrime,2018-04,1
+Manpada,Cybercrime,2019-01,1
+Manpada,Cybercrime,2019-02,1
+Manpada,Cybercrime,2019-03,2
+Manpada,Cybercrime,2019-08,1
+Manpada,Cybercrime,2019-10,2
+Manpada,Cybercrime,2020-01,2
+Manpada,Cybercrime,2020-03,1
+Manpada,Cybercrime,2020-05,1
+Manpada,Cybercrime,2020-08,1
+Manpada,Cybercrime,2020-10,1
+Manpada,Cybercrime,2021-01,1
+Manpada,Cybercrime,2021-07,1
+Manpada,Cybercrime,2021-11,1
+Manpada,Cybercrime,2022-01,1
+Manpada,Cybercrime,2022-08,1
+Manpada,Cybercrime,2022-10,1
+Manpada,Cybercrime,2023-11,1
+Manpada,Cybercrime,2023-12,1
+Manpada,Cybercrime,2024-03,1
+Manpada,Cybercrime,2024-09,1
+Manpada,Cybercrime,2025-08,1
+Manpada,Domestic Violence,2018-03,1
+Manpada,Domestic Violence,2018-06,1
+Manpada,Domestic Violence,2018-08,1
+Manpada,Domestic Violence,2019-02,1
+Manpada,Domestic Violence,2019-03,1
+Manpada,Domestic Violence,2019-08,1
+Manpada,Domestic Violence,2019-10,1
+Manpada,Domestic Violence,2019-11,1
+Manpada,Domestic Violence,2020-05,1
+Manpada,Domestic Violence,2020-07,1
+Manpada,Domestic Violence,2020-08,1
+Manpada,Domestic Violence,2020-10,1
+Manpada,Domestic Violence,2021-01,1
+Manpada,Domestic Violence,2021-05,2
+Manpada,Domestic Violence,2021-10,1
+Manpada,Domestic Violence,2022-01,1
+Manpada,Domestic Violence,2022-09,1
+Manpada,Domestic Violence,2022-11,1
+Manpada,Domestic Violence,2023-02,2
+Manpada,Domestic Violence,2023-07,1
+Manpada,Domestic Violence,2024-01,1
+Manpada,Domestic Violence,2024-06,2
+Manpada,Domestic Violence,2025-01,1
+Manpada,Domestic Violence,2025-05,1
+Manpada,Domestic Violence,2025-09,2
+Manpada,Drug Offense,2018-06,1
+Manpada,Drug Offense,2018-09,1
+Manpada,Drug Offense,2019-05,1
+Manpada,Drug Offense,2019-12,1
+Manpada,Drug Offense,2020-03,1
+Manpada,Drug Offense,2020-10,1
+Manpada,Drug Offense,2020-12,1
+Manpada,Drug Offense,2021-07,1
+Manpada,Drug Offense,2021-10,1
+Manpada,Drug Offense,2022-01,1
+Manpada,Drug Offense,2022-02,1
+Manpada,Drug Offense,2022-08,1
+Manpada,Drug Offense,2023-06,1
+Manpada,Drug Offense,2023-11,1
+Manpada,Drug Offense,2024-08,1
+Manpada,Drug Offense,2025-03,1
+Manpada,Drug Offense,2025-10,2
+Manpada,Drug Offense,2025-12,1
+Manpada,Fraud,2018-07,1
+Manpada,Fraud,2018-10,1
+Manpada,Fraud,2019-03,1
+Manpada,Fraud,2019-07,1
+Manpada,Fraud,2020-03,1
+Manpada,Fraud,2020-05,1
+Manpada,Fraud,2020-09,2
+Manpada,Fraud,2020-10,1
+Manpada,Fraud,2021-07,1
+Manpada,Fraud,2021-09,1
+Manpada,Fraud,2022-05,2
+Manpada,Fraud,2022-09,1
+Manpada,Fraud,2022-11,1
+Manpada,Fraud,2023-02,1
+Manpada,Fraud,2023-03,2
+Manpada,Fraud,2023-04,1
+Manpada,Fraud,2023-08,1
+Manpada,Fraud,2023-09,1
+Manpada,Fraud,2023-11,2
+Manpada,Fraud,2024-01,4
+Manpada,Fraud,2024-02,1
+Manpada,Fraud,2024-09,1
+Manpada,Fraud,2024-10,1
+Manpada,Fraud,2025-04,2
+Manpada,Fraud,2025-06,1
+Manpada,Fraud,2025-12,1
+Manpada,Kidnapping,2018-07,1
+Manpada,Kidnapping,2018-11,1
+Manpada,Kidnapping,2019-02,1
+Manpada,Kidnapping,2019-08,1
+Manpada,Kidnapping,2019-12,1
+Manpada,Kidnapping,2020-10,1
+Manpada,Kidnapping,2021-01,1
+Manpada,Kidnapping,2022-02,1
+Manpada,Kidnapping,2022-09,1
+Manpada,Kidnapping,2022-11,1
+Manpada,Kidnapping,2022-12,1
+Manpada,Kidnapping,2023-04,1
+Manpada,Kidnapping,2024-06,1
+Manpada,Kidnapping,2024-07,1
+Manpada,Kidnapping,2024-08,1
+Manpada,Kidnapping,2025-01,1
+Manpada,Kidnapping,2025-05,1
+Manpada,Kidnapping,2025-08,1
+Manpada,Kidnapping,2025-11,1
+Manpada,Murder,2018-04,1
+Manpada,Murder,2018-05,1
+Manpada,Murder,2018-06,2
+Manpada,Murder,2019-02,1
+Manpada,Murder,2019-06,1
+Manpada,Murder,2019-08,2
+Manpada,Murder,2019-11,1
+Manpada,Murder,2020-07,2
+Manpada,Murder,2020-08,2
+Manpada,Murder,2020-10,1
+Manpada,Murder,2020-12,1
+Manpada,Murder,2021-01,1
+Manpada,Murder,2021-07,3
+Manpada,Murder,2022-03,1
+Manpada,Murder,2022-06,1
+Manpada,Murder,2022-11,1
+Manpada,Murder,2023-03,1
+Manpada,Murder,2023-04,1
+Manpada,Murder,2023-06,1
+Manpada,Murder,2023-09,1
+Manpada,Murder,2023-10,2
+Manpada,Murder,2024-12,1
+Manpada,Murder,2025-03,2
+Manpada,Murder,2025-10,1
+Manpada,Murder,2025-11,1
+Manpada,Murder,2025-12,1
+Manpada,Robbery,2018-01,1
+Manpada,Robbery,2018-03,1
+Manpada,Robbery,2018-04,1
+Manpada,Robbery,2019-04,2
+Manpada,Robbery,2019-07,2
+Manpada,Robbery,2020-03,1
+Manpada,Robbery,2020-05,1
+Manpada,Robbery,2020-10,1
+Manpada,Robbery,2021-11,1
+Manpada,Robbery,2022-11,1
+Manpada,Robbery,2022-12,1
+Manpada,Robbery,2023-03,1
+Manpada,Robbery,2023-09,1
+Manpada,Robbery,2024-01,1
+Manpada,Robbery,2025-03,1
+Manpada,Robbery,2025-10,1
+Manpada,Theft,2018-03,1
+Manpada,Theft,2018-05,1
+Manpada,Theft,2018-07,1
+Manpada,Theft,2019-01,1
+Manpada,Theft,2019-02,1
+Manpada,Theft,2019-08,2
+Manpada,Theft,2019-09,1
+Manpada,Theft,2019-12,1
+Manpada,Theft,2020-04,4
+Manpada,Theft,2020-07,1
+Manpada,Theft,2020-12,1
+Manpada,Theft,2021-02,1
+Manpada,Theft,2021-03,2
+Manpada,Theft,2021-11,5
+Manpada,Theft,2022-01,1
+Manpada,Theft,2022-04,1
+Manpada,Theft,2022-07,1
+Manpada,Theft,2022-11,1
+Manpada,Theft,2023-06,1
+Manpada,Theft,2024-02,1
+Manpada,Theft,2024-03,1
+Manpada,Theft,2024-06,3
+Manpada,Theft,2024-08,2
+Manpada,Theft,2024-10,2
+Manpada,Theft,2024-11,1
+Manpada,Theft,2024-12,1
+Manpada,Theft,2025-01,1
+Manpada,Theft,2025-07,1
+Manpada,Theft,2025-10,1
+Naupada,Assault,2018-01,1
+Naupada,Assault,2018-08,1
+Naupada,Assault,2018-09,2
+Naupada,Assault,2018-10,1
+Naupada,Assault,2018-12,1
+Naupada,Assault,2019-12,2
+Naupada,Assault,2020-03,1
+Naupada,Assault,2020-05,1
+Naupada,Assault,2020-07,1
+Naupada,Assault,2020-10,1
+Naupada,Assault,2020-11,2
+Naupada,Assault,2021-03,1
+Naupada,Assault,2022-06,2
+Naupada,Assault,2022-08,1
+Naupada,Assault,2022-11,1
+Naupada,Assault,2023-01,2
+Naupada,Assault,2023-08,1
+Naupada,Assault,2023-12,2
+Naupada,Assault,2024-01,2
+Naupada,Assault,2024-02,1
+Naupada,Assault,2024-03,1
+Naupada,Assault,2024-09,2
+Naupada,Assault,2024-10,2
+Naupada,Assault,2024-11,1
+Naupada,Burglary,2023-02,4
+Naupada,Burglary,2024-07,2
+Naupada,Cheating,2018-02,1
+Naupada,Cheating,2018-06,1
+Naupada,Cheating,2018-12,1
+Naupada,Cheating,2019-04,1
+Naupada,Cheating,2019-05,1
+Naupada,Cheating,2019-08,1
+Naupada,Cheating,2019-10,1
+Naupada,Cheating,2020-05,1
+Naupada,Cheating,2020-06,1
+Naupada,Cheating,2020-07,3
+Naupada,Cheating,2020-10,1
+Naupada,Cheating,2020-12,1
+Naupada,Cheating,2021-02,1
+Naupada,Cheating,2021-03,1
+Naupada,Cheating,2021-05,1
+Naupada,Cheating,2022-04,1
+Naupada,Cheating,2022-05,1
+Naupada,Cheating,2022-06,1
+Naupada,Cheating,2022-07,2
+Naupada,Cheating,2022-08,2
+Naupada,Cheating,2022-09,1
+Naupada,Cheating,2023-09,1
+Naupada,Cheating,2025-01,1
+Naupada,Cheating,2025-09,1
+Naupada,Cheating,2025-11,2
+Naupada,Cybercrime,2018-06,1
+Naupada,Cybercrime,2019-02,1
+Naupada,Cybercrime,2019-07,1
+Naupada,Cybercrime,2019-10,1
+Naupada,Cybercrime,2020-07,1
+Naupada,Cybercrime,2020-09,1
+Naupada,Cybercrime,2021-01,2
+Naupada,Cybercrime,2021-06,1
+Naupada,Cybercrime,2022-03,2
+Naupada,Cybercrime,2022-07,1
+Naupada,Cybercrime,2022-11,1
+Naupada,Cybercrime,2023-01,1
+Naupada,Cybercrime,2024-01,1
+Naupada,Cybercrime,2024-11,1
+Naupada,Cybercrime,2025-04,1
+Naupada,Cybercrime,2025-05,1
+Naupada,Domestic Violence,2018-01,1
+Naupada,Domestic Violence,2019-01,1
+Naupada,Domestic Violence,2019-02,1
+Naupada,Domestic Violence,2019-07,1
+Naupada,Domestic Violence,2019-10,1
+Naupada,Domestic Violence,2020-10,1
+Naupada,Domestic Violence,2020-11,1
+Naupada,Domestic Violence,2021-03,2
+Naupada,Domestic Violence,2022-01,1
+Naupada,Domestic Violence,2022-04,1
+Naupada,Domestic Violence,2022-05,1
+Naupada,Domestic Violence,2022-06,1
+Naupada,Domestic Violence,2022-10,2
+Naupada,Domestic Violence,2023-10,1
+Naupada,Domestic Violence,2024-03,2
+Naupada,Domestic Violence,2025-12,1
+Naupada,Drug Offense,2018-04,1
+Naupada,Drug Offense,2018-10,1
+Naupada,Drug Offense,2020-01,1
+Naupada,Drug Offense,2020-07,1
+Naupada,Drug Offense,2020-10,1
+Naupada,Drug Offense,2021-10,1
+Naupada,Drug Offense,2022-03,1
+Naupada,Drug Offense,2022-07,1
+Naupada,Drug Offense,2022-11,1
+Naupada,Drug Offense,2023-02,1
+Naupada,Drug Offense,2023-09,1
+Naupada,Drug Offense,2023-10,1
+Naupada,Drug Offense,2024-09,1
+Naupada,Drug Offense,2024-11,1
+Naupada,Drug Offense,2025-02,1
+Naupada,Drug Offense,2025-06,1
+Naupada,Drug Offense,2025-07,1
+Naupada,Drug Offense,2025-09,1
+Naupada,Fraud,2018-11,1
+Naupada,Fraud,2019-02,1
+Naupada,Fraud,2019-07,1
+Naupada,Fraud,2019-12,1
+Naupada,Fraud,2020-02,1
+Naupada,Fraud,2020-04,1
+Naupada,Fraud,2020-09,1
+Naupada,Fraud,2020-11,1
+Naupada,Fraud,2020-12,1
+Naupada,Fraud,2021-03,1
+Naupada,Fraud,2021-06,1
+Naupada,Fraud,2021-10,1
+Naupada,Fraud,2021-11,1
+Naupada,Fraud,2022-02,1
+Naupada,Fraud,2022-03,1
+Naupada,Fraud,2022-12,1
+Naupada,Fraud,2023-01,1
+Naupada,Fraud,2023-03,1
+Naupada,Fraud,2023-04,1
+Naupada,Fraud,2023-09,1
+Naupada,Fraud,2023-11,3
+Naupada,Fraud,2024-01,3
+Naupada,Fraud,2024-03,1
+Naupada,Fraud,2025-02,1
+Naupada,Fraud,2025-03,1
+Naupada,Fraud,2025-06,2
+Naupada,Fraud,2025-07,1
+Naupada,Fraud,2025-09,1
+Naupada,Fraud,2025-12,1
+Naupada,Kidnapping,2019-02,1
+Naupada,Kidnapping,2019-05,1
+Naupada,Kidnapping,2019-06,1
+Naupada,Kidnapping,2020-03,2
+Naupada,Kidnapping,2020-05,1
+Naupada,Kidnapping,2020-09,1
+Naupada,Kidnapping,2020-11,1
+Naupada,Kidnapping,2021-01,3
+Naupada,Kidnapping,2021-03,1
+Naupada,Kidnapping,2021-11,1
+Naupada,Kidnapping,2023-04,2
+Naupada,Kidnapping,2024-02,1
+Naupada,Kidnapping,2024-05,3
+Naupada,Kidnapping,2025-01,1
+Naupada,Kidnapping,2025-06,1
+Naupada,Kidnapping,2025-08,1
+Naupada,Kidnapping,2025-12,1
+Naupada,Murder,2018-12,1
+Naupada,Murder,2020-03,1
+Naupada,Murder,2020-04,1
+Naupada,Murder,2020-08,1
+Naupada,Murder,2021-09,1
+Naupada,Murder,2021-11,3
+Naupada,Murder,2022-04,1
+Naupada,Murder,2022-11,1
+Naupada,Murder,2024-08,2
+Naupada,Murder,2024-09,1
+Naupada,Murder,2025-02,1
+Naupada,Murder,2025-05,1
+Naupada,Murder,2025-07,1
+Naupada,Murder,2025-10,1
+Naupada,Murder,2025-12,1
+Naupada,Robbery,2018-10,2
+Naupada,Robbery,2020-01,1
+Naupada,Robbery,2020-05,1
+Naupada,Robbery,2021-01,1
+Naupada,Robbery,2021-05,1
+Naupada,Robbery,2022-02,1
+Naupada,Robbery,2022-07,1
+Naupada,Robbery,2022-10,1
+Naupada,Robbery,2023-02,1
+Naupada,Robbery,2023-03,1
+Naupada,Robbery,2023-06,1
+Naupada,Robbery,2023-10,1
+Naupada,Robbery,2023-12,1
+Naupada,Robbery,2024-07,1
+Naupada,Robbery,2024-08,1
+Naupada,Robbery,2025-01,1
+Naupada,Robbery,2025-05,1
+Naupada,Theft,2018-05,1
+Naupada,Theft,2018-08,1
+Naupada,Theft,2019-03,1
+Naupada,Theft,2019-04,1
+Naupada,Theft,2020-02,1
+Naupada,Theft,2020-04,2
+Naupada,Theft,2020-09,1
+Naupada,Theft,2021-02,1
+Naupada,Theft,2021-04,1
+Naupada,Theft,2021-08,1
+Naupada,Theft,2021-10,1
+Naupada,Theft,2022-03,1
+Naupada,Theft,2022-09,1
+Naupada,Theft,2022-10,1
+Naupada,Theft,2022-11,1
+Naupada,Theft,2022-12,1
+Naupada,Theft,2023-02,1
+Naupada,Theft,2023-04,1
+Naupada,Theft,2023-05,1
+Naupada,Theft,2023-06,3
+Naupada,Theft,2023-08,1
+Naupada,Theft,2023-10,1
+Naupada,Theft,2024-06,2
+Naupada,Theft,2025-01,1
+Naupada,Theft,2025-08,1
+Panchpakhadi,Assault,2018-01,1
+Panchpakhadi,Assault,2018-03,2
+Panchpakhadi,Assault,2019-10,2
+Panchpakhadi,Assault,2019-11,1
+Panchpakhadi,Assault,2020-01,1
+Panchpakhadi,Assault,2020-07,2
+Panchpakhadi,Assault,2020-09,1
+Panchpakhadi,Assault,2020-11,1
+Panchpakhadi,Assault,2020-12,1
+Panchpakhadi,Assault,2021-04,1
+Panchpakhadi,Assault,2021-05,1
+Panchpakhadi,Assault,2022-03,1
+Panchpakhadi,Assault,2022-06,1
+Panchpakhadi,Assault,2022-08,3
+Panchpakhadi,Assault,2022-12,1
+Panchpakhadi,Assault,2023-01,2
+Panchpakhadi,Assault,2023-04,1
+Panchpakhadi,Assault,2023-07,1
+Panchpakhadi,Assault,2024-07,1
+Panchpakhadi,Assault,2024-09,2
+Panchpakhadi,Assault,2024-12,1
+Panchpakhadi,Assault,2025-08,1
+Panchpakhadi,Assault,2025-12,1
+Panchpakhadi,Burglary,2023-02,2
+Panchpakhadi,Burglary,2024-07,1
+Panchpakhadi,Cheating,2018-12,1
+Panchpakhadi,Cheating,2019-01,1
+Panchpakhadi,Cheating,2019-06,1
+Panchpakhadi,Cheating,2019-11,1
+Panchpakhadi,Cheating,2020-01,1
+Panchpakhadi,Cheating,2020-05,2
+Panchpakhadi,Cheating,2020-07,2
+Panchpakhadi,Cheating,2020-08,1
+Panchpakhadi,Cheating,2020-10,1
+Panchpakhadi,Cheating,2020-11,2
+Panchpakhadi,Cheating,2020-12,1
+Panchpakhadi,Cheating,2021-09,1
+Panchpakhadi,Cheating,2022-07,2
+Panchpakhadi,Cheating,2022-09,2
+Panchpakhadi,Cheating,2022-10,1
+Panchpakhadi,Cheating,2023-02,1
+Panchpakhadi,Cheating,2023-03,1
+Panchpakhadi,Cheating,2024-04,1
+Panchpakhadi,Cheating,2024-05,2
+Panchpakhadi,Cheating,2024-06,3
+Panchpakhadi,Cheating,2024-11,1
+Panchpakhadi,Cheating,2025-02,1
+Panchpakhadi,Cheating,2025-03,1
+Panchpakhadi,Cheating,2025-11,1
+Panchpakhadi,Cybercrime,2020-01,1
+Panchpakhadi,Cybercrime,2020-03,1
+Panchpakhadi,Cybercrime,2020-10,2
+Panchpakhadi,Cybercrime,2022-03,1
+Panchpakhadi,Cybercrime,2022-04,1
+Panchpakhadi,Cybercrime,2022-05,1
+Panchpakhadi,Cybercrime,2022-06,1
+Panchpakhadi,Cybercrime,2023-02,1
+Panchpakhadi,Cybercrime,2023-06,1
+Panchpakhadi,Cybercrime,2023-09,1
+Panchpakhadi,Cybercrime,2024-03,1
+Panchpakhadi,Cybercrime,2024-07,1
+Panchpakhadi,Domestic Violence,2019-01,1
+Panchpakhadi,Domestic Violence,2019-12,1
+Panchpakhadi,Domestic Violence,2020-06,1
+Panchpakhadi,Domestic Violence,2020-08,1
+Panchpakhadi,Domestic Violence,2020-10,1
+Panchpakhadi,Domestic Violence,2021-04,1
+Panchpakhadi,Domestic Violence,2021-10,2
+Panchpakhadi,Domestic Violence,2022-05,1
+Panchpakhadi,Domestic Violence,2022-06,1
+Panchpakhadi,Domestic Violence,2023-06,1
+Panchpakhadi,Domestic Violence,2023-09,2
+Panchpakhadi,Domestic Violence,2024-08,1
+Panchpakhadi,Domestic Violence,2024-11,1
+Panchpakhadi,Domestic Violence,2024-12,1
+Panchpakhadi,Domestic Violence,2025-01,1
+Panchpakhadi,Domestic Violence,2025-04,1
+Panchpakhadi,Domestic Violence,2025-07,1
+Panchpakhadi,Drug Offense,2019-04,1
+Panchpakhadi,Drug Offense,2020-10,1
+Panchpakhadi,Drug Offense,2021-06,1
+Panchpakhadi,Drug Offense,2022-09,1
+Panchpakhadi,Drug Offense,2022-10,1
+Panchpakhadi,Drug Offense,2023-03,1
+Panchpakhadi,Drug Offense,2023-04,1
+Panchpakhadi,Drug Offense,2023-06,1
+Panchpakhadi,Drug Offense,2025-01,1
+Panchpakhadi,Fraud,2018-04,1
+Panchpakhadi,Fraud,2018-06,1
+Panchpakhadi,Fraud,2018-11,1
+Panchpakhadi,Fraud,2019-03,1
+Panchpakhadi,Fraud,2019-06,1
+Panchpakhadi,Fraud,2019-10,1
+Panchpakhadi,Fraud,2019-11,1
+Panchpakhadi,Fraud,2020-06,1
+Panchpakhadi,Fraud,2020-11,1
+Panchpakhadi,Fraud,2021-04,1
+Panchpakhadi,Fraud,2021-11,1
+Panchpakhadi,Fraud,2022-02,1
+Panchpakhadi,Fraud,2022-05,3
+Panchpakhadi,Fraud,2022-10,1
+Panchpakhadi,Fraud,2023-02,1
+Panchpakhadi,Fraud,2023-03,1
+Panchpakhadi,Fraud,2023-05,1
+Panchpakhadi,Fraud,2024-01,1
+Panchpakhadi,Fraud,2024-02,1
+Panchpakhadi,Fraud,2024-07,1
+Panchpakhadi,Fraud,2024-08,1
+Panchpakhadi,Fraud,2024-12,2
+Panchpakhadi,Fraud,2025-05,1
+Panchpakhadi,Fraud,2025-06,1
+Panchpakhadi,Fraud,2025-12,1
+Panchpakhadi,Kidnapping,2019-07,1
+Panchpakhadi,Kidnapping,2019-09,1
+Panchpakhadi,Kidnapping,2019-11,1
+Panchpakhadi,Kidnapping,2019-12,1
+Panchpakhadi,Kidnapping,2020-01,1
+Panchpakhadi,Kidnapping,2020-03,1
+Panchpakhadi,Kidnapping,2020-07,1
+Panchpakhadi,Kidnapping,2020-09,1
+Panchpakhadi,Kidnapping,2020-10,1
+Panchpakhadi,Kidnapping,2021-01,2
+Panchpakhadi,Kidnapping,2021-05,1
+Panchpakhadi,Kidnapping,2021-08,2
+Panchpakhadi,Kidnapping,2022-01,2
+Panchpakhadi,Kidnapping,2022-05,1
+Panchpakhadi,Kidnapping,2022-09,1
+Panchpakhadi,Kidnapping,2023-01,1
+Panchpakhadi,Kidnapping,2023-04,1
+Panchpakhadi,Kidnapping,2023-12,2
+Panchpakhadi,Kidnapping,2024-08,1
+Panchpakhadi,Kidnapping,2024-12,1
+Panchpakhadi,Kidnapping,2025-04,1
+Panchpakhadi,Kidnapping,2025-07,1
+Panchpakhadi,Murder,2018-06,1
+Panchpakhadi,Murder,2018-07,1
+Panchpakhadi,Murder,2018-10,1
+Panchpakhadi,Murder,2020-07,1
+Panchpakhadi,Murder,2021-05,1
+Panchpakhadi,Murder,2021-07,3
+Panchpakhadi,Murder,2021-08,1
+Panchpakhadi,Murder,2021-11,2
+Panchpakhadi,Murder,2022-03,1
+Panchpakhadi,Murder,2022-06,1
+Panchpakhadi,Murder,2022-11,1
+Panchpakhadi,Murder,2023-02,1
+Panchpakhadi,Murder,2023-04,1
+Panchpakhadi,Murder,2023-10,1
+Panchpakhadi,Murder,2023-11,1
+Panchpakhadi,Murder,2025-08,1
+Panchpakhadi,Robbery,2018-03,1
+Panchpakhadi,Robbery,2018-04,1
+Panchpakhadi,Robbery,2018-05,1
+Panchpakhadi,Robbery,2018-06,1
+Panchpakhadi,Robbery,2018-08,1
+Panchpakhadi,Robbery,2018-10,2
+Panchpakhadi,Robbery,2018-12,1
+Panchpakhadi,Robbery,2019-05,2
+Panchpakhadi,Robbery,2019-10,1
+Panchpakhadi,Robbery,2019-11,1
+Panchpakhadi,Robbery,2020-07,1
+Panchpakhadi,Robbery,2020-12,1
+Panchpakhadi,Robbery,2021-03,1
+Panchpakhadi,Robbery,2021-06,1
+Panchpakhadi,Robbery,2021-08,1
+Panchpakhadi,Robbery,2021-12,1
+Panchpakhadi,Robbery,2022-03,1
+Panchpakhadi,Robbery,2022-08,1
+Panchpakhadi,Robbery,2022-09,1
+Panchpakhadi,Robbery,2023-03,1
+Panchpakhadi,Robbery,2024-02,1
+Panchpakhadi,Robbery,2024-08,1
+Panchpakhadi,Robbery,2024-10,1
+Panchpakhadi,Robbery,2025-01,1
+Panchpakhadi,Robbery,2025-02,1
+Panchpakhadi,Robbery,2025-05,1
+Panchpakhadi,Robbery,2025-08,1
+Panchpakhadi,Theft,2018-04,1
+Panchpakhadi,Theft,2019-02,1
+Panchpakhadi,Theft,2019-09,1
+Panchpakhadi,Theft,2019-12,1
+Panchpakhadi,Theft,2020-07,2
+Panchpakhadi,Theft,2020-10,1
+Panchpakhadi,Theft,2021-11,4
+Panchpakhadi,Theft,2022-02,1
+Panchpakhadi,Theft,2022-08,1
+Panchpakhadi,Theft,2022-11,1
+Panchpakhadi,Theft,2023-04,2
+Panchpakhadi,Theft,2023-06,3
+Panchpakhadi,Theft,2023-11,1
+Panchpakhadi,Theft,2024-01,1
+Panchpakhadi,Theft,2024-04,2
+Panchpakhadi,Theft,2024-06,1
+Panchpakhadi,Theft,2024-07,1
+Panchpakhadi,Theft,2024-08,1
+Panchpakhadi,Theft,2024-11,1
+Panchpakhadi,Theft,2025-04,1
+Panchpakhadi,Theft,2025-06,2
+Panchpakhadi,Theft,2025-08,1
+Patlipada,Assault,2019-04,1
+Patlipada,Assault,2019-05,1
+Patlipada,Assault,2019-11,1
+Patlipada,Assault,2021-04,1
+Patlipada,Assault,2021-05,1
+Patlipada,Assault,2021-09,1
+Patlipada,Assault,2022-01,1
+Patlipada,Assault,2022-05,1
+Patlipada,Assault,2022-08,1
+Patlipada,Assault,2023-03,1
+Patlipada,Assault,2023-07,1
+Patlipada,Assault,2023-08,1
+Patlipada,Assault,2023-10,1
+Patlipada,Assault,2024-09,2
+Patlipada,Assault,2024-10,1
+Patlipada,Assault,2025-05,1
+Patlipada,Assault,2025-12,1
+Patlipada,Cheating,2018-01,1
+Patlipada,Cheating,2019-03,1
+Patlipada,Cheating,2020-07,1
+Patlipada,Cheating,2020-08,1
+Patlipada,Cheating,2020-10,1
+Patlipada,Cheating,2021-03,1
+Patlipada,Cheating,2021-05,1
+Patlipada,Cheating,2022-02,1
+Patlipada,Cheating,2022-06,3
+Patlipada,Cheating,2022-09,1
+Patlipada,Cheating,2022-10,1
+Patlipada,Cheating,2023-08,1
+Patlipada,Cheating,2023-12,1
+Patlipada,Cheating,2024-03,1
+Patlipada,Cheating,2024-05,1
+Patlipada,Cheating,2024-07,1
+Patlipada,Cheating,2024-11,1
+Patlipada,Cheating,2025-07,1
+Patlipada,Cheating,2025-10,1
+Patlipada,Cybercrime,2019-01,1
+Patlipada,Cybercrime,2019-05,1
+Patlipada,Cybercrime,2019-06,2
+Patlipada,Cybercrime,2019-09,1
+Patlipada,Cybercrime,2021-01,1
+Patlipada,Cybercrime,2022-11,1
+Patlipada,Cybercrime,2023-07,1
+Patlipada,Cybercrime,2023-09,1
+Patlipada,Cybercrime,2023-11,2
+Patlipada,Cybercrime,2024-06,1
+Patlipada,Cybercrime,2024-10,1
+Patlipada,Cybercrime,2024-12,1
+Patlipada,Cybercrime,2025-02,1
+Patlipada,Domestic Violence,2018-01,1
+Patlipada,Domestic Violence,2018-05,1
+Patlipada,Domestic Violence,2018-07,1
+Patlipada,Domestic Violence,2018-12,1
+Patlipada,Domestic Violence,2019-01,1
+Patlipada,Domestic Violence,2019-10,1
+Patlipada,Domestic Violence,2020-05,1
+Patlipada,Domestic Violence,2020-11,1
+Patlipada,Domestic Violence,2021-02,2
+Patlipada,Domestic Violence,2021-09,1
+Patlipada,Domestic Violence,2022-05,1
+Patlipada,Domestic Violence,2023-02,1
+Patlipada,Domestic Violence,2023-06,1
+Patlipada,Domestic Violence,2023-07,1
+Patlipada,Domestic Violence,2024-03,1
+Patlipada,Domestic Violence,2024-04,1
+Patlipada,Domestic Violence,2024-11,3
+Patlipada,Domestic Violence,2024-12,1
+Patlipada,Domestic Violence,2025-05,1
+Patlipada,Domestic Violence,2025-06,1
+Patlipada,Drug Offense,2018-02,1
+Patlipada,Drug Offense,2018-03,1
+Patlipada,Drug Offense,2018-08,1
+Patlipada,Drug Offense,2018-09,1
+Patlipada,Drug Offense,2019-12,1
+Patlipada,Drug Offense,2020-05,1
+Patlipada,Drug Offense,2021-01,2
+Patlipada,Drug Offense,2021-03,1
+Patlipada,Drug Offense,2021-09,1
+Patlipada,Drug Offense,2021-10,1
+Patlipada,Drug Offense,2022-02,1
+Patlipada,Drug Offense,2022-05,1
+Patlipada,Drug Offense,2022-08,1
+Patlipada,Drug Offense,2022-09,1
+Patlipada,Drug Offense,2022-11,1
+Patlipada,Drug Offense,2023-01,1
+Patlipada,Drug Offense,2023-03,1
+Patlipada,Drug Offense,2023-07,1
+Patlipada,Drug Offense,2023-08,2
+Patlipada,Drug Offense,2024-03,2
+Patlipada,Drug Offense,2025-01,1
+Patlipada,Drug Offense,2025-05,2
+Patlipada,Drug Offense,2025-07,1
+Patlipada,Drug Offense,2025-09,1
+Patlipada,Fraud,2018-01,1
+Patlipada,Fraud,2018-08,2
+Patlipada,Fraud,2018-09,4
+Patlipada,Fraud,2018-12,1
+Patlipada,Fraud,2019-02,1
+Patlipada,Fraud,2019-03,1
+Patlipada,Fraud,2019-07,1
+Patlipada,Fraud,2021-01,1
+Patlipada,Fraud,2021-02,1
+Patlipada,Fraud,2021-06,1
+Patlipada,Fraud,2021-11,1
+Patlipada,Fraud,2022-06,1
+Patlipada,Fraud,2022-07,1
+Patlipada,Fraud,2022-08,1
+Patlipada,Fraud,2022-11,1
+Patlipada,Fraud,2023-04,1
+Patlipada,Fraud,2023-06,1
+Patlipada,Fraud,2023-11,1
+Patlipada,Fraud,2024-09,1
+Patlipada,Fraud,2025-08,2
+Patlipada,Fraud,2025-09,1
+Patlipada,Kidnapping,2018-02,2
+Patlipada,Kidnapping,2018-06,1
+Patlipada,Kidnapping,2018-07,1
+Patlipada,Kidnapping,2019-03,1
+Patlipada,Kidnapping,2019-12,1
+Patlipada,Kidnapping,2020-01,2
+Patlipada,Kidnapping,2020-10,1
+Patlipada,Kidnapping,2020-11,1
+Patlipada,Kidnapping,2021-07,1
+Patlipada,Kidnapping,2021-11,1
+Patlipada,Kidnapping,2023-03,1
+Patlipada,Kidnapping,2023-05,1
+Patlipada,Kidnapping,2023-07,1
+Patlipada,Kidnapping,2024-08,1
+Patlipada,Kidnapping,2025-04,1
+Patlipada,Kidnapping,2025-08,2
+Patlipada,Murder,2018-01,1
+Patlipada,Murder,2018-05,1
+Patlipada,Murder,2018-06,1
+Patlipada,Murder,2018-07,1
+Patlipada,Murder,2018-08,1
+Patlipada,Murder,2019-05,1
+Patlipada,Murder,2019-06,1
+Patlipada,Murder,2019-12,1
+Patlipada,Murder,2020-12,1
+Patlipada,Murder,2021-02,1
+Patlipada,Murder,2021-04,2
+Patlipada,Murder,2021-07,1
+Patlipada,Murder,2022-10,1
+Patlipada,Murder,2023-02,1
+Patlipada,Murder,2023-07,1
+Patlipada,Murder,2023-11,1
+Patlipada,Murder,2023-12,2
+Patlipada,Murder,2024-11,1
+Patlipada,Murder,2025-03,1
+Patlipada,Murder,2025-04,1
+Patlipada,Murder,2025-10,1
+Patlipada,Robbery,2018-02,1
+Patlipada,Robbery,2019-02,1
+Patlipada,Robbery,2019-08,1
+Patlipada,Robbery,2020-03,1
+Patlipada,Robbery,2020-04,1
+Patlipada,Robbery,2020-06,1
+Patlipada,Robbery,2020-10,1
+Patlipada,Robbery,2020-12,1
+Patlipada,Robbery,2021-06,2
+Patlipada,Robbery,2024-01,1
+Patlipada,Robbery,2024-05,1
+Patlipada,Robbery,2024-11,1
+Patlipada,Robbery,2025-02,1
+Patlipada,Robbery,2025-03,1
+Patlipada,Robbery,2025-07,1
+Patlipada,Theft,2018-02,1
+Patlipada,Theft,2018-03,1
+Patlipada,Theft,2018-10,1
+Patlipada,Theft,2018-11,1
+Patlipada,Theft,2019-01,1
+Patlipada,Theft,2019-03,1
+Patlipada,Theft,2019-05,1
+Patlipada,Theft,2021-02,1
+Patlipada,Theft,2021-04,1
+Patlipada,Theft,2021-10,1
+Patlipada,Theft,2022-01,1
+Patlipada,Theft,2022-02,1
+Patlipada,Theft,2022-06,1
+Patlipada,Theft,2022-09,1
+Patlipada,Theft,2022-10,1
+Patlipada,Theft,2023-03,1
+Patlipada,Theft,2024-08,1
+Patlipada,Theft,2025-05,2
+Saket,Assault,2018-05,1
+Saket,Assault,2018-07,1
+Saket,Assault,2020-02,1
+Saket,Assault,2020-09,1
+Saket,Assault,2021-11,1
+Saket,Assault,2022-01,1
+Saket,Assault,2022-07,1
+Saket,Assault,2022-09,1
+Saket,Assault,2023-05,1
+Saket,Assault,2024-03,2
+Saket,Assault,2024-04,1
+Saket,Assault,2025-02,1
+Saket,Assault,2025-06,1
+Saket,Assault,2025-10,1
+Saket,Cheating,2018-02,1
+Saket,Cheating,2018-03,1
+Saket,Cheating,2018-05,1
+Saket,Cheating,2018-07,1
+Saket,Cheating,2018-08,1
+Saket,Cheating,2018-09,2
+Saket,Cheating,2019-01,1
+Saket,Cheating,2019-11,2
+Saket,Cheating,2020-02,1
+Saket,Cheating,2020-04,1
+Saket,Cheating,2021-03,1
+Saket,Cheating,2021-04,1
+Saket,Cheating,2021-08,1
+Saket,Cheating,2022-02,1
+Saket,Cheating,2022-10,1
+Saket,Cheating,2023-01,1
+Saket,Cheating,2023-08,1
+Saket,Cheating,2023-12,1
+Saket,Cheating,2024-11,1
+Saket,Cheating,2025-06,1
+Saket,Cheating,2025-07,1
+Saket,Cybercrime,2018-06,1
+Saket,Cybercrime,2018-09,1
+Saket,Cybercrime,2018-10,1
+Saket,Cybercrime,2018-12,1
+Saket,Cybercrime,2019-03,4
+Saket,Cybercrime,2020-02,1
+Saket,Cybercrime,2020-08,1
+Saket,Cybercrime,2020-10,1
+Saket,Cybercrime,2021-04,1
+Saket,Cybercrime,2021-05,1
+Saket,Cybercrime,2021-11,1
+Saket,Cybercrime,2022-08,1
+Saket,Cybercrime,2024-01,1
+Saket,Cybercrime,2024-05,1
+Saket,Cybercrime,2024-06,1
+Saket,Cybercrime,2025-01,1
+Saket,Cybercrime,2025-05,1
+Saket,Cybercrime,2025-10,1
+Saket,Cybercrime,2025-11,1
+Saket,Domestic Violence,2018-11,1
+Saket,Domestic Violence,2019-08,1
+Saket,Domestic Violence,2019-12,1
+Saket,Domestic Violence,2020-09,1
+Saket,Domestic Violence,2021-03,2
+Saket,Domestic Violence,2021-04,1
+Saket,Domestic Violence,2022-03,1
+Saket,Domestic Violence,2022-05,1
+Saket,Domestic Violence,2022-10,1
+Saket,Domestic Violence,2022-12,1
+Saket,Domestic Violence,2023-02,1
+Saket,Domestic Violence,2023-08,1
+Saket,Domestic Violence,2024-04,1
+Saket,Domestic Violence,2024-05,2
+Saket,Domestic Violence,2024-06,2
+Saket,Domestic Violence,2025-01,1
+Saket,Domestic Violence,2025-05,1
+Saket,Drug Offense,2018-01,1
+Saket,Drug Offense,2018-02,1
+Saket,Drug Offense,2018-10,1
+Saket,Drug Offense,2019-06,1
+Saket,Drug Offense,2019-08,1
+Saket,Drug Offense,2019-12,1
+Saket,Drug Offense,2020-05,1
+Saket,Drug Offense,2020-07,1
+Saket,Drug Offense,2020-09,1
+Saket,Drug Offense,2020-10,1
+Saket,Drug Offense,2020-12,1
+Saket,Drug Offense,2021-06,1
+Saket,Drug Offense,2021-08,1
+Saket,Drug Offense,2021-10,2
+Saket,Drug Offense,2022-03,1
+Saket,Drug Offense,2022-05,1
+Saket,Drug Offense,2022-06,1
+Saket,Drug Offense,2022-10,2
+Saket,Drug Offense,2023-04,1
+Saket,Drug Offense,2025-01,1
+Saket,Drug Offense,2025-09,1
+Saket,Fraud,2019-01,1
+Saket,Fraud,2019-02,1
+Saket,Fraud,2019-04,1
+Saket,Fraud,2020-01,1
+Saket,Fraud,2020-02,1
+Saket,Fraud,2020-12,1
+Saket,Fraud,2021-05,1
+Saket,Fraud,2021-10,1
+Saket,Fraud,2022-01,1
+Saket,Fraud,2022-02,1
+Saket,Fraud,2022-05,2
+Saket,Fraud,2022-09,1
+Saket,Fraud,2022-10,1
+Saket,Fraud,2022-12,1
+Saket,Fraud,2024-05,1
+Saket,Fraud,2024-07,1
+Saket,Fraud,2024-08,1
+Saket,Fraud,2024-11,1
+Saket,Fraud,2025-01,1
+Saket,Fraud,2025-09,1
+Saket,Kidnapping,2018-04,1
+Saket,Kidnapping,2018-05,1
+Saket,Kidnapping,2018-07,1
+Saket,Kidnapping,2018-08,1
+Saket,Kidnapping,2018-10,1
+Saket,Kidnapping,2019-02,1
+Saket,Kidnapping,2020-02,2
+Saket,Kidnapping,2020-12,2
+Saket,Kidnapping,2021-03,2
+Saket,Kidnapping,2022-11,1
+Saket,Kidnapping,2023-04,1
+Saket,Kidnapping,2023-05,1
+Saket,Kidnapping,2023-08,1
+Saket,Kidnapping,2023-10,1
+Saket,Kidnapping,2024-03,1
+Saket,Kidnapping,2024-06,1
+Saket,Kidnapping,2025-01,1
+Saket,Kidnapping,2025-07,2
+Saket,Murder,2018-01,1
+Saket,Murder,2018-04,1
+Saket,Murder,2018-12,1
+Saket,Murder,2019-11,1
+Saket,Murder,2020-04,1
+Saket,Murder,2020-05,2
+Saket,Murder,2020-12,1
+Saket,Murder,2021-02,2
+Saket,Murder,2021-03,1
+Saket,Murder,2021-05,1
+Saket,Murder,2022-09,1
+Saket,Murder,2023-02,1
+Saket,Murder,2023-10,1
+Saket,Murder,2023-11,1
+Saket,Murder,2024-01,1
+Saket,Murder,2024-06,1
+Saket,Murder,2024-08,1
+Saket,Murder,2024-11,1
+Saket,Murder,2025-10,1
+Saket,Robbery,2018-03,1
+Saket,Robbery,2019-04,1
+Saket,Robbery,2020-01,1
+Saket,Robbery,2020-08,1
+Saket,Robbery,2021-04,1
+Saket,Robbery,2021-08,1
+Saket,Robbery,2021-10,1
+Saket,Robbery,2022-11,2
+Saket,Robbery,2023-05,1
+Saket,Robbery,2023-07,1
+Saket,Robbery,2023-08,1
+Saket,Robbery,2023-09,1
+Saket,Robbery,2024-02,1
+Saket,Robbery,2025-09,1
+Saket,Robbery,2025-10,1
+Saket,Robbery,2025-12,1
+Saket,Theft,2018-08,1
+Saket,Theft,2021-03,1
+Saket,Theft,2021-04,1
+Saket,Theft,2022-03,1
+Saket,Theft,2022-04,1
+Saket,Theft,2022-06,2
+Saket,Theft,2022-08,1
+Saket,Theft,2024-02,1
+Saket,Theft,2025-03,2
+Saket,Theft,2025-04,1
+Saket,Theft,2025-09,2
+Saket,Theft,2025-10,1
+Teen Hath Naka,Assault,2018-11,1
+Teen Hath Naka,Assault,2019-01,1
+Teen Hath Naka,Assault,2019-02,1
+Teen Hath Naka,Assault,2019-04,1
+Teen Hath Naka,Assault,2019-09,2
+Teen Hath Naka,Assault,2020-07,2
+Teen Hath Naka,Assault,2020-10,1
+Teen Hath Naka,Assault,2021-05,1
+Teen Hath Naka,Assault,2021-08,1
+Teen Hath Naka,Assault,2022-06,2
+Teen Hath Naka,Assault,2022-08,1
+Teen Hath Naka,Assault,2022-12,1
+Teen Hath Naka,Assault,2023-03,1
+Teen Hath Naka,Assault,2023-05,1
+Teen Hath Naka,Assault,2023-09,1
+Teen Hath Naka,Assault,2023-11,1
+Teen Hath Naka,Assault,2024-01,1
+Teen Hath Naka,Assault,2024-02,1
+Teen Hath Naka,Assault,2024-03,1
+Teen Hath Naka,Assault,2024-08,1
+Teen Hath Naka,Assault,2024-09,2
+Teen Hath Naka,Assault,2024-11,1
+Teen Hath Naka,Assault,2025-03,1
+Teen Hath Naka,Assault,2025-07,1
+Teen Hath Naka,Burglary,2023-02,3
+Teen Hath Naka,Burglary,2024-07,1
+Teen Hath Naka,Cheating,2018-02,1
+Teen Hath Naka,Cheating,2018-11,1
+Teen Hath Naka,Cheating,2019-07,1
+Teen Hath Naka,Cheating,2019-08,1
+Teen Hath Naka,Cheating,2019-11,1
+Teen Hath Naka,Cheating,2020-02,1
+Teen Hath Naka,Cheating,2020-03,1
+Teen Hath Naka,Cheating,2020-10,1
+Teen Hath Naka,Cheating,2020-12,1
+Teen Hath Naka,Cheating,2021-05,1
+Teen Hath Naka,Cheating,2022-01,1
+Teen Hath Naka,Cheating,2022-04,1
+Teen Hath Naka,Cheating,2022-11,2
+Teen Hath Naka,Cheating,2023-02,1
+Teen Hath Naka,Cheating,2023-05,1
+Teen Hath Naka,Cheating,2023-09,1
+Teen Hath Naka,Cheating,2024-01,1
+Teen Hath Naka,Cheating,2024-02,1
+Teen Hath Naka,Cheating,2024-03,1
+Teen Hath Naka,Cheating,2024-08,1
+Teen Hath Naka,Cheating,2024-11,1
+Teen Hath Naka,Cheating,2025-02,1
+Teen Hath Naka,Cybercrime,2018-11,1
+Teen Hath Naka,Cybercrime,2019-02,1
+Teen Hath Naka,Cybercrime,2021-04,1
+Teen Hath Naka,Cybercrime,2021-11,1
+Teen Hath Naka,Cybercrime,2021-12,1
+Teen Hath Naka,Cybercrime,2022-10,1
+Teen Hath Naka,Cybercrime,2023-02,1
+Teen Hath Naka,Cybercrime,2024-09,2
+Teen Hath Naka,Cybercrime,2024-10,1
+Teen Hath Naka,Cybercrime,2025-07,1
+Teen Hath Naka,Cybercrime,2025-11,1
+Teen Hath Naka,Domestic Violence,2018-09,1
+Teen Hath Naka,Domestic Violence,2018-10,2
+Teen Hath Naka,Domestic Violence,2019-02,1
+Teen Hath Naka,Domestic Violence,2019-03,1
+Teen Hath Naka,Domestic Violence,2019-08,1
+Teen Hath Naka,Domestic Violence,2019-09,1
+Teen Hath Naka,Domestic Violence,2019-10,1
+Teen Hath Naka,Domestic Violence,2019-12,1
+Teen Hath Naka,Domestic Violence,2020-03,1
+Teen Hath Naka,Domestic Violence,2020-10,1
+Teen Hath Naka,Domestic Violence,2021-02,1
+Teen Hath Naka,Domestic Violence,2021-03,1
+Teen Hath Naka,Domestic Violence,2021-05,1
+Teen Hath Naka,Domestic Violence,2021-09,1
+Teen Hath Naka,Domestic Violence,2022-03,1
+Teen Hath Naka,Domestic Violence,2022-06,1
+Teen Hath Naka,Domestic Violence,2022-09,1
+Teen Hath Naka,Domestic Violence,2023-07,1
+Teen Hath Naka,Domestic Violence,2023-08,2
+Teen Hath Naka,Domestic Violence,2023-10,1
+Teen Hath Naka,Domestic Violence,2023-11,1
+Teen Hath Naka,Domestic Violence,2025-02,1
+Teen Hath Naka,Domestic Violence,2025-09,1
+Teen Hath Naka,Drug Offense,2018-03,1
+Teen Hath Naka,Drug Offense,2018-04,1
+Teen Hath Naka,Drug Offense,2018-08,1
+Teen Hath Naka,Drug Offense,2019-01,1
+Teen Hath Naka,Drug Offense,2019-05,1
+Teen Hath Naka,Drug Offense,2019-06,1
+Teen Hath Naka,Drug Offense,2019-10,1
+Teen Hath Naka,Drug Offense,2020-01,1
+Teen Hath Naka,Drug Offense,2020-04,1
+Teen Hath Naka,Drug Offense,2020-06,1
+Teen Hath Naka,Drug Offense,2020-09,1
+Teen Hath Naka,Drug Offense,2020-12,1
+Teen Hath Naka,Drug Offense,2021-01,1
+Teen Hath Naka,Drug Offense,2021-03,1
+Teen Hath Naka,Drug Offense,2021-08,1
+Teen Hath Naka,Drug Offense,2022-06,1
+Teen Hath Naka,Drug Offense,2022-08,1
+Teen Hath Naka,Drug Offense,2023-05,1
+Teen Hath Naka,Drug Offense,2023-08,1
+Teen Hath Naka,Drug Offense,2023-09,1
+Teen Hath Naka,Drug Offense,2023-10,1
+Teen Hath Naka,Drug Offense,2024-01,1
+Teen Hath Naka,Drug Offense,2024-03,1
+Teen Hath Naka,Drug Offense,2024-07,1
+Teen Hath Naka,Drug Offense,2025-06,1
+Teen Hath Naka,Drug Offense,2025-07,1
+Teen Hath Naka,Drug Offense,2025-09,1
+Teen Hath Naka,Fraud,2018-01,1
+Teen Hath Naka,Fraud,2018-04,1
+Teen Hath Naka,Fraud,2018-07,1
+Teen Hath Naka,Fraud,2018-12,2
+Teen Hath Naka,Fraud,2019-01,1
+Teen Hath Naka,Fraud,2019-02,1
+Teen Hath Naka,Fraud,2019-03,1
+Teen Hath Naka,Fraud,2019-09,1
+Teen Hath Naka,Fraud,2019-11,1
+Teen Hath Naka,Fraud,2020-02,1
+Teen Hath Naka,Fraud,2020-09,1
+Teen Hath Naka,Fraud,2020-10,3
+Teen Hath Naka,Fraud,2020-11,2
+Teen Hath Naka,Fraud,2022-05,2
+Teen Hath Naka,Fraud,2022-06,1
+Teen Hath Naka,Fraud,2022-10,1
+Teen Hath Naka,Fraud,2023-02,1
+Teen Hath Naka,Fraud,2023-03,1
+Teen Hath Naka,Fraud,2023-11,2
+Teen Hath Naka,Fraud,2023-12,1
+Teen Hath Naka,Fraud,2024-01,1
+Teen Hath Naka,Fraud,2024-04,1
+Teen Hath Naka,Fraud,2024-05,1
+Teen Hath Naka,Fraud,2025-01,1
+Teen Hath Naka,Fraud,2025-09,1
+Teen Hath Naka,Kidnapping,2018-02,1
+Teen Hath Naka,Kidnapping,2018-03,1
+Teen Hath Naka,Kidnapping,2018-05,1
+Teen Hath Naka,Kidnapping,2018-11,1
+Teen Hath Naka,Kidnapping,2019-06,1
+Teen Hath Naka,Kidnapping,2020-03,2
+Teen Hath Naka,Kidnapping,2020-07,1
+Teen Hath Naka,Kidnapping,2020-10,1
+Teen Hath Naka,Kidnapping,2020-11,2
+Teen Hath Naka,Kidnapping,2021-01,3
+Teen Hath Naka,Kidnapping,2021-11,1
+Teen Hath Naka,Kidnapping,2021-12,1
+Teen Hath Naka,Kidnapping,2022-01,1
+Teen Hath Naka,Kidnapping,2022-05,1
+Teen Hath Naka,Kidnapping,2023-04,1
+Teen Hath Naka,Kidnapping,2023-07,1
+Teen Hath Naka,Kidnapping,2024-05,1
+Teen Hath Naka,Kidnapping,2025-03,1
+Teen Hath Naka,Kidnapping,2025-05,1
+Teen Hath Naka,Kidnapping,2025-09,1
+Teen Hath Naka,Kidnapping,2025-12,1
+Teen Hath Naka,Murder,2018-04,1
+Teen Hath Naka,Murder,2019-11,1
+Teen Hath Naka,Murder,2020-04,1
+Teen Hath Naka,Murder,2020-10,1
+Teen Hath Naka,Murder,2021-07,1
+Teen Hath Naka,Murder,2021-11,2
+Teen Hath Naka,Murder,2022-01,1
+Teen Hath Naka,Murder,2022-06,1
+Teen Hath Naka,Murder,2022-09,1
+Teen Hath Naka,Murder,2023-09,1
+Teen Hath Naka,Murder,2023-11,1
+Teen Hath Naka,Murder,2024-02,1
+Teen Hath Naka,Murder,2024-05,1
+Teen Hath Naka,Murder,2024-08,1
+Teen Hath Naka,Murder,2024-11,1
+Teen Hath Naka,Murder,2025-02,1
+Teen Hath Naka,Murder,2025-03,1
+Teen Hath Naka,Murder,2025-04,2
+Teen Hath Naka,Murder,2025-09,1
+Teen Hath Naka,Robbery,2018-02,1
+Teen Hath Naka,Robbery,2018-09,1
+Teen Hath Naka,Robbery,2018-10,1
+Teen Hath Naka,Robbery,2019-01,1
+Teen Hath Naka,Robbery,2019-08,1
+Teen Hath Naka,Robbery,2019-09,1
+Teen Hath Naka,Robbery,2020-07,1
+Teen Hath Naka,Robbery,2020-08,1
+Teen Hath Naka,Robbery,2021-01,1
+Teen Hath Naka,Robbery,2021-05,1
+Teen Hath Naka,Robbery,2021-07,1
+Teen Hath Naka,Robbery,2021-11,1
+Teen Hath Naka,Robbery,2022-01,1
+Teen Hath Naka,Robbery,2022-08,1
+Teen Hath Naka,Robbery,2023-06,1
+Teen Hath Naka,Robbery,2023-11,1
+Teen Hath Naka,Robbery,2024-03,1
+Teen Hath Naka,Robbery,2024-05,1
+Teen Hath Naka,Robbery,2024-09,1
+Teen Hath Naka,Robbery,2025-02,1
+Teen Hath Naka,Robbery,2025-03,1
+Teen Hath Naka,Robbery,2025-06,1
+Teen Hath Naka,Robbery,2025-11,1
+Teen Hath Naka,Theft,2018-07,1
+Teen Hath Naka,Theft,2019-03,1
+Teen Hath Naka,Theft,2019-09,1
+Teen Hath Naka,Theft,2020-04,1
+Teen Hath Naka,Theft,2020-07,2
+Teen Hath Naka,Theft,2021-10,1
+Teen Hath Naka,Theft,2021-11,3
+Teen Hath Naka,Theft,2022-02,1
+Teen Hath Naka,Theft,2022-03,1
+Teen Hath Naka,Theft,2022-11,2
+Teen Hath Naka,Theft,2023-01,1
+Teen Hath Naka,Theft,2023-06,4
+Teen Hath Naka,Theft,2024-02,1
+Teen Hath Naka,Theft,2024-04,1
+Teen Hath Naka,Theft,2024-06,2
+Teen Hath Naka,Theft,2024-12,1
+Teen Hath Naka,Theft,2025-08,2
+Teen Hath Naka,Theft,2025-09,1
+Vartak Nagar,Assault,2018-11,1
+Vartak Nagar,Assault,2019-01,1
+Vartak Nagar,Assault,2020-01,1
+Vartak Nagar,Assault,2020-04,3
+Vartak Nagar,Assault,2020-07,2
+Vartak Nagar,Assault,2020-11,3
+Vartak Nagar,Assault,2021-12,2
+Vartak Nagar,Assault,2022-01,1
+Vartak Nagar,Assault,2022-06,1
+Vartak Nagar,Assault,2022-08,4
+Vartak Nagar,Assault,2022-09,1
+Vartak Nagar,Assault,2023-03,1
+Vartak Nagar,Assault,2023-04,1
+Vartak Nagar,Assault,2023-09,1
+Vartak Nagar,Assault,2023-10,1
+Vartak Nagar,Assault,2023-11,1
+Vartak Nagar,Assault,2024-09,4
+Vartak Nagar,Assault,2025-01,1
+Vartak Nagar,Assault,2025-12,1
+Vartak Nagar,Burglary,2023-02,2
+Vartak Nagar,Burglary,2024-05,1
+Vartak Nagar,Burglary,2024-07,2
+Vartak Nagar,Cheating,2018-09,1
+Vartak Nagar,Cheating,2018-10,1
+Vartak Nagar,Cheating,2019-03,1
+Vartak Nagar,Cheating,2019-05,1
+Vartak Nagar,Cheating,2019-08,1
+Vartak Nagar,Cheating,2020-04,1
+Vartak Nagar,Cheating,2020-08,1
+Vartak Nagar,Cheating,2021-04,1
+Vartak Nagar,Cheating,2021-08,2
+Vartak Nagar,Cheating,2022-05,1
+Vartak Nagar,Cheating,2022-10,1
+Vartak Nagar,Cheating,2023-02,1
+Vartak Nagar,Cheating,2023-06,1
+Vartak Nagar,Cheating,2023-07,1
+Vartak Nagar,Cheating,2023-12,2
+Vartak Nagar,Cheating,2024-05,1
+Vartak Nagar,Cheating,2024-06,1
+Vartak Nagar,Cheating,2025-09,1
+Vartak Nagar,Cybercrime,2018-10,1
+Vartak Nagar,Cybercrime,2020-11,2
+Vartak Nagar,Cybercrime,2021-04,1
+Vartak Nagar,Cybercrime,2021-06,1
+Vartak Nagar,Cybercrime,2021-07,1
+Vartak Nagar,Cybercrime,2021-12,1
+Vartak Nagar,Cybercrime,2022-02,1
+Vartak Nagar,Cybercrime,2022-04,1
+Vartak Nagar,Cybercrime,2022-10,2
+Vartak Nagar,Cybercrime,2023-01,1
+Vartak Nagar,Cybercrime,2023-06,1
+Vartak Nagar,Cybercrime,2023-08,1
+Vartak Nagar,Cybercrime,2023-12,1
+Vartak Nagar,Cybercrime,2024-04,1
+Vartak Nagar,Cybercrime,2024-07,1
+Vartak Nagar,Cybercrime,2024-08,1
+Vartak Nagar,Cybercrime,2024-11,1
+Vartak Nagar,Cybercrime,2024-12,1
+Vartak Nagar,Cybercrime,2025-06,1
+Vartak Nagar,Cybercrime,2025-08,1
+Vartak Nagar,Domestic Violence,2018-01,2
+Vartak Nagar,Domestic Violence,2018-02,1
+Vartak Nagar,Domestic Violence,2018-10,1
+Vartak Nagar,Domestic Violence,2020-07,1
+Vartak Nagar,Domestic Violence,2021-01,1
+Vartak Nagar,Domestic Violence,2021-03,1
+Vartak Nagar,Domestic Violence,2021-07,1
+Vartak Nagar,Domestic Violence,2021-09,1
+Vartak Nagar,Domestic Violence,2022-09,1
+Vartak Nagar,Domestic Violence,2022-11,1
+Vartak Nagar,Domestic Violence,2023-03,1
+Vartak Nagar,Domestic Violence,2023-08,1
+Vartak Nagar,Domestic Violence,2023-09,1
+Vartak Nagar,Domestic Violence,2024-01,2
+Vartak Nagar,Domestic Violence,2024-08,1
+Vartak Nagar,Domestic Violence,2024-10,1
+Vartak Nagar,Domestic Violence,2025-12,1
+Vartak Nagar,Drug Offense,2018-09,1
+Vartak Nagar,Drug Offense,2018-12,1
+Vartak Nagar,Drug Offense,2020-05,1
+Vartak Nagar,Drug Offense,2020-11,2
+Vartak Nagar,Drug Offense,2021-04,1
+Vartak Nagar,Drug Offense,2021-10,1
+Vartak Nagar,Drug Offense,2021-12,1
+Vartak Nagar,Drug Offense,2022-03,1
+Vartak Nagar,Drug Offense,2022-04,1
+Vartak Nagar,Drug Offense,2022-09,1
+Vartak Nagar,Drug Offense,2022-12,1
+Vartak Nagar,Drug Offense,2023-08,1
+Vartak Nagar,Drug Offense,2023-09,1
+Vartak Nagar,Drug Offense,2023-10,1
+Vartak Nagar,Drug Offense,2023-12,2
+Vartak Nagar,Drug Offense,2024-08,1
+Vartak Nagar,Drug Offense,2025-01,1
+Vartak Nagar,Drug Offense,2025-04,1
+Vartak Nagar,Drug Offense,2025-05,1
+Vartak Nagar,Drug Offense,2025-09,1
+Vartak Nagar,Fraud,2018-01,1
+Vartak Nagar,Fraud,2019-10,1
+Vartak Nagar,Fraud,2020-02,2
+Vartak Nagar,Fraud,2020-08,1
+Vartak Nagar,Fraud,2020-09,1
+Vartak Nagar,Fraud,2020-11,1
+Vartak Nagar,Fraud,2020-12,1
+Vartak Nagar,Fraud,2022-05,1
+Vartak Nagar,Fraud,2022-08,1
+Vartak Nagar,Fraud,2022-09,1
+Vartak Nagar,Fraud,2023-02,2
+Vartak Nagar,Fraud,2023-11,2
+Vartak Nagar,Fraud,2023-12,1
+Vartak Nagar,Fraud,2024-10,1
+Vartak Nagar,Fraud,2025-05,1
+Vartak Nagar,Fraud,2025-08,1
+Vartak Nagar,Kidnapping,2018-01,1
+Vartak Nagar,Kidnapping,2018-03,1
+Vartak Nagar,Kidnapping,2018-04,1
+Vartak Nagar,Kidnapping,2018-09,1
+Vartak Nagar,Kidnapping,2018-11,1
+Vartak Nagar,Kidnapping,2019-04,1
+Vartak Nagar,Kidnapping,2020-03,3
+Vartak Nagar,Kidnapping,2020-10,1
+Vartak Nagar,Kidnapping,2021-01,3
+Vartak Nagar,Kidnapping,2021-02,1
+Vartak Nagar,Kidnapping,2021-03,1
+Vartak Nagar,Kidnapping,2021-07,1
+Vartak Nagar,Kidnapping,2021-09,2
+Vartak Nagar,Kidnapping,2023-02,1
+Vartak Nagar,Kidnapping,2023-04,1
+Vartak Nagar,Kidnapping,2023-08,1
+Vartak Nagar,Kidnapping,2023-09,1
+Vartak Nagar,Kidnapping,2023-11,1
+Vartak Nagar,Kidnapping,2024-02,1
+Vartak Nagar,Kidnapping,2024-05,1
+Vartak Nagar,Kidnapping,2025-07,1
+Vartak Nagar,Murder,2018-01,1
+Vartak Nagar,Murder,2018-06,1
+Vartak Nagar,Murder,2018-07,1
+Vartak Nagar,Murder,2019-02,1
+Vartak Nagar,Murder,2019-09,1
+Vartak Nagar,Murder,2020-04,1
+Vartak Nagar,Murder,2020-09,1
+Vartak Nagar,Murder,2020-10,1
+Vartak Nagar,Murder,2021-06,1
+Vartak Nagar,Murder,2021-07,3
+Vartak Nagar,Murder,2021-11,2
+Vartak Nagar,Murder,2022-02,1
+Vartak Nagar,Murder,2022-03,2
+Vartak Nagar,Murder,2022-05,1
+Vartak Nagar,Murder,2022-07,1
+Vartak Nagar,Murder,2022-08,1
+Vartak Nagar,Murder,2022-10,1
+Vartak Nagar,Murder,2023-01,1
+Vartak Nagar,Murder,2023-02,1
+Vartak Nagar,Murder,2023-06,3
+Vartak Nagar,Murder,2023-08,1
+Vartak Nagar,Murder,2023-09,1
+Vartak Nagar,Murder,2024-10,1
+Vartak Nagar,Murder,2024-11,1
+Vartak Nagar,Murder,2025-01,1
+Vartak Nagar,Murder,2025-06,1
+Vartak Nagar,Robbery,2018-09,1
+Vartak Nagar,Robbery,2019-01,2
+Vartak Nagar,Robbery,2019-07,1
+Vartak Nagar,Robbery,2019-09,1
+Vartak Nagar,Robbery,2019-10,1
+Vartak Nagar,Robbery,2019-12,2
+Vartak Nagar,Robbery,2020-02,1
+Vartak Nagar,Robbery,2020-05,1
+Vartak Nagar,Robbery,2021-01,1
+Vartak Nagar,Robbery,2021-03,1
+Vartak Nagar,Robbery,2021-04,1
+Vartak Nagar,Robbery,2021-05,1
+Vartak Nagar,Robbery,2021-10,1
+Vartak Nagar,Robbery,2021-12,1
+Vartak Nagar,Robbery,2022-03,1
+Vartak Nagar,Robbery,2023-05,1
+Vartak Nagar,Robbery,2023-12,1
+Vartak Nagar,Robbery,2024-02,1
+Vartak Nagar,Robbery,2025-02,1
+Vartak Nagar,Theft,2018-01,2
+Vartak Nagar,Theft,2019-05,1
+Vartak Nagar,Theft,2019-06,1
+Vartak Nagar,Theft,2019-09,1
+Vartak Nagar,Theft,2019-11,1
+Vartak Nagar,Theft,2020-04,1
+Vartak Nagar,Theft,2020-07,1
+Vartak Nagar,Theft,2020-10,1
+Vartak Nagar,Theft,2020-11,1
+Vartak Nagar,Theft,2021-03,1
+Vartak Nagar,Theft,2021-06,1
+Vartak Nagar,Theft,2021-10,1
+Vartak Nagar,Theft,2021-11,2
+Vartak Nagar,Theft,2021-12,1
+Vartak Nagar,Theft,2022-11,2
+Vartak Nagar,Theft,2023-06,1
+Vartak Nagar,Theft,2023-07,1
+Vartak Nagar,Theft,2023-10,1
+Vartak Nagar,Theft,2023-11,2
+Vartak Nagar,Theft,2023-12,1
+Vartak Nagar,Theft,2024-08,1
+Vartak Nagar,Theft,2024-12,1
+Vartak Nagar,Theft,2025-02,2
+Vartak Nagar,Theft,2025-04,2
+Wagle Estate,Assault,2018-02,1
+Wagle Estate,Assault,2018-12,1
+Wagle Estate,Assault,2019-02,1
+Wagle Estate,Assault,2019-05,1
+Wagle Estate,Assault,2020-06,1
+Wagle Estate,Assault,2020-07,2
+Wagle Estate,Assault,2020-11,3
+Wagle Estate,Assault,2021-08,1
+Wagle Estate,Assault,2021-12,1
+Wagle Estate,Assault,2022-01,1
+Wagle Estate,Assault,2022-06,1
+Wagle Estate,Assault,2022-07,2
+Wagle Estate,Assault,2022-08,1
+Wagle Estate,Assault,2022-12,1
+Wagle Estate,Assault,2023-01,2
+Wagle Estate,Assault,2023-09,1
+Wagle Estate,Assault,2023-11,1
+Wagle Estate,Assault,2024-11,1
+Wagle Estate,Assault,2025-01,1
+Wagle Estate,Assault,2025-05,1
+Wagle Estate,Assault,2025-12,1
+Wagle Estate,Burglary,2023-02,5
+Wagle Estate,Burglary,2024-05,2
+Wagle Estate,Burglary,2024-07,3
+Wagle Estate,Cheating,2018-01,1
+Wagle Estate,Cheating,2018-09,2
+Wagle Estate,Cheating,2019-01,1
+Wagle Estate,Cheating,2019-12,1
+Wagle Estate,Cheating,2020-05,1
+Wagle Estate,Cheating,2020-09,2
+Wagle Estate,Cheating,2020-10,1
+Wagle Estate,Cheating,2020-12,1
+Wagle Estate,Cheating,2021-08,2
+Wagle Estate,Cheating,2022-01,1
+Wagle Estate,Cheating,2022-07,1
+Wagle Estate,Cheating,2022-10,1
+Wagle Estate,Cheating,2023-02,2
+Wagle Estate,Cheating,2023-08,1
+Wagle Estate,Cheating,2023-10,1
+Wagle Estate,Cheating,2023-11,1
+Wagle Estate,Cheating,2024-08,1
+Wagle Estate,Cheating,2024-09,1
+Wagle Estate,Cheating,2024-10,2
+Wagle Estate,Cheating,2025-02,1
+Wagle Estate,Cheating,2025-03,1
+Wagle Estate,Cheating,2025-07,1
+Wagle Estate,Cheating,2025-09,1
+Wagle Estate,Cybercrime,2018-10,2
+Wagle Estate,Cybercrime,2018-11,1
+Wagle Estate,Cybercrime,2018-12,1
+Wagle Estate,Cybercrime,2019-01,1
+Wagle Estate,Cybercrime,2019-02,1
+Wagle Estate,Cybercrime,2019-04,1
+Wagle Estate,Cybercrime,2019-12,1
+Wagle Estate,Cybercrime,2020-04,1
+Wagle Estate,Cybercrime,2020-07,1
+Wagle Estate,Cybercrime,2020-10,1
+Wagle Estate,Cybercrime,2020-11,1
+Wagle Estate,Cybercrime,2021-01,1
+Wagle Estate,Cybercrime,2021-02,1
+Wagle Estate,Cybercrime,2022-02,1
+Wagle Estate,Cybercrime,2023-03,1
+Wagle Estate,Cybercrime,2023-06,1
+Wagle Estate,Cybercrime,2023-08,1
+Wagle Estate,Cybercrime,2024-05,1
+Wagle Estate,Cybercrime,2024-06,2
+Wagle Estate,Cybercrime,2024-09,1
+Wagle Estate,Cybercrime,2024-12,1
+Wagle Estate,Domestic Violence,2018-06,1
+Wagle Estate,Domestic Violence,2018-10,1
+Wagle Estate,Domestic Violence,2018-12,1
+Wagle Estate,Domestic Violence,2020-02,2
+Wagle Estate,Domestic Violence,2021-04,1
+Wagle Estate,Domestic Violence,2021-08,2
+Wagle Estate,Domestic Violence,2021-12,1
+Wagle Estate,Domestic Violence,2022-02,1
+Wagle Estate,Domestic Violence,2022-03,1
+Wagle Estate,Domestic Violence,2022-06,1
+Wagle Estate,Domestic Violence,2022-09,1
+Wagle Estate,Domestic Violence,2022-11,1
+Wagle Estate,Domestic Violence,2022-12,1
+Wagle Estate,Domestic Violence,2023-04,2
+Wagle Estate,Domestic Violence,2023-09,1
+Wagle Estate,Domestic Violence,2023-11,1
+Wagle Estate,Domestic Violence,2024-10,1
+Wagle Estate,Domestic Violence,2025-05,1
+Wagle Estate,Domestic Violence,2025-06,2
+Wagle Estate,Domestic Violence,2025-08,1
+Wagle Estate,Drug Offense,2018-03,1
+Wagle Estate,Drug Offense,2018-04,1
+Wagle Estate,Drug Offense,2018-06,1
+Wagle Estate,Drug Offense,2019-01,1
+Wagle Estate,Drug Offense,2019-06,1
+Wagle Estate,Drug Offense,2019-07,1
+Wagle Estate,Drug Offense,2020-04,1
+Wagle Estate,Drug Offense,2020-05,1
+Wagle Estate,Drug Offense,2020-06,1
+Wagle Estate,Drug Offense,2021-03,1
+Wagle Estate,Drug Offense,2021-12,1
+Wagle Estate,Drug Offense,2022-03,1
+Wagle Estate,Drug Offense,2022-04,1
+Wagle Estate,Drug Offense,2022-10,1
+Wagle Estate,Drug Offense,2023-02,2
+Wagle Estate,Drug Offense,2023-04,1
+Wagle Estate,Drug Offense,2023-07,1
+Wagle Estate,Drug Offense,2023-10,1
+Wagle Estate,Drug Offense,2024-01,1
+Wagle Estate,Drug Offense,2024-04,1
+Wagle Estate,Drug Offense,2024-06,1
+Wagle Estate,Drug Offense,2024-08,1
+Wagle Estate,Drug Offense,2025-05,1
+Wagle Estate,Drug Offense,2025-09,1
+Wagle Estate,Drug Offense,2025-12,1
+Wagle Estate,Fraud,2018-02,1
+Wagle Estate,Fraud,2018-07,1
+Wagle Estate,Fraud,2020-01,1
+Wagle Estate,Fraud,2020-08,1
+Wagle Estate,Fraud,2022-01,1
+Wagle Estate,Fraud,2022-07,1
+Wagle Estate,Fraud,2023-02,2
+Wagle Estate,Fraud,2023-03,2
+Wagle Estate,Fraud,2023-11,1
+Wagle Estate,Fraud,2024-01,2
+Wagle Estate,Fraud,2024-06,1
+Wagle Estate,Fraud,2024-07,1
+Wagle Estate,Fraud,2024-09,1
+Wagle Estate,Fraud,2024-12,1
+Wagle Estate,Fraud,2025-01,1
+Wagle Estate,Fraud,2025-07,1
+Wagle Estate,Kidnapping,2018-03,1
+Wagle Estate,Kidnapping,2018-08,1
+Wagle Estate,Kidnapping,2018-12,1
+Wagle Estate,Kidnapping,2019-08,1
+Wagle Estate,Kidnapping,2019-09,1
+Wagle Estate,Kidnapping,2019-11,1
+Wagle Estate,Kidnapping,2019-12,1
+Wagle Estate,Kidnapping,2020-03,2
+Wagle Estate,Kidnapping,2020-05,1
+Wagle Estate,Kidnapping,2020-08,1
+Wagle Estate,Kidnapping,2020-09,1
+Wagle Estate,Kidnapping,2020-11,1
+Wagle Estate,Kidnapping,2021-01,2
+Wagle Estate,Kidnapping,2021-05,1
+Wagle Estate,Kidnapping,2021-06,2
+Wagle Estate,Kidnapping,2022-11,1
+Wagle Estate,Kidnapping,2023-04,1
+Wagle Estate,Kidnapping,2024-06,2
+Wagle Estate,Kidnapping,2025-02,1
+Wagle Estate,Kidnapping,2025-04,1
+Wagle Estate,Kidnapping,2025-11,1
+Wagle Estate,Murder,2018-08,1
+Wagle Estate,Murder,2018-10,1
+Wagle Estate,Murder,2019-01,1
+Wagle Estate,Murder,2019-02,1
+Wagle Estate,Murder,2019-03,1
+Wagle Estate,Murder,2019-05,1
+Wagle Estate,Murder,2019-11,1
+Wagle Estate,Murder,2020-02,1
+Wagle Estate,Murder,2020-03,1
+Wagle Estate,Murder,2020-12,1
+Wagle Estate,Murder,2021-05,1
+Wagle Estate,Murder,2021-07,1
+Wagle Estate,Murder,2021-08,1
+Wagle Estate,Murder,2021-11,3
+Wagle Estate,Murder,2022-03,1
+Wagle Estate,Murder,2022-07,1
+Wagle Estate,Murder,2022-12,1
+Wagle Estate,Murder,2023-06,4
+Wagle Estate,Murder,2024-01,1
+Wagle Estate,Murder,2025-02,1
+Wagle Estate,Murder,2025-12,1
+Wagle Estate,Robbery,2018-06,1
+Wagle Estate,Robbery,2020-01,1
+Wagle Estate,Robbery,2021-04,1
+Wagle Estate,Robbery,2021-06,1
+Wagle Estate,Robbery,2021-11,1
+Wagle Estate,Robbery,2023-03,1
+Wagle Estate,Robbery,2023-09,1
+Wagle Estate,Robbery,2023-12,1
+Wagle Estate,Robbery,2024-03,1
+Wagle Estate,Robbery,2024-10,1
+Wagle Estate,Robbery,2025-04,1
+Wagle Estate,Robbery,2025-11,1
+Wagle Estate,Theft,2018-08,1
+Wagle Estate,Theft,2018-10,1
+Wagle Estate,Theft,2019-04,1
+Wagle Estate,Theft,2019-10,1
+Wagle Estate,Theft,2020-04,3
+Wagle Estate,Theft,2020-07,4
+Wagle Estate,Theft,2020-08,1
+Wagle Estate,Theft,2020-09,1
+Wagle Estate,Theft,2020-10,1
+Wagle Estate,Theft,2020-12,1
+Wagle Estate,Theft,2021-01,1
+Wagle Estate,Theft,2021-04,1
+Wagle Estate,Theft,2021-10,1
+Wagle Estate,Theft,2021-11,1
+Wagle Estate,Theft,2022-02,1
+Wagle Estate,Theft,2022-04,1
+Wagle Estate,Theft,2022-09,1
+Wagle Estate,Theft,2022-11,1
+Wagle Estate,Theft,2023-01,1
+Wagle Estate,Theft,2023-02,1
+Wagle Estate,Theft,2023-03,1
+Wagle Estate,Theft,2023-06,1
+Wagle Estate,Theft,2023-09,1
+Wagle Estate,Theft,2023-10,2
+Wagle Estate,Theft,2024-06,5
+Wagle Estate,Theft,2024-11,1
+Wagle Estate,Theft,2025-03,1
+Wagle Estate,Theft,2025-11,1
+Wagle Estate,Theft,2025-12,1

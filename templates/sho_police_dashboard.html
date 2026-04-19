@@ -1,0 +1,847 @@
+{% extends "sho(base).html" %}
+{% load static %}
+{% load time_filters %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+:root{
+  --bg: #e1efff;--surface:#ffffff;--surface2:#f8fafc;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --navy:#0f172a;--navy2:#1e293b;
+  --blue:#2563eb;--blue2:#3b82f6;--blue-dim:rgba(37,99,235,.07);
+  --green:#059669;--green-dim:rgba(5,150,105,.08);
+  --red:#dc2626;--red-dim:rgba(220,38,38,.07);
+  --amber:#d97706;--amber-dim:rgba(217,119,6,.08);
+  --purple:#7c3aed;--purple-dim:rgba(124,58,237,.08);
+  --text:#111827;--text2:#475569;--text3:#94a3b8;
+  --font:sans-serif;--monomonospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+
+/* ── PAGE ── */
+.sho-page{max-width:1280px;margin:0 auto;padding:24px 20px 80px}
+
+/* ── HEADER ── */
+.sho-top-header{
+  background:var(--navy);border-radius:14px;padding:20px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:22px;flex-wrap:wrap;gap:14px;
+  position:relative;overflow:hidden;
+}
+.sho-top-header::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#2563eb,#7c3aed,#059669,transparent);
+}
+.header-brand{display:flex;align-items:center;gap:14px}
+.header-brand-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(135deg,#1d4ed8,#2563eb);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+}
+.header-brand-title{font-size:1rem;font-weight:700;color:#f1f5f9;letter-spacing:-.01em}
+.header-brand-sub{font-family:var(--mono);font-size:.58rem;color:#64748b;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:12px}
+.header-stat-chip{
+  padding:5px 14px;border-radius:7px;font-family:var(--mono);font-size:.6rem;
+  border:1px solid;letter-spacing:.06em;
+}
+.chip-green{border-color:rgba(5,150,105,.35);color:#6ee7b7;background:rgba(5,150,105,.1)}
+.chip-blue {border-color:rgba(37,99,235,.35); color:#93c5fd;background:rgba(37,99,235,.1)}
+.chip-amber{border-color:rgba(217,119,6,.35); color:#fcd34d;background:rgba(217,119,6,.1)}
+.header-avatar{
+  width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+  display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;
+  font-size:.88rem;cursor:pointer;overflow:hidden;flex-shrink:0;border:2px solid rgba(255,255,255,.15);
+}
+.header-avatar img{width:100%;height:100%;object-fit:cover}
+
+/* ── STAT STRIP ── */
+.stat-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;
+}
+@media(max-width:768px){.stat-strip{grid-template-columns:1fr 1fr}}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:16px 18px;display:flex;align-items:center;gap:14px;
+  transition:all .2s;cursor:default;
+}
+.stat-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.32);transform:translateY(-1px)}
+.stat-icon{
+  width:42px;height:42px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:1.1rem;flex-shrink:0;
+}
+.si-blue  {background:var(--blue-dim)}
+.si-green {background:var(--green-dim)}
+.si-amber {background:var(--amber-dim)}
+.si-purple{background:var(--purple-dim)}
+.stat-lbl{font-size:.72rem;color:var(--text3);margin-bottom:3px;font-family:var(--mono);letter-spacing:.04em}
+.stat-num{font-size:1.6rem;font-weight:700;letter-spacing:-.02em;line-height:1}
+.stat-sub{font-size:.7rem;color:var(--text3);margin-top:3px}
+.num-blue  {color:var(--blue)}
+.num-green {color:var(--green)}
+.num-amber {color:var(--amber)}
+.num-purple{color:var(--purple)}
+
+/* ── MAIN LAYOUT ── */
+.sho-main{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+@media(max-width:1024px){.sho-main{grid-template-columns:1fr}}
+
+/* ── SECTION LABEL ── */
+.sec-label{
+  font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.2em;
+  text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;
+}
+.sec-label::before{content:'';width:18px;height:1px;background:linear-gradient(90deg,var(--blue),transparent)}
+
+/* ── INTEL PANEL ── */
+.intel-panel{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;margin-bottom:20px;
+}
+.intel-panel-head{
+  background:var(--navy);padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.intel-head-title{
+  font-family:var(--mono);font-size:.58rem;color:#c9a227;
+  letter-spacing:.2em;text-transform:uppercase;display:flex;align-items:center;gap:7px;
+}
+.intel-live-dot{width:5px;height:5px;border-radius:50%;background:#ff2244;animation:blink 1.4s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.intel-head-link{
+  font-family:var(--mono);font-size:.56rem;color:#c9a227;text-decoration:none;
+  padding:4px 12px;border:1px solid rgba(201,162,39,.3);border-radius:3px;transition:all .2s;
+}
+.intel-head-link:hover{background:rgba(201,162,39,.1)}
+
+/* SITREP STRIP */
+.sitrep-strip{
+  background:#07091a;border-bottom:1px solid #1c2240;padding:10px 18px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.sitrep-lbl{
+  font-family:var(--mono);font-size:.5rem;color:#c9a227;letter-spacing:.2em;
+  text-transform:uppercase;white-space:nowrap;margin-top:1px;flex-shrink:0;
+}
+.sitrep-txt{
+  font-family:var(--mono);font-size:.65rem;color:#8a93bb;line-height:1.65;flex:1;
+}
+
+/* TOP ALERT CARD */
+.top-alert-card{
+  margin:16px;border-radius:10px;padding:14px 16px;
+  background:rgba(220,38,38,.05);border:1px solid rgba(220,38,38,.2);
+  display:flex;gap:12px;align-items:flex-start;
+}
+.top-alert-risk{
+  padding:3px 10px;border-radius:4px;font-family:var(--mono);font-size:.55rem;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase;flex-shrink:0;
+  background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);color:var(--red);
+}
+.top-alert-crime{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:3px}
+.top-alert-location{font-family:var(--mono);font-size:.62rem;color:var(--text3);margin-bottom:5px}
+.top-alert-action{font-size:.75rem;color:var(--text2);line-height:1.5;display:flex;gap:5px}
+.top-alert-action::before{content:'▸';color:var(--green);flex-shrink:0}
+.sync-btn{
+  padding:5px 14px;border-radius:5px;border:1px solid rgba(5,150,105,.35);
+  background:transparent;color:var(--green);font-family:var(--mono);font-size:.6rem;
+  cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0;
+}
+.sync-btn:hover{background:var(--green-dim)}
+
+/* ALERT TABLE */
+.alert-table-wrap{padding:0 16px 6px}
+.alert-table{width:100%;border-collapse:collapse}
+.alert-table th{
+  font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text3);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;
+}
+.alert-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:.78rem;color:var(--text2);vertical-align:middle}
+.alert-table tr:last-child td{border-bottom:none}
+.risk-pill{
+  display:inline-block;padding:2px 8px;border-radius:4px;font-family:var(--mono);
+  font-size:.55rem;font-weight:700;letter-spacing:.08em;border:1px solid;
+}
+.rp-HIGH  {background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.3);color:var(--red)}
+.rp-MEDIUM{background:rgba(217,119,6,.08);border-color:rgba(217,119,6,.3);color:var(--amber)}
+.rp-LOW   {background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.25);color:var(--green)}
+.score-num{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--blue)}
+
+/* NEWS CARDS GRID */
+.news-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+  padding:14px 16px;
+}
+@media(max-width:500px){.news-grid{grid-template-columns:1fr}}
+.news-card{
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;
+  transition:all .18s;display:block;
+}
+.news-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-2px);border-color:var(--border2)}
+.news-card-img{width:100%;height:110px;object-fit:cover;background:#e2e8f0}
+.news-card-no-img{height:60px;background:linear-gradient(135deg,#1e293b,#0f172a);display:flex;align-items:center;justify-content:center;font-size:1.3rem;opacity:.5}
+.news-card-body{padding:10px 12px}
+.news-card-meta{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.news-card-risk{
+  font-family:var(--mono);font-size:.5rem;padding:1px 7px;border-radius:3px;
+  font-weight:700;border:1px solid;letter-spacing:.08em;
+}
+.ncr-HIGH  {background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.3);color:var(--red)}
+.ncr-MEDIUM{background:rgba(217,119,6,.08);border-color:rgba(217,119,6,.3);color:var(--amber)}
+.news-card-loc{font-family:var(--mono);font-size:.55rem;color:var(--text3)}
+.news-card-time{font-family:var(--mono);font-size:.52rem;color:var(--text3);margin-left:auto}
+.news-card-title{font-size:.78rem;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.news-card-action{font-size:.68rem;color:var(--blue);display:flex;gap:4px;line-height:1.4}
+.news-card-action::before{content:'▸';flex-shrink:0}
+
+/* ASK AI FOOTER */
+.intel-footer{
+  border-top:1px solid var(--border);padding:10px 16px;
+  display:flex;gap:8px;background:var(--surface2);
+}
+.ask-input{
+  flex:1;border:1px solid var(--border);border-radius:7px;
+  padding:7px 12px;font-size:.78rem;color:var(--text);font-family:var(--mono);
+  outline:none;transition:border-color .18s;background:var(--surface);
+}
+.ask-input::placeholder{color:var(--text3)}
+.ask-input:focus{border-color:var(--blue2)}
+.ask-btn{
+  padding:7px 14px;border-radius:7px;border:none;background:var(--navy);
+  color:#93c5fd;font-family:var(--mono);font-size:.62rem;cursor:pointer;transition:all .18s;white-space:nowrap;
+}
+.ask-btn:hover{background:var(--navy2)}
+.ask-answer{
+  display:none;padding:10px 16px;background:#eff6ff;border-top:1px solid #bfdbfe;
+  font-family:var(--mono);font-size:.7rem;color:#1d4ed8;line-height:1.7;
+}
+.ask-answer.on{display:block}
+.intel-spinner{width:12px;height:12px;border:2px solid #e5e7eb;border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── OFFICER WORKLOAD ── */
+.workload-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin-bottom:20px;
+}
+.officer-row{
+  display:flex;align-items:center;gap:12px;padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.officer-row:last-child{border-bottom:none}
+.officer-av{
+  width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.8rem;flex-shrink:0;
+}
+.officer-name-col{flex:1;min-width:0}
+.officer-name-val{font-size:.85rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.officer-name-sub{font-family:var(--mono);font-size:.58rem;color:var(--text3);margin-top:1px}
+.officer-bar-col{width:110px;flex-shrink:0}
+.officer-bar-lbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.55rem;color:var(--text3);margin-bottom:4px}
+.officer-bar{height:4px;background:var(--border2);border-radius:99px;overflow:hidden}
+.officer-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .8s ease}
+.officer-stats{display:flex;gap:8px;flex-shrink:0}
+.o-stat{text-align:center;min-width:30px}
+.o-stat-num{font-family:var(--mono);font-size:.72rem;font-weight:700}
+.o-stat-lbl{font-family:var(--mono);font-size:.48rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-on {background:#22c55e}
+.dot-off{background:var(--text3)}
+
+/* ── PENDING REPORTS ── */
+.reports-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;
+}
+.report-item{
+  border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;
+  transition:all .18s;
+}
+.report-item:last-child{margin-bottom:0}
+.report-item:hover{box-shadow:0 4px 14px rgba(0,0,0,.07);border-color:var(--border2)}
+.report-item.sev-high  {border-left:3px solid var(--red)}
+.report-item.sev-medium{border-left:3px solid var(--amber)}
+.report-item.sev-low   {border-left:3px solid var(--green)}
+.report-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.report-type{font-size:.88rem;font-weight:700;color:var(--text)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-family:var(--mono);font-size:.55rem;font-weight:700;border:1px solid;letter-spacing:.08em}
+.badge-pending{background:rgba(217,119,6,.08);border-color:rgba(217,119,6,.3);color:var(--amber)}
+.badge-high   {background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.3);color:var(--red)}
+.badge-medium {background:rgba(217,119,6,.08);border-color:rgba(217,119,6,.3);color:var(--amber)}
+.badge-low    {background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.25);color:var(--green)}
+.badge-ok     {background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.25);color:var(--green)}
+.badge-flagged{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.3);color:var(--red)}
+.report-meta{font-family:var(--mono);font-size:.62rem;color:var(--text3);margin-bottom:7px;display:flex;gap:10px;flex-wrap:wrap}
+.report-desc{font-size:.78rem;color:var(--text2);line-height:1.55;margin-bottom:10px}
+.report-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  padding:6px 14px;border-radius:7px;font-family:var(--mono);font-size:.62rem;
+  letter-spacing:.06em;cursor:pointer;border:1px solid;transition:all .18s;
+}
+.btn-approve{background:rgba(5,150,105,.1);border-color:rgba(5,150,105,.3);color:var(--green)}
+.btn-approve:hover{background:rgba(5,150,105,.18)}
+.btn-reject {background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.3);color:var(--red)}
+.btn-reject:hover {background:rgba(220,38,38,.14)}
+.btn-view   {background:rgba(37,99,235,.07);border-color:rgba(37,99,235,.25);color:var(--blue)}
+.btn-view:hover{background:rgba(37,99,235,.12)}
+.btn-nav{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:7px;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;cursor:pointer;
+  border:1px solid rgba(37,99,235,.25);background:rgba(37,99,235,.07);color:var(--blue);
+  text-decoration:none;transition:all .18s;
+}
+.btn-nav:hover{background:rgba(37,99,235,.12)}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:32px;font-family:var(--mono);font-size:.7rem;color:var(--text3)}
+.empty-icon{font-size:2rem;margin-bottom:8px;opacity:.4}
+
+/* ── RIGHT SIDEBAR ── */
+.right-sidebar{display:flex;flex-direction:column;gap:18px}
+
+/* PROFILE CARD */
+.profile-card{
+  background:var(--navy);border-radius:14px;padding:20px;
+  position:relative;overflow:hidden;
+}
+.profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#2563eb,#7c3aed)}
+.profile-av{
+  width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;font-weight:700;margin-bottom:12px;overflow:hidden;
+}
+.profile-av img{width:100%;height:100%;object-fit:cover}
+.profile-name{font-size:.95rem;font-weight:700;color:#f1f5f9;margin-bottom:2px}
+.profile-role{font-family:var(--mono);font-size:.58rem;color:#475569;letter-spacing:.1em}
+.profile-field{margin-top:10px;font-size:.78rem;color:#94a3b8;line-height:1.7}
+.profile-field strong{color:#cbd5e1;font-weight:500}
+.profile-edit-btn{
+  margin-top:12px;width:100%;padding:8px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
+  color:#94a3b8;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;cursor:pointer;transition:all .18s;
+}
+.profile-edit-btn:hover{background:rgba(255,255,255,.1);color:#f1f5f9}
+
+/* PROFILE SIDEBAR */
+.p-sidebar{
+  position:fixed;right:-360px;top:0;width:320px;height:100%;
+  background:var(--surface);box-shadow:-4px 0 20px rgba(0,0,0,.1);
+  padding:24px;transition:.3s;z-index:999;border-left:1px solid var(--border);
+}
+.p-sidebar.open{right:0}
+.p-sidebar-close{float:right;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text3)}
+.p-sidebar label{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:4px;margin-top:12px}
+.p-sidebar input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:.82rem;outline:none;color:var(--text);transition:border-color .18s}
+.p-sidebar input:focus{border-color:var(--blue2)}
+.p-sidebar-save{width:100%;padding:9px;background:var(--green);color:#fff;border:none;border-radius:7px;font-family:var(--mono);font-size:.68rem;cursor:pointer;margin-top:12px}
+.p-sidebar-cancel{width:100%;padding:9px;background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:7px;font-family:var(--mono);font-size:.68rem;cursor:pointer;margin-top:6px}
+
+/* QUICK LINKS */
+.quick-links{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
+.ql-title{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px}
+.ql-item{
+  display:flex;align-items:center;gap:10px;padding:9px 0;
+  border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);
+  font-size:.82rem;font-weight:500;transition:color .15s;
+}
+.ql-item:last-child{border-bottom:none}
+.ql-item:hover{color:var(--blue)}
+.ql-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.ql-count{margin-left:auto;font-family:var(--mono);font-size:.62rem;color:var(--text3)}
+.ql-count.urgent{color:var(--red);font-weight:700}
+
+/* PATTERNS CARD */
+.patterns-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
+.pattern-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.78rem}
+.pattern-item:last-child{border-bottom:none}
+.pattern-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
+.pattern-text{color:var(--text2);flex:1;line-height:1.4}
+.pattern-count{font-family:var(--mono);font-size:.62rem;color:var(--red);font-weight:700}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fu{opacity:0;animation:fadeUp .35s ease forwards}
+.fu-1{animation-delay:.04s}.fu-2{animation-delay:.08s}.fu-3{animation-delay:.12s}.fu-4{animation-delay:.16s}
+
+@media(max-width:600px){.stat-strip{grid-template-columns:1fr 1fr}.news-grid{grid-template-columns:1fr}}
+</style>
+
+<div class="sho-page">
+
+  {# ── HEADER ── #}
+  <div class="sho-top-header fu fu-1">
+    <div class="header-brand">
+      <div class="header-brand-icon">🛡</div>
+      <div>
+        <div class="header-brand-title">SHO Command Dashboard</div>
+        <div class="header-brand-sub">{% if request.user.userprofile.station %}{{ request.user.userprofile.station.name }}{% else %}Thane District Police{% endif %} · Station Head Officer</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="header-stat-chip chip-green">{{ on_duty }} On Duty</span>
+      <span class="header-stat-chip chip-amber">{{ reports|length }} Pending</span>
+      <span class="header-stat-chip chip-blue">{{ station_resolution_rate }}% Resolved</span>
+      <div class="header-avatar" onclick="openSidebar()">
+        {% if request.user.userprofile.profile_image %}
+          <img id="profileImageHome" src="{{ request.user.userprofile.profile_image.url }}" alt="Profile"/>
+        {% else %}
+          {{ request.user.username|slice:":1"|upper }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {# ── STAT STRIP ── #}
+  <div class="stat-strip">
+    <div class="stat-card fu fu-1">
+      <div class="stat-icon si-blue">👮</div>
+      <div>
+        <div class="stat-lbl">Total Officers</div>
+        <div class="stat-num num-blue">{{ total_officers }}</div>
+        <div class="stat-sub">{{ on_duty }} on duty · {{ off_duty }} off</div>
+      </div>
+    </div>
+    <div class="stat-card fu fu-2">
+      <div class="stat-icon si-amber">📋</div>
+      <div>
+        <div class="stat-lbl">Active Cases</div>
+        <div class="stat-num num-amber">{{ active_cases }}</div>
+        <div class="stat-sub">Across all officers</div>
+      </div>
+    </div>
+    <div class="stat-card fu fu-3">
+      <div class="stat-icon si-green">✅</div>
+      <div>
+        <div class="stat-lbl">Resolution Rate</div>
+        <div class="stat-num num-green">{{ station_resolution_rate }}%</div>
+        <div class="stat-sub">Station average</div>
+      </div>
+    </div>
+    <div class="stat-card fu fu-4">
+      <div class="stat-icon si-purple">🚨</div>
+      <div>
+        <div class="stat-lbl">Pending Reports</div>
+        <div class="stat-num num-purple">{{ reports|length }}</div>
+        <div class="stat-sub">Awaiting your review</div>
+      </div>
+    </div>
+  </div>
+
+  {# ── MAIN GRID ── #}
+  <div class="sho-main">
+    <div>
+
+      {# ── INTELLIGENCE PANEL ── #}
+      <div class="sec-label fu">Intelligence Feed · AI-Powered</div>
+      <div class="intel-panel fu">
+        <div class="intel-panel-head">
+          <div class="intel-head-title">
+            <span class="intel-live-dot"></span>Live Intelligence
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="sync-btn" onclick="shoSyncIntel()">↻ Sync</button>
+            <a href="{% url 'intel_center' %}" class="intel-head-link">Command Center →</a>
+          </div>
+        </div>
+
+        {# AI SITREP #}
+        <div class="sitrep-strip">
+          <span class="sitrep-lbl">SITREP</span>
+          <div class="sitrep-txt" id="sho-sitrep">
+            <span class="intel-spinner"></span> Generating situation report…
+          </div>
+        </div>
+
+        {# TOP ALERT #}
+        {% if top_alert %}
+        <div class="top-alert-card">
+          <div>
+            <span class="top-alert-risk">{{ top_alert.risk_level }}</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="top-alert-crime">{{ top_alert.crime_type }} · Priority {{ top_alert.priority_score }}</div>
+            <div class="top-alert-location">📍 {{ top_alert.location }}</div>
+            <div class="top-alert-action">{{ top_alert.suggested_action|truncatechars:80 }}</div>
+          </div>
+          <a href="{% url 'intel_detail' top_alert.id %}" style="font-family:var(--mono);font-size:.58rem;color:var(--blue);text-decoration:none;white-space:nowrap;flex-shrink:0;padding-top:2px">View →</a>
+        </div>
+        {% endif %}
+
+        {# ALERT TABLE #}
+        {% if top_alerts %}
+        <div class="alert-table-wrap">
+          <table class="alert-table">
+            <thead>
+              <tr>
+                <th>Crime Type</th>
+                <th>Location</th>
+                <th>Risk</th>
+                <th>Score</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for alert in top_alerts %}
+              <tr>
+                <td style="font-weight:500;color:var(--text)">{{ alert.crime_type }}</td>
+                <td>{{ alert.location }}</td>
+                <td><span class="risk-pill rp-{{ alert.risk_level }}">{{ alert.risk_level }}</span></td>
+                <td><span class="score-num">{{ alert.priority_score }}</span></td>
+                <td><a href="{% url 'intel_detail' alert.id %}" style="font-family:var(--mono);font-size:.58rem;color:var(--blue);text-decoration:none">Detail →</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+
+        {# NEWS CARDS #}
+        {% if top_news_cards %}
+        <div class="news-grid">
+          {% for news in top_news_cards %}
+          <a href="{% url 'intel_detail' news.id %}" class="news-card">
+            {% if news.image_url %}
+              <img src="{{ news.image_url }}" class="news-card-img" alt=""/>
+            {% else %}
+              <div class="news-card-no-img">📰</div>
+            {% endif %}
+            <div class="news-card-body">
+              <div class="news-card-meta">
+                <span class="news-card-risk ncr-{{ news.risk_level }}">{{ news.risk_level }}</span>
+                <span class="news-card-loc">{{ news.location }}</span>
+                <span class="news-card-time">{{ news.published_at|time_ago }}</span>
+              </div>
+              <div class="news-card-title">{{ news.title|truncatechars:70 }}</div>
+              <div class="news-card-action">{{ news.suggested_action|truncatechars:55 }}</div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {# ASK AI #}
+        
+      {# ── PENDING CRIME REPORTS ── #}
+      <div class="sec-label fu">Pending Crime Reports</div>
+      <div class="reports-card fu">
+        {% if reports %}
+          {% for report in reports %}
+          {% with sev=report.severity_score|default:0 %}
+          <div class="report-item {% if sev >= 7 %}sev-high{% elif sev >= 4 %}sev-medium{% else %}sev-low{% endif %}">
+            <div class="report-header">
+              <span class="report-type">{{ report.crime_type }}</span>
+              <div style="display:flex;gap:5px;flex-wrap:wrap">
+                <span class="badge badge-pending">Pending Review</span>
+                {% if sev >= 7 %}<span class="badge badge-high">Sev {{ sev|floatformat:1 }}</span>
+                {% elif sev >= 4 %}<span class="badge badge-medium">Sev {{ sev|floatformat:1 }}</span>
+                {% else %}<span class="badge badge-low">Sev {{ sev|floatformat:1 }}</span>{% endif %}
+                {% if report.ai_status == "Flagged" %}<span class="badge badge-flagged">⚠ AI Flagged</span>
+                {% else %}<span class="badge badge-ok">✓ Evidence OK</span>{% endif %}
+              </div>
+            </div>
+            <div class="report-meta">
+              <span>By: {{ report.reported_by.get_full_name|default:report.reported_by.username }}</span>
+              <span>📍 {{ report.address|truncatechars:40 }}</span>
+              <span>{{ report.reported_at|date:"d M Y, H:i" }}</span>
+            </div>
+            <div class="report-desc">{{ report.description|truncatechars:160 }}</div>
+            <div class="report-actions">
+              <form method="post" action="{% url 'sho_approve_report' report.id %}" style="display:inline">
+                {% csrf_token %}<input type="hidden" name="decision" value="approve">
+                <button type="submit" class="btn btn-approve">✓ Approve</button>
+              </form>
+              <button class="btn btn-reject" onclick="approveCrime({{ report.id }})">✗ Reject</button>
+              {% if report.photos.all or report.video %}
+              <button class="btn btn-view" onclick="viewEvidence({{ report.id }})">👁 Evidence</button>
+              {% endif %}
+            </div>
+          </div>
+          {% endwith %}
+          {% endfor %}
+        {% else %}
+          <div class="empty"><div class="empty-icon">🎉</div>No pending reports right now</div>
+        {% endif %}
+      </div>
+
+      {# ── OFFICER WORKLOAD ── #}
+      <div class="sec-label fu">Officer Workload Tracker</div>
+      <div class="workload-card fu">
+        {% for officer in officers %}
+        <div class="officer-row">
+          <div class="officer-av">{{ officer.name|slice:":1"|upper }}</div>
+          <div class="officer-name-col">
+            <div class="officer-name-val">{{ officer.name }}</div>
+            <div class="officer-name-sub">{{ officer.username }}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <div class="status-dot {% if officer.status == 'on_duty' %}dot-on{% else %}dot-off{% endif %}"></div>
+            <span style="font-family:var(--mono);font-size:.58rem;color:var(--text3)">{% if officer.status == 'on_duty' %}On Duty{% else %}Off Duty{% endif %}</span>
+          </div>
+          <div class="officer-bar-col">
+            <div class="officer-bar-lbl">
+              <span>Resolution</span><span>{{ officer.resolution_rate }}%</span>
+            </div>
+            <div class="officer-bar">
+              <div class="officer-bar-fill" style="width:{{ officer.resolution_rate }}%"></div>
+            </div>
+          </div>
+          <div class="officer-stats">
+            <div class="o-stat">
+              <div class="o-stat-num num-blue">{{ officer.total_cases }}</div>
+              <div class="o-stat-lbl">Total</div>
+            </div>
+            <div class="o-stat">
+              <div class="o-stat-num num-green">{{ officer.resolved_cases }}</div>
+              <div class="o-stat-lbl">Done</div>
+            </div>
+            <div class="o-stat">
+              <div class="o-stat-num num-amber">{{ officer.pending_cases }}</div>
+              <div class="o-stat-lbl">Open</div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty">No officers at this station</div>
+        {% endfor %}
+      </div>
+
+    </div>{# end left col #}
+
+    {# ── RIGHT SIDEBAR ── #}
+    <div class="right-sidebar">
+
+      {# PROFILE CARD #}
+      <div class="profile-card fu">
+        <div class="profile-av">
+          {% if request.user.userprofile.profile_image %}
+            <img src="{{ request.user.userprofile.profile_image.url }}" alt=""/>
+          {% else %}
+            {{ request.user.username|slice:":1"|upper }}
+          {% endif %}
+        </div>
+        <div class="profile-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+        <div class="profile-role">Station Head Officer</div>
+        <div class="profile-field">
+          <strong>Station:</strong> {% if request.user.userprofile.station %}{{ request.user.userprofile.station.name }}{% else %}—{% endif %}<br>
+          <strong>Contact:</strong> {{ request.user.userprofile.contact|default:"—" }}<br>
+          <strong>Address:</strong> {{ request.user.userprofile.address|default:"—" }}
+        </div>
+        <button class="profile-edit-btn" onclick="openSidebar()">Edit Profile</button>
+      </div>
+
+      {# QUICK LINKS #}
+      <div class="quick-links fu">
+        
+      </div>
+
+      {# CRIME PATTERNS #}
+      {% if patterns %}
+      <div class="patterns-card fu">
+        <div class="ql-title">Crime Patterns · 24h</div>
+        {% for p in patterns %}
+        <div class="pattern-item">
+          <div class="pattern-dot"></div>
+          <div class="pattern-text">{{ p.crime_type }} rising in {{ p.location }}</div>
+          <div class="pattern-count">{{ p.count }}×</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {# TRENDS #}
+      {% if trends %}
+      <div class="quick-links fu">
+        <div class="ql-title">Crime Trends · 48h</div>
+        {% for t in trends %}
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.75rem;color:var(--text2)">
+          <span style="flex:1">{{ t.crime_type }} in {{ t.location }}</span>
+          <span style="font-family:var(--mono);font-size:.6rem;color:
+            {% if 'INCREASING' in t.trend %}var(--red){% elif 'NEW' in t.trend %}var(--amber){% else %}var(--text3){% endif %}">
+            {{ t.trend }}
+          </span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>{# end right sidebar #}
+  </div>{# end main grid #}
+</div>{# end sho-page #}
+
+{# ── PROFILE SIDEBAR ── #}
+<div class="p-sidebar" id="profileSidebar">
+  <button class="p-sidebar-close" onclick="closeSidebar()" id="profileCloseBtn">×</button>
+  <div style="margin-top:24px">
+    <div style="font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:16px">Edit Profile</div>
+
+    <div id="sidebarImgWrap" style="margin-bottom:14px">
+      {% if request.user.userprofile.profile_image %}
+        <img id="profileImageSidebar" src="{{ request.user.userprofile.profile_image.url }}"
+             style="width:60px;height:60px;border-radius:50%;object-fit:cover"/>
+      {% else %}
+        <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1.1rem">{{ request.user.username|slice:":1"|upper }}</div>
+      {% endif %}
+    </div>
+
+    <div id="profileView">
+      <button type="button" onclick="toggleEdit(true)"
+        style="padding:7px 14px;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--text2);font-family:var(--mono);font-size:.62rem;cursor:pointer">
+        Edit Profile
+      </button>
+    </div>
+
+    <div id="profileEdit" style="display:none">
+      <form id="profileEditForm" enctype="multipart/form-data">
+        <button type="button" id="shoChangeProfileBtn"
+          style="padding:5px 12px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--text3);font-family:var(--mono);font-size:.6rem;cursor:pointer;margin-bottom:10px">
+          Change Photo
+        </button>
+        <input type="file" id="shoEditProfileImage" accept="image/*" style="display:none"/>
+        <label>Full Name</label>
+        <input type="text" id="shoEditFullName" value="{{ request.user.get_full_name }}"/>
+        <label>Contact</label>
+        <input type="text" id="shoEditContact" value="{{ request.user.userprofile.contact }}"/>
+        <label>Address</label>
+        <input type="text" id="shoEditAddress" value="{{ request.user.userprofile.address }}"/>
+        <button type="button" id="shoSaveProfileBtn" class="p-sidebar-save">Save Changes</button>
+        <button type="button" onclick="toggleEdit(false)" class="p-sidebar-cancel">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Profile sidebar ───────────────────────────────────────────────────────
+function openSidebar()  { document.getElementById('profileSidebar').classList.add('open'); }
+function closeSidebar() { document.getElementById('profileSidebar').classList.remove('open'); }
+function toggleEdit(show) {
+  document.getElementById('profileView').style.display  = show ? 'none'  : 'block';
+  document.getElementById('profileEdit').style.display = show ? 'block' : 'none';
+}
+
+document.getElementById('shoChangeProfileBtn').addEventListener('click', () => {
+  document.getElementById('shoEditProfileImage').click();
+});
+document.getElementById('shoEditProfileImage').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const imgs = document.querySelectorAll('#profileImageSidebar, #profileImageHome');
+    imgs.forEach(img => { if (img) img.src = e.target.result; });
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('shoSaveProfileBtn').addEventListener('click', function() {
+  const fd = new FormData();
+  const name = document.getElementById('shoEditFullName').value;
+  fd.append('first_name', name.split(' ')[0] || '');
+  fd.append('last_name',  name.split(' ').slice(1).join(' ') || '');
+  fd.append('contact',    document.getElementById('shoEditContact').value);
+  fd.append('address',    document.getElementById('shoEditAddress').value);
+  const img = document.getElementById('shoEditProfileImage').files[0];
+  if (img) fd.append('profile_image', img);
+
+  fetch("{% url 'update_profile' %}", {
+    method: 'POST',
+    headers: { 'X-CSRFToken': getCSRF() },
+    body: fd,
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success') {
+      Swal.fire('Saved!', 'Profile updated.', 'success');
+      toggleEdit(false);
+      if (data.profile_image_url) {
+        const url = data.profile_image_url + '?t=' + Date.now();
+        document.querySelectorAll('#profileImageSidebar,#profileImageHome').forEach(el => { if (el) el.src = url; });
+      }
+    } else {
+      Swal.fire('Error', data.message || 'Update failed', 'error');
+    }
+  })
+  .catch(() => Swal.fire('Error', 'Something went wrong', 'error'));
+});
+
+// ── Crime actions ─────────────────────────────────────────────────────────
+function approveCrime(id) {
+  Swal.fire({title:'Reject this report?',input:'textarea',inputPlaceholder:'Reason for rejection...',showCancelButton:true,confirmButtonText:'Reject',confirmButtonColor:'#dc2626'})
+    .then(result => {
+      if (!result.isConfirmed) return;
+      const fd = new FormData();
+      fd.append('decision','reject');
+      fd.append('rejection_note', result.value||'');
+      fetch(`/reject-crime/${id}/`, { method:'POST', headers:{'X-CSRFToken':getCSRF()}, body:fd })
+        .then(r => r.json())
+        .then(() => location.reload())
+        .catch(() => Swal.fire('Error','Something went wrong','error'));
+    });
+}
+
+function viewEvidence(id) {
+  fetch(`/view-evidence/${id}/`, { credentials:'same-origin' })
+    .then(r => r.json())
+    .then(data => {
+      let html = '';
+      if (data.video_url) html += `<video width="100%" height="240" controls style="border-radius:8px;margin-bottom:10px"><source src="${data.video_url}" type="video/mp4"></video>`;
+      if (data.photo_urls?.length) data.photo_urls.forEach(url => {
+        html += `<img src="${url}" style="width:100%;border-radius:8px;margin-bottom:8px;display:block">`;
+      });
+      if (!html) html = '<p style="color:#94a3b8;text-align:center;padding:20px">No evidence files available</p>';
+      Swal.fire({ title:'Evidence', html, width:'640px', confirmButtonText:'Close' });
+    })
+    .catch(() => Swal.fire('Error','Failed to load evidence','error'));
+}
+
+// ── Intel AI ──────────────────────────────────────────────────────────────
+(async function loadSitrep() {
+  try {
+    const res  = await fetch('/api/intel/sitrep/');
+    const data = await res.json();
+    document.getElementById('sho-sitrep').textContent = data.sitrep || 'SITREP unavailable.';
+  } catch(e) {
+    document.getElementById('sho-sitrep').textContent = 'Intelligence feed unavailable.';
+  }
+})();
+
+async function shoAskIntel() {
+  const q   = document.getElementById('sho-ask-input').value.trim();
+  const ans = document.getElementById('sho-ask-answer');
+  if (!q) return;
+  ans.innerHTML = '<span class="intel-spinner"></span> Querying…';
+  ans.classList.add('on');
+  try {
+    const res  = await fetch('/api/intel/ask/', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+      body: JSON.stringify({question:q}),
+    });
+    const data = await res.json();
+    ans.textContent = data.answer || 'No data in current feed.';
+  } catch(e) {
+    ans.textContent = 'Query failed. Try again.';
+  }
+}
+document.getElementById('sho-ask-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') shoAskIntel();
+});
+
+async function shoSyncIntel() {
+  try {
+    await fetch('/sync-news/');
+    location.reload();
+  } catch(e) {}
+}
+
+function getCSRF() {
+  const c = document.cookie.split('; ').find(r => r.startsWith('csrftoken='));
+  return c ? decodeURIComponent(c.split('=')[1]) : '';
+}
+</script>
+{% endblock %}

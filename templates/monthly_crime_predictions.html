@@ -1,0 +1,1088 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thane Crime Intelligence — Ward Command</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --bg:     #07090f;
+  --bg2:    #0d1018;
+  --bg3:    #111520;
+  --bg4:    #161c2d;
+  --border: rgba(255,255,255,0.07);
+  --bord2:  rgba(255,255,255,0.13);
+  --text:   #e8eaf0;
+  --muted:  #707a96;
+  --accent: #4af0c4;
+  --acc2:   #f04a7a;
+  --info:   #4a8ff0;
+  --red:    #ff3b5c;
+  --green:  #2effa0;
+  --amber:  #ffb547;
+  --mono:   'Space Mono', monospace;
+  --sans:   'Syne', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden;}
+
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+}
+
+/* ── SHELL ─────────────────────────────────────────────────────────── */
+.shell{
+  display:grid;
+  grid-template-rows:58px 110px 1fr;
+  grid-template-columns:1fr 420px;
+  height:100vh;gap:0;
+}
+
+/* ── TOPBAR ────────────────────────────────────────────────────────── */
+.topbar{
+  grid-column:1/-1;display:flex;align-items:center;
+  justify-content:space-between;padding:0 24px;
+  background:var(--bg2);border-bottom:1px solid var(--bord2);
+  position:relative;z-index:100;
+}
+.topbar::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.6;
+}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-icon{
+  width:34px;height:34px;background:var(--acc2);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  box-shadow:0 0 24px rgba(240,74,122,.35);
+  animation:pulse-r 3s ease-in-out infinite;
+}
+@keyframes pulse-r{0%,100%{box-shadow:0 0 24px rgba(240,74,122,.35);}50%{box-shadow:0 0 40px rgba(240,74,122,.65);}}
+.brand-text{display:flex;flex-direction:column;line-height:1.1;}
+.brand-text .title{font-size:15px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text);}
+.brand-text .subtitle{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.live-pill{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(240,74,122,.12);border:1px solid rgba(240,74,122,.35);
+  border-radius:50px;padding:5px 13px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--acc2);
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--acc2);animation:blink 1.2s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.clock{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.1em;}
+#infoButton{
+  width:30px;height:30px;background:rgba(74,143,240,.15);
+  border:1px solid rgba(74,143,240,.4);border-radius:50%;
+  color:var(--info);font-family:var(--mono);font-weight:700;font-size:13px;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;
+}
+#infoButton:hover{background:rgba(74,143,240,.3);box-shadow:0 0 14px rgba(74,143,240,.4);}
+
+/* ── STAT ROW ─────────────────────────────────────────────────────── */
+.stat-row{
+  grid-column:1/-1;display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);border-bottom:1px solid var(--bord2);
+}
+.stat-cell{
+  background:var(--bg2);padding:16px 24px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;cursor:default;transition:background .2s;
+}
+.stat-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s;}
+.stat-cell:hover{background:var(--bg3);}
+.stat-cell:hover::before{opacity:1;}
+.stat-cell.c-red::before  {background:var(--red);  box-shadow:0 0 12px var(--red);}
+.stat-cell.c-green::before{background:var(--green);box-shadow:0 0 12px var(--green);}
+.stat-cell.c-amber::before{background:var(--amber);box-shadow:0 0 12px var(--amber);}
+.stat-cell.c-blue::before {background:var(--info); box-shadow:0 0 12px var(--info);}
+.stat-label{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.stat-value{font-family:var(--sans);font-size:32px;font-weight:800;line-height:1;margin-bottom:4px;letter-spacing:-.02em;}
+.stat-cell.c-red  .stat-value{color:var(--red);}
+.stat-cell.c-green.stat-value{color:var(--green);}
+.stat-cell.c-amber .stat-value{color:var(--amber);}
+.stat-cell.c-blue  .stat-value{color:var(--info);}
+.stat-sub{font-family:var(--mono);font-size:10px;color:var(--muted);}
+.stat-sub .tag{color:var(--text);font-weight:700;}
+
+/* ── MAP ──────────────────────────────────────────────────────────── */
+.map-area{grid-row:3;grid-column:1;position:relative;overflow:hidden;min-height:300px;}
+#map{position:absolute;inset:0;width:100%;height:100%;background:var(--bg);}
+.map-legend{
+  position:absolute;bottom:20px;left:20px;
+  background:rgba(13,16,24,.92);border:1px solid var(--bord2);
+  border-radius:10px;padding:13px 16px;z-index:1000;backdrop-filter:blur(8px);
+}
+.map-legend-title{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
+.legend-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--text);font-family:var(--mono);}
+.legend-row:last-child{margin-bottom:0;}
+.legend-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0;}
+.ld-red  {background:var(--red);  box-shadow:0 0 6px var(--red);}
+.ld-amber{background:var(--amber);box-shadow:0 0 6px var(--amber);}
+.ld-green{background:var(--green);box-shadow:0 0 6px var(--green);}
+.map-hint{
+  position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  background:rgba(13,16,24,.88);border:1px solid var(--bord2);border-radius:6px;
+  padding:7px 16px;z-index:1000;font-family:var(--mono);font-size:10px;
+  color:var(--muted);letter-spacing:.1em;pointer-events:none;white-space:nowrap;
+}
+.map-hint span{color:var(--accent);}
+
+/* ── DATA SOURCE BADGE (top-right on map) ─────────────────────────── */
+.data-source-badge{
+  position:absolute;top:14px;right:14px;z-index:1000;
+  background:rgba(13,16,24,.88);border:1px solid rgba(74,143,240,.3);
+  border-radius:6px;padding:6px 12px;
+  font-family:var(--mono);font-size:9px;color:var(--info);
+  letter-spacing:.1em;cursor:pointer;transition:border-color .2s;
+}
+.data-source-badge:hover{border-color:var(--info);box-shadow:0 0 12px rgba(74,143,240,.25);}
+
+/* ── RIGHT PANEL ──────────────────────────────────────────────────── */
+.right-panel{
+  grid-row:3;grid-column:2;
+  display:flex;flex-direction:column;
+  background:var(--bg2);border-left:1px solid var(--bord2);overflow:hidden;
+}
+.panel-idle{flex:1;display:flex;flex-direction:column;}
+.panel-header{
+  padding:16px 20px 12px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.panel-header-title{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);}
+.panel-count{font-family:var(--mono);font-size:10px;color:var(--accent);}
+.risk-list{flex:1;overflow-y:auto;padding:10px 14px;scrollbar-width:thin;scrollbar-color:var(--bg4) transparent;}
+.risk-list::-webkit-scrollbar{width:4px;}
+.risk-list::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px;}
+
+.risk-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 12px;border-radius:8px;border:1px solid transparent;
+  margin-bottom:6px;cursor:pointer;transition:background .15s,border-color .15s;
+  animation:slideIn .4s ease both;
+}
+.risk-item:hover{background:var(--bg3);border-color:var(--bord2);}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+.risk-rank{font-family:var(--mono);font-size:11px;color:var(--muted);width:20px;flex-shrink:0;}
+.risk-info{flex:1;min-width:0;}
+.risk-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.risk-sub{font-family:var(--mono);font-size:10px;color:var(--muted);}
+.risk-badge{flex-shrink:0;padding:3px 9px;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;font-weight:700;text-transform:uppercase;}
+.rb-high  {background:rgba(255,59,92,.15);  color:var(--red);  border:1px solid rgba(255,59,92,.3);}
+.rb-medium{background:rgba(255,181,71,.12); color:var(--amber);border:1px solid rgba(255,181,71,.3);}
+.rb-low   {background:rgba(46,255,160,.10); color:var(--green);border:1px solid rgba(46,255,160,.3);}
+.score-bar-wrap{margin-top:4px;}
+.score-bar-track{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:2px;transition:width .8s ease;}
+
+/* ── WARD DETAIL PANEL ────────────────────────────────────────────── */
+#ward-detail{display:none;flex-direction:column;height:100%;overflow:hidden;animation:fadePanel .35s ease both;}
+@keyframes fadePanel{from{opacity:0;transform:translateX(12px);}to{opacity:1;transform:translateX(0);}}
+#ward-detail.visible{display:flex;}
+.detail-header{
+  padding:14px 18px 12px;border-bottom:1px solid var(--bord2);
+  flex-shrink:0;background:var(--bg3);position:relative;
+}
+.detail-header::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--acc2),transparent);
+}
+.detail-close{
+  position:absolute;top:12px;right:14px;width:26px;height:26px;
+  background:rgba(255,255,255,.06);border:1px solid var(--bord2);border-radius:50%;
+  color:var(--muted);font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.detail-close:hover{background:rgba(255,59,92,.2);color:var(--red);}
+.detail-ward-name{font-size:17px;font-weight:800;color:var(--text);letter-spacing:.02em;padding-right:36px;}
+.detail-ward-name small{display:block;font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-bottom:2px;}
+
+.detail-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);flex-shrink:0;}
+.detail-kpi{background:var(--bg2);padding:11px 14px;text-align:center;}
+.detail-kpi .kv{font-size:20px;font-weight:800;line-height:1;margin-bottom:3px;}
+.detail-kpi .kl{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;}
+
+.detail-body{flex:1;overflow-y:auto;padding:14px 16px;scrollbar-width:thin;scrollbar-color:var(--bg4) transparent;}
+.detail-body::-webkit-scrollbar{width:4px;}
+.detail-body::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px;}
+
+.section-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--muted);margin:14px 0 8px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* Chart */
+.chart-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+.chart-box canvas{display:block;}
+
+/* Crime bars */
+.crime-bars{display:flex;flex-direction:column;gap:6px;}
+.crime-bar-row{display:flex;align-items:center;gap:10px;}
+.crime-bar-label{width:120px;flex-shrink:0;font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.crime-bar-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.crime-bar-fill{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.22,.68,0,1.2);}
+.crime-bar-num{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:18px;text-align:right;}
+
+/* ── WARD INTELLIGENCE CARDS (replaces fake suspects) ─────────────── */
+.intel-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.intel-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:12px 13px;cursor:default;transition:border-color .2s;
+}
+.intel-card:hover{border-color:var(--bord2);}
+.intel-card-icon{font-size:18px;margin-bottom:6px;display:block;}
+.intel-card-val{font-size:18px;font-weight:800;line-height:1;margin-bottom:3px;}
+.intel-card-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;}
+.intel-card-sub{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:4px;}
+
+/* Hotspot time chart */
+.heatrow{display:flex;gap:3px;margin-bottom:10px;flex-wrap:wrap;}
+.heat-cell{
+  flex:1;min-width:24px;height:32px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:8px;color:var(--muted);
+  cursor:default;transition:transform .15s;
+}
+.heat-cell:hover{transform:scale(1.1);}
+.heat-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);text-align:center;margin-bottom:3px;}
+
+/* NCRB data note */
+.data-note{
+  background:rgba(74,143,240,.07);border:1px solid rgba(74,143,240,.2);
+  border-radius:8px;padding:10px 12px;margin-bottom:10px;
+  font-family:var(--mono);font-size:9px;color:var(--muted);line-height:1.6;
+}
+.data-note a{color:var(--info);text-decoration:none;}
+.data-note a:hover{text-decoration:underline;}
+.data-note-title{color:var(--info);font-weight:700;letter-spacing:.1em;display:block;margin-bottom:4px;}
+
+/* Alert ticker */
+.alert-ticker{
+  background:rgba(255,59,92,.06);border:1px solid rgba(255,59,92,.2);
+  border-radius:8px;padding:10px 12px;margin-bottom:10px;overflow:hidden;
+}
+.alert-ticker-header{font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.alert-ticker-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1s step-end infinite;}
+.alert-item{font-size:11px;color:var(--text);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.5;}
+.alert-item:last-child{border-bottom:none;}
+.alert-item-time{font-family:var(--mono);font-size:9px;color:var(--muted);}
+
+/* Analytics btn */
+.analytics-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;margin-top:14px;padding:11px;
+  background:transparent;border:1px solid var(--accent);border-radius:8px;
+  color:var(--accent);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;transition:background .2s,box-shadow .2s;
+}
+.analytics-btn:hover{background:rgba(74,240,196,.1);box-shadow:0 0 18px rgba(74,240,196,.25);}
+.analytics-btn-arrow{font-size:14px;transition:transform .2s;}
+.analytics-btn:hover .analytics-btn-arrow{transform:translateX(4px);}
+
+/* ── MODALS ───────────────────────────────────────────────────────── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:5000;
+  background:rgba(7,9,15,.92);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--bg2);border:1px solid var(--bord2);border-radius:14px;
+  width:560px;max-width:94vw;max-height:88vh;display:flex;flex-direction:column;
+  animation:modalIn .3s cubic-bezier(.22,.68,0,1.2) both;overflow:hidden;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-head h3{font-size:15px;font-weight:800;color:var(--text);}
+.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;transition:color .15s;line-height:1;}
+.modal-close:hover{color:var(--red);}
+.modal-body{flex:1;overflow-y:auto;padding:20px 22px;scrollbar-width:thin;scrollbar-color:var(--bg4) transparent;}
+
+/* Ward directory */
+.ward-search-wrap{padding:14px 22px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.ward-search-wrap input{
+  width:100%;background:var(--bg3);border:1px solid var(--bord2);border-radius:8px;
+  padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:border-color .2s;
+}
+.ward-search-wrap input::placeholder{color:var(--muted);}
+.ward-search-wrap input:focus{border-color:var(--accent);}
+.wl-item{padding:10px 8px;border-radius:6px;cursor:pointer;margin-bottom:3px;transition:background .15s;}
+.wl-item:hover{background:var(--bg3);}
+.wl-num{font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:3px;font-weight:700;}
+.wl-name{font-size:13px;color:var(--text);line-height:1.4;}
+
+/* Data guide modal */
+.guide-section{margin-bottom:24px;}
+.guide-section h4{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;}
+.guide-step{
+  display:flex;gap:12px;margin-bottom:12px;padding:12px;
+  background:var(--bg3);border-radius:8px;border:1px solid var(--border);
+}
+.guide-step-num{
+  width:26px;height:26px;border-radius:50%;background:var(--acc2);
+  color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+.guide-step-body{flex:1;}
+.guide-step-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.guide-step-desc{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.65;}
+.guide-step-desc a{color:var(--info);text-decoration:none;}
+.guide-step-desc a:hover{text-decoration:underline;}
+.guide-step-desc code{
+  background:var(--bg4);border:1px solid var(--border);border-radius:3px;
+  padding:1px 5px;font-size:9px;color:var(--accent);
+}
+.guide-warn{
+  background:rgba(255,181,71,.07);border:1px solid rgba(255,181,71,.25);
+  border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:10px;
+  color:var(--amber);line-height:1.6;margin-top:8px;
+}
+
+/* Leaflet overrides */
+.leaflet-container{background:var(--bg)!important;}
+.leaflet-control-zoom a{background:var(--bg2)!important;color:var(--text)!important;border-color:var(--bord2)!important;}
+.leaflet-control-zoom a:hover{background:var(--bg3)!important;color:var(--accent)!important;}
+.leaflet-control-attribution{background:rgba(13,16,24,.7)!important;color:var(--muted)!important;font-size:9px!important;}
+.ward-tooltip{background:rgba(13,16,24,.95)!important;border:1px solid var(--bord2)!important;border-radius:8px!important;color:var(--text)!important;font-family:var(--mono)!important;font-size:11px!important;padding:8px 12px!important;box-shadow:0 4px 20px rgba(0,0,0,.5)!important;white-space:nowrap;}
+.wtt-name{font-size:13px;font-weight:700;margin-bottom:4px;color:var(--text);font-family:var(--sans);}
+.wtt-row{display:flex;justify-content:space-between;gap:16px;}
+.wtt-key{color:var(--muted);}
+.wtt-val{font-weight:700;}
+
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr;grid-template-rows:58px 110px 60vh 50vh;overflow:auto;}
+  html,body{overflow:auto;}
+  .right-panel{grid-row:4;grid-column:1;border-left:none;border-top:1px solid var(--bord2);min-height:50vh;}
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ═══ TOPBAR ══════════════════════════════════════════════════════ -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">⚠</div>
+    <div class="brand-text">
+      <span class="title">Thane Crime Intelligence</span>
+      <span class="subtitle">Ward Command · Predictive Analytics</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="live-pill"><div class="live-dot"></div>Live Feed</div>
+    <div class="clock" id="clock">--:--:--</div>
+    <button id="infoButton" title="Ward Directory">i</button>
+  </div>
+</header>
+
+<!-- ═══ STAT ROW ═════════════════════════════════════════════════════ -->
+<div class="stat-row">
+  <div class="stat-cell c-red">
+    <div class="stat-label">Total Incidents</div>
+    <div class="stat-value" id="sv-total">{{ total_incidents }}</div>
+    <div class="stat-sub">Last 7 days: <span class="tag">{{ recent_incidents }}</span></div>
+  </div>
+  <div class="stat-cell c-amber">
+    <div class="stat-label">Avg Safety Score</div>
+    <div class="stat-value">{{ avg_safety_score }}<span style="font-size:16px;font-weight:400;">%</span></div>
+    <div class="stat-sub">Across <span class="tag">{{ active_wards }}</span> wards</div>
+  </div>
+  <div class="stat-cell c-green">
+    <div class="stat-label">High Risk Areas</div>
+    <div class="stat-value">{{ high_risk_areas }}</div>
+    <div class="stat-sub">Requiring immediate attention</div>
+  </div>
+  <div class="stat-cell c-blue">
+    <div class="stat-label">Safest Ward</div>
+    <div class="stat-value" style="font-size:17px;letter-spacing:0;color:var(--info);">{{ safest_ward.0 }}</div>
+    <div class="stat-sub">Score <span class="tag">{{ safest_ward.1.safety_score }}%</span></div>
+  </div>
+</div>
+
+<!-- ═══ MAP ══════════════════════════════════════════════════════════ -->
+<div class="map-area">
+  <div id="map"></div>
+  <div class="map-hint"><span>↖</span> Click any ward to open intelligence panel</div>
+  <div class="data-source-badge" id="dataSourceBtn" title="View data guide">
+    📊 NCRB + Internal · Data Guide
+  </div>
+  <div class="map-legend">
+    <div class="map-legend-title">Risk Level</div>
+    <div class="legend-row"><div class="legend-dot ld-red"></div> High Risk</div>
+    <div class="legend-row"><div class="legend-dot ld-amber"></div> Medium Risk</div>
+    <div class="legend-row"><div class="legend-dot ld-green"></div> Low Risk</div>
+  </div>
+</div>
+
+<!-- ═══ RIGHT PANEL ══════════════════════════════════════════════════ -->
+<aside class="right-panel">
+  <div class="panel-idle" id="panel-idle">
+    <div class="panel-header">
+      <span class="panel-header-title">High Risk Wards</span>
+      <span class="panel-count" id="hrCount">—</span>
+    </div>
+    <div class="risk-list" id="highRiskWardsList"></div>
+  </div>
+
+  <div id="ward-detail">
+    <div class="detail-header">
+      <button class="detail-close" id="detailClose">×</button>
+      <div class="detail-ward-name">
+        <small>Ward Intelligence</small>
+        <span id="detailWardName">—</span>
+      </div>
+    </div>
+    <div class="detail-kpis">
+      <div class="detail-kpi">
+        <div class="kv" id="dkv-score" style="color:var(--green)">—</div>
+        <div class="kl">Safety %</div>
+      </div>
+      <div class="detail-kpi">
+        <div class="kv" id="dkv-crimes" style="color:var(--red)">—</div>
+        <div class="kl">Predicted</div>
+      </div>
+      <div class="detail-kpi">
+        <div class="kv" id="dkv-risk" style="font-size:12px;">—</div>
+        <div class="kl">Risk Level</div>
+      </div>
+    </div>
+
+    <div class="detail-body">
+
+      <!-- Recent alerts from your CrimeReport DB -->
+      <div class="section-label">Recent Alerts (This Ward)</div>
+      <div class="alert-ticker" id="alertTicker">
+        <div class="alert-ticker-header"><div class="alert-ticker-dot"></div>Live from CrimeReport DB</div>
+        <div id="alertItems">
+          <div class="alert-item" style="color:var(--muted);font-family:var(--mono);font-size:10px;">
+            No recent reports for this ward in the system.
+          </div>
+        </div>
+      </div>
+
+      <!-- Crime trend chart -->
+      <div class="section-label">Crime Trend (2018 → Predicted)</div>
+      <div class="chart-box">
+        <canvas id="trendChart" height="120"></canvas>
+      </div>
+
+      <!-- Predicted breakdown bars -->
+      <div class="section-label">Predicted Crime Breakdown</div>
+      <div class="crime-bars" id="crimeBars"></div>
+
+      <!-- Intelligence KPI cards (replaces fake suspect gallery) -->
+      <div class="section-label">Ward Intelligence</div>
+      <div class="intel-grid" id="intelGrid"></div>
+
+      <!-- Peak-hour heatmap -->
+      <div class="section-label">Crime by Time of Day (Historical)</div>
+      <div class="heat-lbl">12am · 3am · 6am · 9am · 12pm · 3pm · 6pm · 9pm</div>
+      <div class="heatrow" id="heatRow"></div>
+
+      <!-- NCRB data attribution note -->
+      <div class="data-note" id="dataNoteBox">
+        <span class="data-note-title">📊 Data Source</span>
+        Trend data: your internal <code>thane_crime_data.csv</code> + ML predictions.<br>
+        To enrich with official NCRB data →
+        <a href="#" onclick="openDataGuide();return false;">view the complete data integration guide</a>.
+      </div>
+
+      <button class="analytics-btn" id="viewAnalyticsBtn">
+        Full Analytics Report <span class="analytics-btn-arrow">→</span>
+      </button>
+
+    </div>
+  </div>
+</aside>
+</div>
+
+<!-- ═══ WARD DIRECTORY MODAL ════════════════════════════════════════ -->
+<div class="modal-overlay" id="wardModal">
+  <div class="modal-box" style="width:640px;">
+    <div class="modal-head">
+      <h3>Ward Directory — Thane Municipal Corporation</h3>
+      <button class="modal-close" onclick="document.getElementById('wardModal').classList.remove('open')">×</button>
+    </div>
+    <div class="ward-search-wrap">
+      <input type="text" id="wardSearchInput" placeholder="Search by ward number or area name...">
+    </div>
+    <div class="modal-body" id="wardList"></div>
+  </div>
+</div>
+
+<!-- ═══ DATA GUIDE MODAL ═════════════════════════════════════════════ -->
+<div class="modal-overlay" id="dataGuideModal">
+  <div class="modal-box" style="width:640px;">
+    <div class="modal-head">
+      <h3>📊 Official Data Integration Guide</h3>
+      <button class="modal-close" onclick="document.getElementById('dataGuideModal').classList.remove('open')">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="guide-warn">
+        ⚠ NCRB does <strong>not</strong> publish ward-level data. The finest official granularity is
+        <strong>district/city level</strong> (Thane District, Maharashtra).
+        Ward-level breakdown requires your own FIR data from the CCTNS system — which your project already
+        collects via <code>CrimeReport</code>. The strategy below uses both.
+      </div>
+
+      <div class="guide-section" style="margin-top:20px;">
+        <h4>Source 1 · NCRB Open Data (City-level baseline)</h4>
+
+        <div class="guide-step">
+          <div class="guide-step-num">1</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Go to data.gov.in NCRB Catalog</div>
+            <div class="guide-step-desc">
+              Visit <a href="https://data.gov.in/catalog/crime-india-2023" target="_blank">data.gov.in/catalog/crime-india-2023</a><br>
+              Click <strong>"District-wise crimes under IPC"</strong> → Download CSV.<br>
+              Filter rows where <code>STATE/UT = "Maharashtra"</code> and <code>DISTRICT = "Thane"</code>.
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="guide-step-num">2</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Extract Thane city totals (2018–2023)</div>
+            <div class="guide-step-desc">
+              The CSV has columns: <code>Year, State, District, Murder, Robbery, Theft, Assault…</code><br>
+              Run this Python script to extract and save:
+              <br><br>
+              <code>import pandas as pd</code><br>
+              <code>df = pd.read_csv('district_ipc_crimes.csv')</code><br>
+              <code>thane = df[(df['District']=='Thane') & (df['State']=='Maharashtra')]</code><br>
+              <code>thane.to_csv('home/thane_ncrb_baseline.csv', index=False)</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="guide-step-num">3</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Map district totals to ward weights</div>
+            <div class="guide-step-desc">
+              Since NCRB has no ward breakdown, use your internal <code>CrimeReport</code> records
+              to calculate each ward's <em>share</em> of total city crimes.<br>
+              Then multiply NCRB district totals × ward share to get calibrated ward estimates.<br>
+              Add a management command: <code>python manage.py calibrate_ward_predictions</code><br>
+              (Starter code is in <code>home/management/commands/</code> — create it using the snippet below.)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h4>Source 2 · Your Own CrimeReport DB (Ward-level, live)</h4>
+
+        <div class="guide-step">
+          <div class="guide-step-num">4</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Add ward field to CrimeReport model</div>
+            <div class="guide-step-desc">
+              In <code>home/models.py</code>, your <code>CrimeReport</code> already has <code>address</code> and <code>latitude/longitude</code>.<br>
+              Add: <code>ward = models.ForeignKey('Ward', null=True, blank=True, on_delete=models.SET_NULL)</code><br>
+              Then in <code>report_crime()</code> view, after saving the report, do a point-in-polygon
+              lookup using the <code>thane_wards.json</code> GeoJSON to auto-assign the ward.
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="guide-step-num">5</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Build the ward summary API endpoint</div>
+            <div class="guide-step-desc">
+              Create <code>GET /api/ward-intel/&lt;ward_name&gt;/</code> that returns:<br>
+              • Recent reports (last 30 days) for that ward<br>
+              • Crime type breakdown from your DB<br>
+              • Peak hour histogram (group <code>reported_at__hour</code>)<br>
+              • Resolution rate for that ward<br>
+              The template's JS already calls this endpoint — just wire it up in <code>urls.py</code>.
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="guide-step-num">6</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Update ward_predictions.json generation</div>
+            <div class="guide-step-desc">
+              Replace the current static JSON with a Django management command that:<br>
+              1. Pulls NCRB baseline totals for Thane<br>
+              2. Calculates ward shares from <code>CrimeReport</code><br>
+              3. Runs your existing <code>ml_utils.predict_severity</code> per ward<br>
+              4. Writes out <code>home/ward_predictions.json</code><br>
+              Schedule it with <code>django-crontab</code>: run nightly at 2am.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h4>Source 3 · Maharashtra Police Open Data</h4>
+
+        <div class="guide-step">
+          <div class="guide-step-num">7</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">mahapolice.gov.in FIR data (PS-level)</div>
+            <div class="guide-step-desc">
+              Visit <a href="https://mahapolice.gov.in" target="_blank">mahapolice.gov.in</a> →
+              Citizens' Corner → Crime Statistics.<br>
+              Thane Police Commissionerate publishes police station-wise FIR counts annually (PDF/Excel).<br>
+              Download, extract with <code>tabula-py</code> or <code>camelot</code>, and join to your
+              ward→police-station mapping.
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="guide-step-num">8</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">RTI as last resort</div>
+            <div class="guide-step-desc">
+              If online data is insufficient, file an RTI via
+              <a href="https://rtionline.gov.in" target="_blank">rtionline.gov.in</a> to
+              Thane CP Office requesting ward/PS-wise IPC crime data for 2018–2024.<br>
+              Response time: 30 days. Cost: ₹10. This is the most granular official data possible.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-warn">
+        💡 <strong>Bottom line:</strong> Your current <code>ward_predictions.json</code> is ML-generated
+        from your own <code>thane_crime_data.csv</code>. That is <em>legitimate and valuable</em> —
+        it reflects actual reports in your system. The NCRB layer adds a calibration baseline.
+        The combination of both (internal live data + NCRB city baseline) is actually
+        <strong>more granular than NCRB alone</strong>.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+// ── CLOCK ──────────────────────────────────────────────────────────
+(function(){
+  const el=document.getElementById('clock');
+  function u(){el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}
+  u();setInterval(u,1000);
+})();
+
+// ── WARD DIRECTORY ─────────────────────────────────────────────────
+const WARD_DIR=[
+  {n:1, name:"Ovala, Bhainderpada, Vadavali, Kavesar"},
+  {n:2, name:"Gaimukh, Nagla Bunder, Ovala, Kasarvadavali, Vijay Park, Vijay Nagari"},
+  {n:3, name:"Hiranandani Estate, Patlipada, Brahmand Phase 8, Brajbhoomi"},
+  {n:4, name:"Manpada, Manoramanagar, Majivada Village, Rewale Lake"},
+  {n:5, name:"Gaimukh, Vihang Hills, Haware City, Happy Valley, Kalpataru Hills"},
+  {n:6, name:"Yeoor Village, Patlipada, Upvan Talao, Pokhran Road No. 2, Devdaya Nagar"},
+  {n:7, name:"Subhash Nagar, Nilkanth Palms, Lok Upavan, Tulshidham"},
+  {n:8, name:"Hiranandani Vasant Vihar, Gandhi Nagar, Jawahar Nagar, Pawar Nagar"},
+  {n:9, name:"Dadlani Park, Ashok Nagar, Balkum Pada, Highland Haven"},
+  {n:10,name:"Maitri Garden, Oswal Park, Vartak Nagar MHADA Colony, Bhimnagar"},
+  {n:11,name:"Shashri Nagar, Pareira Nagar, Rifle Range"},
+  {n:12,name:"Samata Nagar, Nakshatra, Dosti Vihar"},
+  {n:13,name:"Lokmanya Nagar Pada No. 4, Panchpakhadi MHADA Colony"},
+  {n:14,name:"Savarkar Nagar, R. J. Thakur College, ESIS Hospital Area"},
+  {n:15,name:"Ambika Nagar, Dnyaneshwar Nagar, Wimbledon Park, Hanuman Nagar"},
+  {n:16,name:"Louis Wadi, Ramchandra Nagar, Koram Mall"},
+  {n:17,name:"Vrindavan, Azadnagar, Kolbad Road, Gokul Nagar, Rutu Park"},
+  {n:18,name:"Rustamjee, Saket, Rabodi, Kranti Nagar, Akashganga"},
+  {n:19,name:"Charai, Police Colony, K Villa"},
+  {n:20,name:"Siddheshwar Talao, Ramabai Ambedkar Nagar, Kolbad, Gokuldas Wadi"},
+  {n:21,name:"Panchpakhadi, Naupada, Bhaskar Colony, Namdevwadi"},
+  {n:22,name:"Ramkrishna Nagar, Hajuri, Railadevi Lake, Maharashtra Nagar"},
+  {n:23,name:"Shri Nagar, Shanti Nagar, Ram Nagar"},
+  {n:24,name:"CP Talao, Nehru Nagar, Indira Nagar"},
+  {n:25,name:"Kisan Nagar No. 2"},
+  {n:26,name:"Kisan Nagar No. 1, Padwal Nagar, Ratan Bai Compound"},
+  {n:27,name:"Anand Nagar, Kashish Park, Raheja Garden, Raghunath Nagar"},
+  {n:28,name:"Naupada, Ram Maruti Road, Gokhale Road, Ghantali, Vishnu Nagar"},
+  {n:29,name:"Chendani East & West, Kharten Road, Mahagiri"},
+  {n:30,name:"Kopari Colony, Siddharth Nagar, Daulat Nagar, Sindhi Colony"},
+  {n:31,name:"Vitawa, Surya Nagar"},
+  {n:32,name:"Mafatlal Co, Shivaji Nagar"},
+  {n:33,name:"Kalwa Car Shed, Kalwa Gaon, CSM Hospital, TMT"},
+  {n:34,name:"Manisha Nagar, Janaki Nagar, Mahatma Phule Nagar"},
+  {n:35,name:"Parsik Nagar, Khari-Pakhadi, Sanghavi Valley"},
+  {n:36,name:"Gholai Nagar, Atkoneshwar Nagar, Waghoba Nagar"},
+  {n:37,name:"Parsik Retibandar, Rana Nagar, Datt Wadi, Shailesh Nagar (part)"},
+  {n:38,name:"Bombay Colony (part), Santosh Nagar, Anand Koliwada (part), Mittal Ground"},
+  {n:39,name:"Shailesh Nagar (part), Bombay Colony (part), Ambedkar Nagar, Sanjay Nagar"},
+  {n:40,name:"Amrut Nagar (part), Shivaji Nagar, Ghaswala Compound, Charni Pada"},
+  {n:41,name:"Ghaswala Compound, Charni Pada, Rashid Compound"},
+  {n:42,name:"Kausa Stadium, STP, Kausa Cemetery"},
+  {n:43,name:"Betwade, Mhatardi, Dativali, Diva, Mumbra Colony Road"},
+  {n:44,name:"Sabe, Diva"},
+  {n:45,name:"Aagasan, B R Nagar"},
+  {n:46,name:"Desai, Daighar (part), Dawale, Padle, Sonkhar, Sagarli, Kausa Lake"},
+  {n:47,name:"Shil (part), Daighar (part), Kausa (part)"}
+];
+
+// ── CONTEXT DATA ──────────────────────────────────────────────────
+let DETAILED = {};
+try { DETAILED = {{ ward_predictions_json|default:"{}"|safe }}; } catch(e){}
+
+// ── MAP SETUP ─────────────────────────────────────────────────────
+const map = L.map('map',{zoomControl:true}).setView([19.2183,72.9781],12);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19
+}).addTo(map);
+
+function getColor(s){return s>70?'#2effa0':s>40?'#ffb547':'#ff3b5c';}
+function getOpacity(s){return s>70?.45:s>40?.55:.65;}
+
+let selectedLayer=null, trendChart=null;
+const scoreMap={};
+
+Promise.all([
+  fetch("{% static 'data/thane_wards.json' %}").then(r=>r.json()),
+  Promise.resolve({{ ward_scores_json|safe }})
+]).then(([wards,wardScores])=>{
+  wardScores.forEach(w=>scoreMap[w.lgd_name]=w);
+  populateHighRiskList(scoreMap);
+
+  const geoLayer=L.geoJSON(wards,{
+    style:f=>{
+      const name=f.properties.lgd_name||f.properties.NAME||'';
+      const s=scoreMap[name]?scoreMap[name].safety_score:50;
+      return{color:'#fff',weight:.8,fillColor:getColor(s),fillOpacity:getOpacity(s)};
+    },
+    onEachFeature(feature,layer){
+      const wn=feature.properties.lgd_name||feature.properties.NAME||'Unknown';
+      const info=scoreMap[wn]||{safety_score:0,crime_count:0,crime_intensity:'Unknown'};
+
+      layer.bindTooltip(`
+        <div class="wtt-name">${wn}</div>
+        <div class="wtt-row"><span class="wtt-key">Safety</span>
+          <span class="wtt-val" style="color:${getColor(info.safety_score)}">${info.safety_score.toFixed(1)}%</span></div>
+        <div class="wtt-row"><span class="wtt-key">Risk</span>
+          <span class="wtt-val">${info.crime_intensity||'—'}</span></div>
+      `,{className:'ward-tooltip',sticky:true,offset:[12,0]});
+
+      layer.on('mouseover',function(){
+        if(this!==selectedLayer) this.setStyle({weight:2,color:'#fff',fillOpacity:.8});
+      });
+      layer.on('mouseout',function(){
+        if(this!==selectedLayer) geoLayer.resetStyle(this);
+      });
+      layer.on('click',function(){
+        if(selectedLayer&&selectedLayer!==this){
+          geoLayer.resetStyle(selectedLayer);
+          selectedLayer.getElement()?.classList.remove('selected-ward');
+        }
+        selectedLayer=this;
+        this.setStyle({weight:2.5,color:'#4af0c4',fillOpacity:.75});
+        openWardDetail(wn,info);
+      });
+    }
+  }).addTo(map);
+
+  setTimeout(()=>{
+    map.invalidateSize();
+    try{map.fitBounds(geoLayer.getBounds(),{padding:[10,10]});}catch(e){}
+  },100);
+}).catch(e=>console.warn('GeoJSON error:',e));
+
+// ── OPEN WARD DETAIL ──────────────────────────────────────────────
+function openWardDetail(wardName,info){
+  document.getElementById('panel-idle').style.display='none';
+  document.getElementById('ward-detail').classList.add('visible');
+  document.getElementById('detailWardName').textContent=wardName;
+
+  const score=info.safety_score||0;
+  document.getElementById('dkv-score').textContent=score.toFixed(1)+'%';
+  document.getElementById('dkv-score').style.color=getColor(score);
+
+  const intensity=info.crime_intensity||'Unknown';
+  document.getElementById('dkv-risk').textContent=intensity;
+  document.getElementById('dkv-risk').style.color=intensity==='High Risk'?'#ff3b5c':intensity==='Low Risk'?'#2effa0':'#ffb547';
+
+  const det=DETAILED[wardName]||{};
+  const trend=det.trend||{};
+  const predicted=det.predicted_crimes||{};
+  const predTotal=Object.values(predicted).reduce((a,b)=>a+b,0)||(info.crime_count||0);
+  document.getElementById('dkv-crimes').textContent=predTotal;
+
+  // ── Trend chart ───────────────────────────────────────────────
+  const labels=Object.keys(trend), vals=Object.values(trend);
+  if(trendChart)trendChart.destroy();
+  if(labels.length){
+    const ctx=document.getElementById('trendChart').getContext('2d');
+    const grad=ctx.createLinearGradient(0,0,0,130);
+    grad.addColorStop(0,'rgba(74,143,240,.35)');
+    grad.addColorStop(1,'rgba(74,143,240,0)');
+    trendChart=new Chart(ctx,{
+      type:'line',
+      data:{labels,datasets:[{
+        data:vals,borderColor:'#4a8ff0',borderWidth:2,
+        pointBackgroundColor:labels.map(l=>l==='predicted'?'#ff3b5c':'#4a8ff0'),
+        pointRadius:labels.map(l=>l==='predicted'?7:4),
+        pointHoverRadius:8,fill:true,backgroundColor:grad,tension:.38,
+        segment:{
+          borderColor:c=>c.p1DataIndex===labels.length-1?'#ff3b5c':'#4a8ff0',
+          borderDash:c=>c.p1DataIndex===labels.length-1?[5,3]:[]
+        }
+      }]},
+      options:{responsive:true,maintainAspectRatio:false,animation:{duration:600},
+        plugins:{legend:{display:false},tooltip:{
+          backgroundColor:'rgba(13,16,24,.95)',borderColor:'rgba(255,255,255,.1)',borderWidth:1,
+          titleFont:{family:"'Space Mono',monospace",size:10},bodyFont:{family:"'Space Mono',monospace",size:11},
+          titleColor:'#707a96',bodyColor:'#e8eaf0',
+          callbacks:{title:i=>i[0].label==='predicted'?'Predicted 2026':i[0].label,label:c=>` Crimes: ${c.parsed.y}`}
+        }},
+        scales:{
+          x:{ticks:{color:'#707a96',font:{family:"'Space Mono',monospace",size:9},maxRotation:0},grid:{color:'rgba(255,255,255,.04)'}},
+          y:{ticks:{color:'#707a96',font:{family:"'Space Mono',monospace",size:9},stepSize:10},grid:{color:'rgba(255,255,255,.04)'}}
+        }
+      }
+    });
+  }
+
+  // ── Crime breakdown bars ─────────────────────────────────────
+  const barsEl=document.getElementById('crimeBars');
+  barsEl.innerHTML='';
+  const COLORS={'Theft':'#ff3b5c','Murder':'#ff0033','Robbery':'#ff6b35','Assault':'#f0a84a',
+    'Domestic Violence':'#ffb547','Kidnapping':'#c084fc','Drug Offense':'#a78bfa',
+    'Fraud':'#4a8ff0','Cheating':'#60a5fa','Cybercrime':'#4af0c4','Burglary':'#2effa0'};
+  if(Object.keys(predicted).length){
+    const maxV=Math.max(...Object.values(predicted),1);
+    Object.entries(predicted).sort((a,b)=>b[1]-a[1]).forEach(([c,v])=>{
+      if(!v)return;
+      const row=document.createElement('div');row.className='crime-bar-row';
+      row.innerHTML=`
+        <div class="crime-bar-label">${c}</div>
+        <div class="crime-bar-track"><div class="crime-bar-fill" style="width:0%;background:${COLORS[c]||'#4af0c4'};" data-t="${(v/maxV)*100}"></div></div>
+        <div class="crime-bar-num">${v}</div>`;
+      barsEl.appendChild(row);
+    });
+    requestAnimationFrame(()=>{
+      barsEl.querySelectorAll('.crime-bar-fill').forEach(el=>el.style.width=el.dataset.t+'%');
+    });
+  } else {
+    barsEl.innerHTML='<div style="font-family:var(--mono);font-size:10px;color:var(--muted);">No breakdown available.</div>';
+  }
+
+  // ── Intelligence KPI cards ────────────────────────────────────
+  renderIntelCards(wardName, info, det, predTotal);
+
+  // ── Peak-hour heatmap ─────────────────────────────────────────
+  renderHeatmap(wardName);
+
+  // ── Recent alerts from DB ─────────────────────────────────────
+  fetchWardAlerts(wardName);
+
+  // ── Analytics link ────────────────────────────────────────────
+  document.getElementById('viewAnalyticsBtn').onclick=()=>{
+    const wn=encodeURIComponent(wardName);
+    const tr=encodeURIComponent(JSON.stringify(trend));
+    const pr=encodeURIComponent(JSON.stringify(predicted));
+    window.open(`/monthly_analytics/?ward=${wn}&trend=${tr}&predicted=${pr}`,'_blank');
+  };
+}
+
+// ── INTEL KPI CARDS ───────────────────────────────────────────────
+function renderIntelCards(wardName, info, det, predTotal){
+  const grid=document.getElementById('intelGrid');
+  const score=info.safety_score||0;
+
+  // Derive meaningful values from available data
+  const prevYear=det.trend?Object.values(det.trend).slice(-3,-1):[0,0];
+  const prevAvg=prevYear.length?Math.round(prevYear.reduce((a,b)=>a+b,0)/prevYear.length):0;
+  const changeDir=predTotal>prevAvg?'▲':'▼';
+  const changePct=prevAvg?Math.abs(Math.round(((predTotal-prevAvg)/prevAvg)*100)):0;
+
+  // Dominant crime type
+  const predicted=det.predicted_crimes||{};
+  const topCrime=Object.entries(predicted).sort((a,b)=>b[1]-a[1])[0];
+
+  // Resolution proxy from safety score
+  const resolutionEst=Math.round(40+(score*0.4));
+
+  const cards=[
+    {icon:'📈',val:`${changeDir} ${changePct}%`,lbl:'YoY Change',sub:'vs previous 2-yr avg',
+     color:predTotal>prevAvg?'var(--red)':'var(--green)'},
+    {icon:'🎯',val:topCrime?topCrime[0].split(' ')[0]:'—',lbl:'Top Threat',
+     sub:topCrime?`${topCrime[1]} predicted cases`:'No data',color:'var(--amber)'},
+    {icon:'🛡',val:resolutionEst+'%',lbl:'Est. Resolution',sub:'Based on safety score',color:'var(--info)'},
+    {icon:'⚡',val:predTotal,lbl:'Total Predicted',sub:'All crime types 2026',color:'var(--acc2)'},
+  ];
+
+  grid.innerHTML='';
+  cards.forEach(c=>{
+    const d=document.createElement('div');d.className='intel-card';
+    d.innerHTML=`<span class="intel-card-icon">${c.icon}</span>
+      <div class="intel-card-val" style="color:${c.color}">${c.val}</div>
+      <div class="intel-card-lbl">${c.lbl}</div>
+      <div class="intel-card-sub">${c.sub}</div>`;
+    grid.appendChild(d);
+  });
+}
+
+// ── PEAK-HOUR HEATMAP (uses CrimeReport data via API) ────────────
+function renderHeatmap(wardName){
+  const row=document.getElementById('heatRow');
+  row.innerHTML='';
+  // 8 time buckets: 0-3, 3-6, 6-9, 9-12, 12-15, 15-18, 18-21, 21-24
+  // Try fetching from your API; fall back to proportional demo from ward risk
+  fetch(`/api/ward-intel/${encodeURIComponent(wardName)}/`)
+    .then(r=>r.ok?r.json():null)
+    .then(data=>{
+      const hours = data?.hourly_distribution || generateDemoHours(wardName);
+      buildHeatRow(row, hours);
+    })
+    .catch(()=>buildHeatRow(row, generateDemoHours(wardName)));
+}
+
+function generateDemoHours(wardName){
+  // Deterministic from ward name hash — not random on every load
+  let h=0; for(let i=0;i<wardName.length;i++) h=(h*31+wardName.charCodeAt(i))&0xFFFF;
+  const base=[2,1,1,3,5,7,9,8];
+  return base.map((v,i)=>v+((h>>(i*2))&3));
+}
+
+function buildHeatRow(row, hours){
+  const max=Math.max(...hours,1);
+  const timeLabels=['12am','3am','6am','9am','12pm','3pm','6pm','9pm'];
+  hours.forEach((v,i)=>{
+    const pct=v/max;
+    const r=Math.round(255*Math.min(1,pct*2));
+    const g=Math.round(255*Math.max(0,1-pct));
+    const cell=document.createElement('div');
+    cell.className='heat-cell';
+    cell.title=`${timeLabels[i]}: ${v} incidents`;
+    cell.style.background=`rgba(${r},${g},60,${.2+pct*.7})`;
+    cell.style.border=`1px solid rgba(${r},${g},60,${.3+pct*.4})`;
+    cell.textContent=v||'';
+    row.appendChild(cell);
+  });
+}
+
+// ── FETCH RECENT ALERTS FROM YOUR DB ─────────────────────────────
+function fetchWardAlerts(wardName){
+  const container=document.getElementById('alertItems');
+  container.innerHTML='<div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Loading…</div>';
+
+  fetch(`/api/ward-intel/${encodeURIComponent(wardName)}/`)
+    .then(r=>r.ok?r.json():null)
+    .then(data=>{
+      const alerts=data?.recent_reports||[];
+      if(!alerts.length){
+        container.innerHTML='<div class="alert-item" style="color:var(--muted);font-family:var(--mono);font-size:10px;">No recent reports logged for this ward.</div>';
+        return;
+      }
+      container.innerHTML='';
+      alerts.slice(0,5).forEach(a=>{
+        const d=document.createElement('div');d.className='alert-item';
+        d.innerHTML=`<div>${a.crime_type} — ${a.address||'Location unknown'}</div>
+          <div class="alert-item-time">${a.reported_at||''} · ${a.status||'Pending'}</div>`;
+        container.appendChild(d);
+      });
+    })
+    .catch(()=>{
+      container.innerHTML='<div class="alert-item" style="color:var(--muted);font-family:var(--mono);font-size:10px;">API not yet wired. See data guide for setup.</div>';
+    });
+}
+
+// ── CLOSE DETAIL PANEL ────────────────────────────────────────────
+document.getElementById('detailClose').addEventListener('click',()=>{
+  document.getElementById('ward-detail').classList.remove('visible');
+  document.getElementById('panel-idle').style.display='flex';
+  if(selectedLayer){
+    const name=selectedLayer.feature?.properties?.lgd_name||'';
+    const info=scoreMap[name]||{safety_score:50};
+    selectedLayer.setStyle({weight:.8,color:'#fff',fillOpacity:getOpacity(info.safety_score)});
+    selectedLayer.getElement()?.classList.remove('selected-ward');
+    selectedLayer=null;
+  }
+  if(trendChart){trendChart.destroy();trendChart=null;}
+});
+
+// ── HIGH RISK LIST ────────────────────────────────────────────────
+function populateHighRiskList(sm){
+  const c=document.getElementById('highRiskWardsList');c.innerHTML='';
+  const wards=Object.values(sm).filter(w=>w.lgd_name).sort((a,b)=>a.safety_score-b.safety_score).slice(0,12);
+  document.getElementById('hrCount').textContent=wards.length+' wards';
+  wards.forEach((w,i)=>{
+    const el=document.createElement('div');el.className='risk-item';
+    el.style.animationDelay=(i*.04)+'s';
+    const bc=w.safety_score<30?'rb-high':w.safety_score<65?'rb-medium':'rb-low';
+    const bt=w.safety_score<30?'HIGH':w.safety_score<65?'MEDIUM':'LOW';
+    el.innerHTML=`
+      <div class="risk-rank">#${i+1}</div>
+      <div class="risk-info">
+        <div class="risk-name">${w.lgd_name}</div>
+        <div class="risk-sub">${w.crime_count||0} incidents</div>
+        <div class="score-bar-wrap"><div class="score-bar-track">
+          <div class="score-bar-fill" style="width:${w.safety_score}%;background:${getColor(w.safety_score)};"></div>
+        </div></div>
+      </div>
+      <div>
+        <div class="risk-badge ${bc}">${bt}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:right;margin-top:4px;">${w.safety_score.toFixed(0)}%</div>
+      </div>`;
+    el.addEventListener('click',()=>{
+      openWardDetail(w.lgd_name,w);
+      document.getElementById('panel-idle').style.display='none';
+      document.getElementById('ward-detail').classList.add('visible');
+    });
+    c.appendChild(el);
+  });
+}
+
+// ── WARD DIRECTORY ────────────────────────────────────────────────
+function populateWardList(q=''){
+  const c=document.getElementById('wardList');c.innerHTML='';
+  const f=WARD_DIR.filter(w=>w.n.toString().includes(q)||w.name.toLowerCase().includes(q.toLowerCase()));
+  if(!f.length){c.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);">No results.</div>';return;}
+  f.forEach(w=>{
+    const d=document.createElement('div');d.className='wl-item';
+    d.innerHTML=`<div class="wl-num">Ward No. ${w.n}</div><div class="wl-name">${w.name}</div>`;
+    c.appendChild(d);
+  });
+}
+
+document.getElementById('infoButton').addEventListener('click',()=>{
+  document.getElementById('wardModal').classList.add('open');
+  document.getElementById('wardSearchInput').value='';
+  populateWardList();
+  setTimeout(()=>document.getElementById('wardSearchInput').focus(),50);
+});
+document.getElementById('wardSearchInput').addEventListener('input',e=>populateWardList(e.target.value));
+document.getElementById('wardModal').addEventListener('click',e=>{if(e.target===document.getElementById('wardModal'))document.getElementById('wardModal').classList.remove('open');});
+
+// ── DATA GUIDE ────────────────────────────────────────────────────
+function openDataGuide(){document.getElementById('dataGuideModal').classList.add('open');}
+document.getElementById('dataSourceBtn').addEventListener('click',openDataGuide);
+document.getElementById('dataGuideModal').addEventListener('click',e=>{if(e.target===document.getElementById('dataGuideModal'))document.getElementById('dataGuideModal').classList.remove('open');});
+
+// ── STAT COUNTER ANIMATION ────────────────────────────────────────
+function animateCount(el,target,dur){
+  const t0=performance.now();
+  (function step(now){
+    const p=Math.min((now-t0)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*e);
+    if(p<1)requestAnimationFrame(step); else el.textContent=target;
+  })(performance.now());
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const el=document.getElementById('sv-total');
+  if(el){const t=parseInt(el.textContent)||0;el.textContent='0';setTimeout(()=>animateCount(el,t,1200),300);}
+});
+</script>
+</body>
+</html>

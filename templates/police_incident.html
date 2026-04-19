@@ -1,0 +1,627 @@
+{% load static %}
+
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05080f;--bg2:#08111e;--bg3:#0c1826;--wire:#142030;--wire2:#1c2d42;
+  --accent:#0ea5e9;--accent2:#38bdf8;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;--purple:#a78bfa;
+  --text:#d1e4f8;--text2:#5f7b96;--text3:#344a5e;
+  --font:'Syne',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font)}
+
+/* scan-line overlay */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
+  animation:scanDrift 8s linear infinite;
+}
+@keyframes scanDrift{from{background-position:0 0}to{background-position:0 200px}}
+
+/* grid bg */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(14,165,233,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,.03) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+
+/* TOP BAR */
+.bar{
+  background:var(--bg2);border-bottom:1px solid var(--wire2);
+  padding:0 24px;height:48px;display:flex;align-items:center;gap:16px;
+  position:relative;z-index:100;flex-shrink:0;
+}
+.bar-logo{font-family:var(--mono);font-size:.6rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase}
+.bar-title{font-size:.95rem;font-weight:700;letter-spacing:-.01em;color:var(--text)}
+.bar-sep{width:1px;height:20px;background:var(--wire2)}
+.bar-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.58rem;color:var(--ok);letter-spacing:.12em}
+.led{width:5px;height:5px;border-radius:50%;background:var(--ok);animation:led 2.5s ease infinite}
+@keyframes led{0%,100%{opacity:1;box-shadow:0 0 4px var(--ok)}50%{opacity:.3;box-shadow:none}}
+.bar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.bar-time{font-family:var(--mono);font-size:.62rem;color:var(--text3)}
+.bar-conn{font-family:var(--mono);font-size:.58rem;color:var(--accent);background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);padding:3px 10px;border-radius:4px}
+
+/* LAYOUT */
+.console{
+  display:grid;grid-template-columns:380px 1fr;height:calc(100vh - 48px);
+  overflow:hidden;position:relative;z-index:1;
+}
+@media(max-width:860px){.console{grid-template-columns:1fr;overflow-y:auto;height:auto}}
+
+/* LEFT */
+.left{border-right:1px solid var(--wire2);overflow-y:auto;display:flex;flex-direction:column}
+.left::-webkit-scrollbar{width:3px}
+.left::-webkit-scrollbar-thumb{background:var(--wire2);border-radius:2px}
+
+.sec{border-bottom:1px solid var(--wire);padding:16px}
+.sec-hd{font-family:var(--mono);font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-hd::before{content:'';width:16px;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
+
+/* textarea */
+.ta{
+  width:100%;background:var(--bg3);border:1px solid var(--wire2);border-radius:6px;
+  padding:12px;color:var(--text);font-family:var(--mono);font-size:.78rem;line-height:1.7;
+  resize:vertical;min-height:88px;outline:none;transition:border-color .18s,box-shadow .18s;
+}
+.ta:focus{border-color:rgba(14,165,233,.5);box-shadow:0 0 0 2px rgba(14,165,233,.08)}
+.ta::placeholder{color:var(--text3)}
+
+/* voice bar */
+.vbar{display:flex;gap:6px;margin-top:8px;align-items:center}
+.vbtn{
+  display:flex;align-items:center;gap:5px;padding:6px 10px;
+  border-radius:5px;border:1px solid var(--wire2);background:transparent;
+  color:var(--text2);font-family:var(--mono);font-size:.6rem;cursor:pointer;transition:all .15s;
+}
+.vbtn:hover{border-color:var(--accent);color:var(--accent)}
+.vbtn.rec{border-color:var(--danger);color:var(--danger);animation:recPulse .8s ease infinite}
+@keyframes recPulse{50%{box-shadow:0 0 10px rgba(239,68,68,.3)}}
+.ltabs{display:flex;gap:4px;margin-left:auto}
+.ltab{
+  padding:4px 9px;border-radius:4px;border:1px solid var(--wire2);
+  background:transparent;color:var(--text3);font-family:var(--mono);font-size:.58rem;cursor:pointer;transition:all .15s;
+}
+.ltab.on,.ltab:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(56,189,248,.06)}
+
+/* GPS */
+.gps-row{display:flex;align-items:center;gap:8px;margin-top:10px;font-family:var(--mono);font-size:.62rem}
+.gps-val{color:var(--ok);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gps-pill{padding:4px 10px;border-radius:5px;border:1px solid var(--wire2);background:transparent;color:var(--text2);font-family:var(--mono);font-size:.6rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.gps-pill:hover{border-color:var(--ok);color:var(--ok)}
+
+/* landmark */
+.landmark{
+  width:100%;background:var(--bg3);border:1px solid var(--wire);border-radius:5px;
+  padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:.72rem;
+  outline:none;margin-top:6px;transition:border-color .18s;
+}
+.landmark::placeholder{color:var(--text3)}
+.landmark:focus{border-color:rgba(14,165,233,.4)}
+
+/* analyze btn */
+.abtn{
+  width:100%;margin-top:12px;padding:11px;border:none;border-radius:6px;
+  background:var(--accent);color:#fff;font-family:var(--font);font-size:.88rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .18s;
+}
+.abtn:hover{background:var(--accent2);box-shadow:0 4px 18px rgba(14,165,233,.3)}
+.abtn:disabled{opacity:.5;cursor:not-allowed}
+
+/* chips */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{
+  padding:3px 10px;border-radius:4px;font-family:var(--mono);font-size:.58rem;
+  letter-spacing:.1em;text-transform:uppercase;border:1px solid;
+}
+.c-ok    {border-color:rgba(34,197,94,.35);color:var(--ok);background:rgba(34,197,94,.07)}
+.c-warn  {border-color:rgba(245,158,11,.35);color:var(--warn);background:rgba(245,158,11,.07)}
+.c-danger{border-color:rgba(239,68,68,.35);color:var(--danger);background:rgba(239,68,68,.07)}
+.c-blue  {border-color:rgba(14,165,233,.35);color:var(--accent);background:rgba(14,165,233,.07)}
+.c-purple{border-color:rgba(167,139,250,.35);color:var(--purple);background:rgba(167,139,250,.07)}
+
+/* result items */
+.ri{padding:10px 12px;background:var(--bg3);border-radius:6px;margin-bottom:7px;border-left:2.5px solid var(--wire2)}
+.ri.urgent{border-left-color:var(--danger)}
+.ri.action{border-left-color:var(--accent)}
+.ri.info  {border-left-color:var(--accent2)}
+.ri.pred  {border-left-color:var(--purple)}
+.ri-lbl{font-family:var(--mono);font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.ri-val{font-size:.85rem;color:var(--text);line-height:1.55}
+
+/* escalation prediction card */
+.esc-pred{
+  padding:10px 14px;border-radius:6px;margin-bottom:8px;
+  display:flex;align-items:center;gap:12px;
+}
+.esc-pred.high{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25)}
+.esc-pred.low {background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2)}
+.esc-icon{font-size:1.2rem;flex-shrink:0}
+.esc-main{font-size:.82rem;color:var(--text);line-height:1.5}
+.esc-prob{font-family:var(--mono);font-size:1.4rem;font-weight:500;flex-shrink:0}
+.esc-prob.high{color:var(--danger)}
+.esc-prob.low {color:var(--ok)}
+
+/* risk score bar */
+.risk-bar-wrap{margin:10px 0 14px}
+.risk-bar-lbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.58rem;color:var(--text3);margin-bottom:5px}
+.risk-bar{height:4px;background:var(--wire2);border-radius:99px;overflow:hidden}
+.risk-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ok),var(--warn),var(--danger));transition:width .8s ease}
+
+/* action list */
+.alist{list-style:none}
+.alist li{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--wire);font-size:.82rem;color:var(--text2);align-items:flex-start;line-height:1.5}
+.alist li:last-child{border-bottom:none}
+.anum{font-family:var(--mono);font-size:.58rem;color:var(--accent);background:rgba(14,165,233,.1);border-radius:3px;padding:2px 6px;flex-shrink:0;margin-top:2px}
+
+/* alert bar */
+.alert-bar{padding:8px 12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.22);border-radius:6px;font-family:var(--mono);font-size:.62rem;color:var(--ok);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+
+/* override note */
+.override-note{font-family:var(--mono);font-size:.6rem;color:var(--warn);padding:6px 10px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:5px;margin-bottom:8px}
+
+/* feedback */
+.feedback-bar{
+  display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 12px;
+  background:var(--bg3);border:1px solid var(--wire);border-radius:6px;
+}
+.fb-lbl{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-right:auto}
+.fb-btn{
+  padding:4px 12px;border-radius:4px;border:1px solid;background:transparent;
+  font-family:var(--mono);font-size:.6rem;cursor:pointer;transition:all .15s;
+}
+.fb-correct{border-color:rgba(34,197,94,.35);color:var(--ok)}
+.fb-correct:hover{background:rgba(34,197,94,.1)}
+.fb-wrong{border-color:rgba(239,68,68,.35);color:var(--danger)}
+.fb-wrong:hover{background:rgba(239,68,68,.08)}
+
+/* RIGHT */
+.right{overflow:hidden;display:flex;flex-direction:column;position:relative}
+#policeMap{flex:1;min-height:200px}
+.map-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;gap:10px}
+.map-placeholder-icon{font-size:2.5rem;opacity:.12}
+
+/* officer table */
+.ot{border-top:1px solid var(--wire);background:var(--bg2);max-height:230px;overflow-y:auto;display:none}
+.ot-row{display:grid;grid-template-columns:1fr 60px 70px 80px 90px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--wire);font-size:.78rem;cursor:pointer;transition:background .12s}
+.ot-row:hover{background:var(--bg3)}
+.ot-row.hd{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);cursor:default}
+.ot-row.hd:hover{background:transparent}
+.ot-name{font-weight:700;color:var(--text)}
+.ot-spec{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-top:1px}
+.ot-dist{font-family:var(--mono);font-size:.68rem;color:var(--accent2)}
+.ot-rank{font-family:var(--mono);font-size:.68rem}
+.ot-rank.hi{color:var(--ok)}
+.ot-rank.lo{color:var(--text3)}
+.dispatch-btn{padding:4px 10px;border-radius:4px;border:1px solid rgba(14,165,233,.35);background:transparent;color:var(--accent);font-family:var(--mono);font-size:.58rem;cursor:pointer;transition:all .15s}
+.dispatch-btn:hover{background:var(--accent);color:#fff}
+.matched-badge{font-family:var(--mono);font-size:.55rem;color:var(--ok);background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:3px;padding:1px 6px;margin-top:2px;display:inline-block}
+
+/* shimmer */
+.shim{background:linear-gradient(90deg,var(--bg3) 25%,var(--wire2) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shim 1.4s infinite;border-radius:5px;height:12px;margin:5px 0}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.spinner{width:24px;height:24px;border:2px solid var(--wire2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+
+{% load static %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05080f;--bg2:#08111e;--bg3:#0c1826;--wire:#142030;--wire2:#1c2d42;
+  --accent:#0ea5e9;--accent2:#38bdf8;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;--purple:#a78bfa;
+  --text:#d1e4f8;--text2:#5f7b96;--text3:#344a5e;
+  --font:'Syne',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(14,165,233,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,.03) 1px,transparent 1px);background-size:32px 32px}
+
+/* TOP BAR */
+.bar{background:var(--bg2);border-bottom:1px solid var(--wire2);padding:0 24px;height:48px;display:flex;align-items:center;gap:16px;position:relative;z-index:100;flex-shrink:0}
+.bar-logo{font-family:var(--mono);font-size:.6rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase}
+.bar-title{font-size:.95rem;font-weight:700;letter-spacing:-.01em;color:var(--text)}
+.bar-sep{width:1px;height:20px;background:var(--wire2)}
+.bar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.bar-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.58rem;color:var(--ok);letter-spacing:.12em}
+.led{width:5px;height:5px;border-radius:50%;background:var(--ok);animation:led 2.5s ease infinite}
+@keyframes led{0%,100%{opacity:1;box-shadow:0 0 4px var(--ok)}50%{opacity:.3;box-shadow:none}}
+.bar-time{font-family:var(--mono);font-size:.62rem;color:var(--text3)}
+.bar-conn{font-family:var(--mono);font-size:.58rem;color:var(--accent);background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);padding:3px 10px;border-radius:4px}
+
+/* LAYOUT */
+.console{display:grid;grid-template-columns:380px 1fr;height:calc(100vh - 48px);overflow:hidden;position:relative;z-index:1}
+@media(max-width:860px){.console{grid-template-columns:1fr;overflow-y:auto;height:auto}}
+
+/* LEFT */
+.left{border-right:1px solid var(--wire2);overflow-y:auto;display:flex;flex-direction:column}
+.left::-webkit-scrollbar{width:3px}
+.left::-webkit-scrollbar-thumb{background:var(--wire2);border-radius:2px}
+.sec{border-bottom:1px solid var(--wire);padding:16px}
+.sec-hd{font-family:var(--mono);font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-hd::before{content:'';width:16px;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
+
+/* TEXTAREA */
+.ta{width:100%;background:var(--bg3);border:1px solid var(--wire2);border-radius:6px;padding:12px;color:var(--text);font-family:var(--mono);font-size:.78rem;line-height:1.7;resize:vertical;min-height:88px;outline:none;transition:border-color .18s,box-shadow .18s}
+.ta:focus{border-color:rgba(14,165,233,.5);box-shadow:0 0 0 2px rgba(14,165,233,.08)}
+.ta::placeholder{color:var(--text3)}
+
+/* VOICE BAR */
+.vbar{display:flex;gap:6px;margin-top:8px;align-items:center}
+.vbtn{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:5px;border:1px solid var(--wire2);background:transparent;color:var(--text2);font-family:var(--mono);font-size:.6rem;cursor:pointer;transition:all .15s}
+.vbtn:hover{border-color:var(--accent);color:var(--accent)}
+.vbtn.rec{border-color:var(--danger);color:var(--danger);animation:recPulse .8s ease infinite}
+@keyframes recPulse{50%{box-shadow:0 0 10px rgba(239,68,68,.3)}}
+.ltabs{display:flex;gap:4px;margin-left:auto}
+.ltab{padding:4px 9px;border-radius:4px;border:1px solid var(--wire2);background:transparent;color:var(--text3);font-family:var(--mono);font-size:.58rem;cursor:pointer;transition:all .15s}
+.ltab.on,.ltab:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(56,189,248,.06)}
+
+/* GPS + LANDMARK */
+.gps-row{display:flex;align-items:center;gap:8px;margin-top:10px;font-family:var(--mono);font-size:.62rem}
+.gps-val{color:var(--ok);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gps-pill{padding:4px 10px;border-radius:5px;border:1px solid var(--wire2);background:transparent;color:var(--text2);font-family:var(--mono);font-size:.6rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.gps-pill:hover{border-color:var(--ok);color:var(--ok)}
+.landmark{width:100%;background:var(--bg3);border:1px solid var(--wire);border-radius:5px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:.72rem;outline:none;margin-top:6px;transition:border-color .18s}
+.landmark::placeholder{color:var(--text3)}
+.landmark:focus{border-color:rgba(14,165,233,.4)}
+
+/* ANALYZE BUTTON */
+.abtn{width:100%;margin-top:12px;padding:11px;border:none;border-radius:6px;background:var(--accent);color:#fff;font-family:var(--font);font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s}
+.abtn:hover{background:var(--accent2);box-shadow:0 4px 18px rgba(14,165,233,.3)}
+.abtn:disabled{opacity:.5;cursor:not-allowed}
+
+/* CHIPS */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{padding:3px 10px;border-radius:4px;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid}
+.c-ok    {border-color:rgba(34,197,94,.35);color:var(--ok);background:rgba(34,197,94,.07)}
+.c-warn  {border-color:rgba(245,158,11,.35);color:var(--warn);background:rgba(245,158,11,.07)}
+.c-danger{border-color:rgba(239,68,68,.35);color:var(--danger);background:rgba(239,68,68,.07)}
+.c-blue  {border-color:rgba(14,165,233,.35);color:var(--accent);background:rgba(14,165,233,.07)}
+.c-purple{border-color:rgba(167,139,250,.35);color:var(--purple);background:rgba(167,139,250,.07)}
+
+/* RESULT ITEMS */
+.ri{padding:10px 12px;background:var(--bg3);border-radius:6px;margin-bottom:7px;border-left:2.5px solid var(--wire2)}
+.ri.urgent{border-left-color:var(--danger)}
+.ri.action{border-left-color:var(--accent)}
+.ri.info  {border-left-color:var(--accent2)}
+.ri-lbl{font-family:var(--mono);font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.ri-val{font-size:.85rem;color:var(--text);line-height:1.55}
+
+/* ESCALATION PREDICTION */
+.esc-pred{padding:10px 14px;border-radius:6px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.esc-pred.high{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25)}
+.esc-pred.low {background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2)}
+.esc-icon{font-size:1.2rem;flex-shrink:0}
+.esc-main{flex:1;font-size:.82rem;color:var(--text);line-height:1.5}
+.esc-prob{font-family:var(--mono);font-size:1.4rem;font-weight:500;flex-shrink:0}
+.esc-prob.high{color:var(--danger)}
+.esc-prob.low {color:var(--ok)}
+
+/* RISK BAR */
+.risk-bar-wrap{margin:10px 0 14px}
+.risk-bar-lbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.58rem;color:var(--text3);margin-bottom:5px}
+.risk-bar{height:4px;background:var(--wire2);border-radius:99px;overflow:hidden}
+.risk-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ok),var(--warn),var(--danger));transition:width .8s ease}
+
+/* OVERRIDE NOTE */
+.override-note{font-family:var(--mono);font-size:.6rem;color:var(--warn);padding:6px 10px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:5px;margin-bottom:8px}
+
+/* ALERT BAR */
+.alert-bar{padding:8px 12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.22);border-radius:6px;font-family:var(--mono);font-size:.62rem;color:var(--ok);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+
+/* ACTION LIST */
+.alist{list-style:none}
+.alist li{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--wire);font-size:.82rem;color:var(--text2);align-items:flex-start;line-height:1.5}
+.alist li:last-child{border-bottom:none}
+.anum{font-family:var(--mono);font-size:.58rem;color:var(--accent);background:rgba(14,165,233,.1);border-radius:3px;padding:2px 6px;flex-shrink:0;margin-top:2px}
+
+/* FEEDBACK BAR */
+.feedback-bar{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 12px;background:var(--bg3);border:1px solid var(--wire);border-radius:6px}
+.fb-lbl{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-right:auto}
+.fb-btn{padding:4px 12px;border-radius:4px;border:1px solid;background:transparent;font-family:var(--mono);font-size:.6rem;cursor:pointer;transition:all .15s}
+.fb-correct{border-color:rgba(34,197,94,.35);color:var(--ok)}
+.fb-correct:hover{background:rgba(34,197,94,.1)}
+.fb-wrong{border-color:rgba(239,68,68,.35);color:var(--danger)}
+.fb-wrong:hover{background:rgba(239,68,68,.08)}
+
+/* RIGHT PANEL */
+.right{overflow:hidden;display:flex;flex-direction:column;position:relative}
+.map-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;gap:10px}
+.map-placeholder-icon{font-size:2.5rem;opacity:.12}
+
+/* OFFICER TABLE */
+.ot{border-top:1px solid var(--wire);background:var(--bg2);max-height:230px;overflow-y:auto;display:none}
+.ot-row{display:grid;grid-template-columns:1fr 60px 70px 80px 90px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--wire);font-size:.78rem;cursor:pointer;transition:background .12s}
+.ot-row:hover{background:var(--bg3)}
+.ot-row.hd{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);cursor:default}
+.ot-row.hd:hover{background:transparent}
+.ot-name{font-weight:700;color:var(--text)}
+.ot-spec{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-top:1px}
+.ot-dist{font-family:var(--mono);font-size:.68rem;color:var(--accent2)}
+.ot-rank.hi{color:var(--ok)}
+.ot-rank.lo{color:var(--text3)}
+.dispatch-btn{padding:4px 10px;border-radius:4px;border:1px solid rgba(14,165,233,.35);background:transparent;color:var(--accent);font-family:var(--mono);font-size:.58rem;cursor:pointer;transition:all .15s}
+.dispatch-btn:hover{background:var(--accent);color:#fff}
+.matched-badge{font-family:var(--mono);font-size:.55rem;color:var(--ok);background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:3px;padding:1px 6px;margin-top:2px;display:inline-block}
+
+/* SHIMMER */
+.shim{background:linear-gradient(90deg,var(--bg3) 25%,var(--wire2) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shim 1.4s infinite;border-radius:5px;height:12px;margin:5px 0}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.spinner{width:24px;height:24px;border:2px solid var(--wire2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+
+<!-- TOP BAR -->
+<div class="bar">
+  <span class="bar-logo">CRIMECAST</span>
+  <div class="bar-sep"></div>
+  <span class="bar-title">Tactical Incident Console</span>
+  <div class="bar-right">
+    <div class="bar-status"><span class="led"></span>AI READY</div>
+    <div class="bar-sep"></div>
+    <span class="bar-time" id="tbTime">—</span>
+    <span class="bar-conn">THANE PD NET</span>
+  </div>
+</div>
+
+<div class="console">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+
+    <!-- Input -->
+    <div class="sec">
+      <div class="sec-hd">Incident Report</div>
+      <textarea class="ta" id="incidentText" rows="5" placeholder="Report: e.g. Altercation near Kopri bridge, 2 persons, crowd forming…"></textarea>
+      <div class="vbar">
+        <button class="vbtn" id="vBtn" onclick="toggleVoice()">🎙 <span id="vLbl">Voice</span></button>
+        <div class="ltabs">
+          <button class="ltab on" onclick="setLang(this,'en-IN')">EN</button>
+          <button class="ltab" onclick="setLang(this,'hi-IN')">HI</button>
+          <button class="ltab" onclick="setLang(this,'mr-IN')">MR</button>
+        </div>
+      </div>
+      <div class="gps-row">
+        <button class="gps-pill" onclick="getGPS()">📍 GPS</button>
+        <span class="gps-val" id="gpsVal">—</span>
+      </div>
+      <input class="landmark" id="landmarkInput" placeholder="Or landmark: near Kopri bridge, Kalyan station exit…"/>
+      <button class="abtn" id="abtn" onclick="analyzeIncident()">⚡ <span id="abtnLbl">Run Analysis</span></button>
+    </div>
+
+    <!-- Results -->
+    <div class="sec" id="resultSec" style="flex:1">
+      <div class="sec-hd">Analysis Output</div>
+      <div style="color:var(--text3);font-family:var(--mono);font-size:.65rem;text-align:center;padding:28px 0">Awaiting incident input</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div id="mapContainer" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+      <div class="map-placeholder" id="mapPlaceholder">
+        <div class="map-placeholder-icon">🗺</div>
+        <span>Map initialises after analysis</span>
+      </div>
+    </div>
+    <div class="ot" id="officerTable"></div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+let lat=null, lon=null, voiceLang='en-IN', recognition=null, isRecording=false, leafMap=null;
+let currentIncidentId=null;
+
+(function tick(){
+  const n=new Date(), el=document.getElementById('tbTime');
+  if(el) el.textContent=n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})+' IST';
+  setTimeout(tick,1000);
+})();
+
+function getCSRF(){
+  const c=document.cookie.split('; ').find(r=>r.startsWith('csrftoken='));
+  return c?decodeURIComponent(c.split('=')[1]):'';
+}
+
+function getGPS(){
+  const el=document.getElementById('gpsVal');
+  el.textContent='Acquiring…';
+  if(!navigator.geolocation){el.textContent='Unavailable';return;}
+  navigator.geolocation.getCurrentPosition(
+    p=>{lat=p.coords.latitude;lon=p.coords.longitude;el.textContent=`${lat.toFixed(5)}, ${lon.toFixed(5)}`;},
+    ()=>{lat=null;lon=null;el.textContent='Denied';}
+  );
+}
+
+function setLang(el,lang){
+  voiceLang=lang;
+  document.querySelectorAll('.ltab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function toggleVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Chrome required for voice input.');return;}
+  const btn=document.getElementById('vBtn'), lbl=document.getElementById('vLbl');
+  if(isRecording){recognition&&recognition.stop();isRecording=false;btn.classList.remove('rec');lbl.textContent='Voice';return;}
+  recognition=new SR();recognition.lang=voiceLang;recognition.interimResults=true;recognition.continuous=true;
+  recognition.onstart=()=>{isRecording=true;btn.classList.add('rec');lbl.textContent='Recording…';};
+  recognition.onresult=e=>{document.getElementById('incidentText').value=Array.from(e.results).map(r=>r[0].transcript).join('');};
+  recognition.onend=()=>{isRecording=false;btn.classList.remove('rec');lbl.textContent='Voice';};
+  recognition.start();
+}
+
+async function analyzeIncident(){
+  const text=document.getElementById('incidentText').value.trim();
+  if(!text)return;
+  const btn=document.getElementById('abtn'), lbl=document.getElementById('abtnLbl');
+  btn.disabled=true;lbl.textContent='Analyzing…';
+  const rs=document.getElementById('resultSec');
+  rs.innerHTML=`<div class="sec-hd">Analysis Output</div><div class="shim" style="width:65%"></div><div class="shim" style="width:45%"></div><div class="shim" style="width:85%;height:50px;margin-top:8px"></div>`;
+
+  try{
+    const body={text};
+    if(lat){body.latitude=lat;body.longitude=lon;}
+    const landmark=document.getElementById('landmarkInput').value.trim();
+    if(landmark)body.landmark=landmark;
+
+    const res=await fetch('/api/incident/analyze/',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+      credentials:'same-origin',
+      body:JSON.stringify(body)
+    });
+    const data=await res.json();
+    if(data.status==='success'){currentIncidentId=data.alert_id;renderPoliceResult(data);}
+    else rs.innerHTML=`<div class="sec-hd">Error</div><div style="color:var(--danger);font-family:var(--mono);font-size:.72rem">${data.error||'Analysis failed'}</div>`;
+  }catch(e){
+    rs.innerHTML='<div class="sec-hd">Network Error</div><div style="color:var(--danger);font-family:var(--mono);font-size:.72rem">Connection failed. Use radio dispatch.</div>';
+  }finally{btn.disabled=false;lbl.textContent='Run Analysis';}
+}
+
+function chipClass(sev){return{low:'c-ok',medium:'c-warn',high:'c-danger',critical:'c-danger'}[sev]||'c-warn';}
+function escClass(risk){return{low:'c-ok',medium:'c-warn',high:'c-danger'}[risk]||'c-warn';}
+
+function renderPoliceResult(data){
+  const a=data.analysis, sev=a.severity||'medium';
+  const escProb=a.escalation_probability||0;
+  const escHigh=escProb>=60||a.escalation_prediction==='yes';
+  const riskScore=a.area_risk_score||5;
+
+  const actions=(a.immediate_actions||[]).map((act,i)=>`<li><span class="anum">${String(i+1).padStart(2,'0')}</span>${act}</li>`).join('');
+  const alertBar=data.alert_sent?`<div class="alert-bar">✓ Auto-alert dispatched · Alert ID: ${data.alert_id||''}</div>`:'';
+  const overrideNote=a.rule_override?`<div class="override-note">⚡ Safety rules override applied — severity upgraded to ${a.severity.toUpperCase()}</div>`:'';
+
+  document.getElementById('resultSec').innerHTML=`
+    <div class="sec-hd">Analysis Output</div>
+    ${alertBar}
+    ${overrideNote}
+
+    <div class="chips">
+      <span class="chip ${chipClass(sev)}">${sev.toUpperCase()}</span>
+      <span class="chip c-blue">${a.crime_type||'unknown'}</span>
+      <span class="chip ${escClass(a.escalation_risk||'medium')}">ESC: ${a.escalation_risk||'—'}</span>
+      <span class="chip c-blue">${a.confidence||'—'}% CONF</span>
+    </div>
+
+    <div class="esc-pred ${escHigh?'high':'low'}">
+      <span class="esc-icon">${escHigh?'⚠️':'✓'}</span>
+      <div class="esc-main">
+        <strong>${escHigh?'HIGH escalation risk in next 5–10 min':'Escalation unlikely'}</strong><br>
+        <span style="font-size:.78rem;color:var(--text2)">${a.escalation_reason||''}</span>
+        ${a.time_risk&&a.time_risk!=='day'?`<div style="font-family:var(--mono);font-size:.58rem;color:var(--warn);margin-top:4px">⏰ ${a.time_risk} — elevated risk period</div>`:''}
+      </div>
+      <div class="esc-prob ${escHigh?'high':'low'}">${escProb}%</div>
+    </div>
+
+    <div class="risk-bar-wrap">
+      <div class="risk-bar-lbl"><span>Area risk score</span><span style="color:var(--text)">${riskScore}/10</span></div>
+      <div class="risk-bar"><div class="risk-bar-fill" style="width:${riskScore*10}%"></div></div>
+    </div>
+
+    <div class="ri urgent"><div class="ri-lbl">Incident summary</div><div class="ri-val">${a.summary}</div></div>
+    <div class="ri action"><div class="ri-lbl">Dispatch recommendation</div><div class="ri-val">${a.dispatch_recommendation}</div></div>
+
+    <div class="sec-hd" style="margin-top:14px">Immediate Actions</div>
+    <ul class="alist">${actions}</ul>
+
+    <div class="ri" style="margin-top:8px"><div class="ri-lbl">ETA / Response window</div><div class="ri-val">${a.estimated_response_time}</div></div>
+
+    <div class="feedback-bar">
+      <span class="fb-lbl">Classification correct?</span>
+      <button class="fb-btn fb-correct" onclick="submitFeedback(true)">✓ Yes</button>
+      <button class="fb-btn fb-wrong"   onclick="submitFeedback(false)">✗ No</button>
+    </div>
+  `;
+
+  if((data.nearest_officers||[]).length){
+    renderPoliceMap(data);
+    renderOfficerTable(data.nearest_officers);
+  }
+}
+
+function renderPoliceMap(data){
+  const placeholder=document.getElementById('mapPlaceholder');
+  if(placeholder){
+    const mapDiv=document.createElement('div');
+    mapDiv.id='policeMap';mapDiv.style.cssText='flex:1;min-height:200px';
+    placeholder.replaceWith(mapDiv);
+  }
+  const center=lat?[lat,lon]:[19.2183,72.9781];
+  if(!leafMap){
+    leafMap=L.map('policeMap').setView(center,14);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© CARTO'}).addTo(leafMap);
+  } else leafMap.setView(center,14);
+  leafMap.eachLayer(l=>{if(l._c)leafMap.removeLayer(l);});
+
+  if(lat){
+    const m=L.marker([lat,lon],{icon:L.divIcon({html:'<div style="width:13px;height:13px;border-radius:50%;background:#ef4444;border:2.5px solid #fff;box-shadow:0 0 16px rgba(239,68,68,.9)"></div>',iconSize:[13,13],iconAnchor:[6,6],className:''})}).addTo(leafMap);
+    m._c=true;m.bindPopup('<b>📍 Incident</b>').openPopup();
+  }
+  (data.nearest_officers||[]).forEach(o=>{
+    const col=o.rank_score>4?'#22c55e':'#38bdf8';
+    const m=L.marker([o.latitude,o.longitude],{icon:L.divIcon({html:`<div style="width:10px;height:10px;border-radius:50%;background:${col};border:2px solid #fff;box-shadow:0 0 8px ${col}88"></div>`,iconSize:[10,10],iconAnchor:[5,5],className:''})}).addTo(leafMap);
+    m._c=true;m.bindPopup(`<b>👮 ${o.name}</b><br>${o.distance_km}km · ${o.specialty}<br>Score: ${o.rank_score}`);
+    if(lat){const l=L.polyline([[o.latitude,o.longitude],[lat,lon]],{color:`${col}44`,weight:1.5,dashArray:'5 4'}).addTo(leafMap);l._c=true;}
+  });
+}
+
+function renderOfficerTable(officers){
+  const tbl=document.getElementById('officerTable');
+  tbl.style.display='block';
+  const maxRank=Math.max(...officers.map(o=>o.rank_score||0));
+  const rows=officers.map((o,i)=>`
+    <div class="ot-row" onclick="if('${o.phone}')window.location.href='tel:${o.phone}'">
+      <div>
+        <div class="ot-name">${i===0?'⭐ ':''}${o.name}</div>
+        <div class="ot-spec">${o.specialty}</div>
+        ${o.rank_score>=maxRank*.8?'<span class="matched-badge">✓ Best match</span>':''}
+        ${o.active_cases?`<div style="font-family:var(--mono);font-size:.55rem;color:var(--warn);margin-top:1px">${o.active_cases} active cases</div>`:''}
+      </div>
+      <span class="ot-dist">${o.distance_km}km</span>
+      <span class="ot-rank ${o.rank_score>=maxRank*.8?'hi':'lo'}" style="font-family:var(--mono);font-size:.68rem">${o.rank_score}</span>
+      <span style="font-family:var(--mono);font-size:.6rem;color:var(--ok)">On Duty</span>
+      <button class="dispatch-btn" onclick="event.stopPropagation();dispatchOfficer('${o.id}','${o.name}')">Dispatch</button>
+    </div>
+  `).join('');
+  tbl.innerHTML=`<div class="ot-row hd"><span>Officer</span><span>Dist</span><span>Score</span><span>Status</span><span>Action</span></div>${rows}`;
+}
+
+function dispatchOfficer(id,name){
+  if(!confirm(`Dispatch ${name}?\n\nThis will send an SMS alert and log the dispatch.`))return;
+  fetch('/api/incident/acknowledge/',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+    body:JSON.stringify({alert_id:currentIncidentId,action:'accept',officer_id:id})
+  }).then(()=>alert(`✓ Dispatch signal sent to ${name}`))
+    .catch(()=>alert('Dispatch signal sent (offline mode).'));
+}
+
+async function submitFeedback(correct){
+  if(!currentIncidentId)return;
+  try{
+    await fetch('/api/incident/resolve/',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+      body:JSON.stringify({alert_id:currentIncidentId,ai_correct:correct,actual_severity:''})
+    });
+    const bar=document.querySelector('.feedback-bar');
+    if(bar)bar.innerHTML=`<span style="font-family:var(--mono);font-size:.6rem;color:var(--ok)">✓ Feedback recorded</span>`;
+  }catch(e){}
+}
+
+window.addEventListener('DOMContentLoaded',()=>setTimeout(getGPS,400));
+</script>
+{% endblock %}

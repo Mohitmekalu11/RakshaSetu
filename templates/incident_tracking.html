@@ -1,0 +1,417 @@
+{% extends "crime(base).html" %}
+{% load static %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f6fb;--card:#fff;--border:#e8ecf4;
+  --text:#111827;--text2:#4b5563;--text3:#9ca3af;
+  --pending:#6b7280;--accepted:#3b82f6;--enroute:#f59e0b;
+  --arrived:#8b5cf6;--resolved:#10b981;--rejected:#ef4444;--escalated:#f97316;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
+}
+body{background:var(--bg);font-family:var(--font);color:var(--text);min-height:100vh}
+
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px 80px}
+
+/* ── HEADER ─────────── */
+.track-header{text-align:center;margin-bottom:32px}
+.ref-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#eff6ff;border:1px solid #bfdbfe;border-radius:99px;
+  padding:4px 14px;font-family:var(--mono);font-size:.68rem;
+  color:#1d4ed8;letter-spacing:.08em;margin-bottom:16px;
+}
+.ref-dot{width:6px;height:6px;border-radius:50%;background:#3b82f6;animation:blink 1.8s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.track-header h1{font-size:1.6rem;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+.track-header p{font-size:.9rem;color:var(--text2)}
+
+/* ── STATUS CARD ─────── */
+.status-card{
+  background:var(--card);border-radius:20px;border:1px solid var(--border);
+  box-shadow:var(--shadow);padding:24px;margin-bottom:20px;
+  position:relative;overflow:hidden;
+}
+.status-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:var(--status-color,#6b7280);
+  transition:background .5s ease;
+}
+.status-main{display:flex;align-items:center;gap:16px}
+.status-icon{
+  width:56px;height:56px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:1.6rem;flex-shrink:0;
+  background:color-mix(in srgb,var(--status-color,#6b7280) 12%,#fff);
+}
+.status-text h2{font-size:1.2rem;font-weight:700;margin-bottom:4px}
+.status-text p{font-size:.88rem;color:var(--text2);line-height:1.6}
+.status-badge{
+  margin-top:12px;display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:99px;font-size:.72rem;font-weight:600;
+  font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;
+  background:color-mix(in srgb,var(--status-color,#6b7280) 15%,#fff);
+  color:var(--status-color,#6b7280);border:1px solid color-mix(in srgb,var(--status-color,#6b7280) 30%,#fff);
+}
+
+/* ── OFFICER CARD ───── */
+.officer-card{
+  background:var(--card);border-radius:16px;border:1px solid var(--border);
+  box-shadow:var(--shadow);padding:20px;margin-bottom:20px;
+  display:flex;gap:14px;align-items:center;
+}
+.officer-avatar{
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,#3b82f6,#1d4ed8);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;color:#fff;
+}
+.officer-info{flex:1}
+.officer-info strong{font-size:1rem;font-weight:700;display:block;margin-bottom:2px}
+.officer-info span{font-size:.8rem;color:var(--text2)}
+.call-officer{
+  padding:9px 20px;background:#3b82f6;color:#fff;
+  border:none;border-radius:10px;font-family:var(--font);
+  font-weight:700;font-size:.85rem;cursor:pointer;
+  text-decoration:none;transition:background .2s;
+}
+.call-officer:hover{background:#1d4ed8}
+
+/* ── STEP TRACKER ────── */
+.stepper-card{
+  background:var(--card);border-radius:20px;border:1px solid var(--border);
+  box-shadow:var(--shadow);padding:24px;margin-bottom:20px;
+}
+.stepper-title{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:20px}
+.stepper{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:14px;align-items:flex-start}
+.step-left{display:flex;flex-direction:column;align-items:center;width:28px;flex-shrink:0}
+.step-dot{
+  width:28px;height:28px;border-radius:50%;border:2px solid var(--border);
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;color:var(--text3);flex-shrink:0;
+  transition:all .4s ease;
+}
+.step-dot.done{background:var(--resolved);border-color:var(--resolved);color:#fff}
+.step-dot.active{background:var(--accepted);border-color:var(--accepted);color:#fff;animation:stepPulse 1.8s ease infinite}
+@keyframes stepPulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.4)}50%{box-shadow:0 0 0 6px rgba(59,130,246,0)}}
+.step-line{width:2px;flex:1;background:var(--border);min-height:24px;margin:2px 0;transition:background .4s}
+.step-line.done{background:var(--resolved)}
+.step-body{padding-bottom:20px;flex:1}
+.step-label{font-size:.9rem;font-weight:600;margin-bottom:2px;color:var(--text3)}
+.step-label.done,.step-label.active{color:var(--text)}
+.step-time{font-family:var(--mono);font-size:.68rem;color:var(--text3)}
+.step-note{font-size:.8rem;color:var(--text2);margin-top:3px;line-height:1.5}
+
+/* ── INFO GRID ───────── */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.info-box{
+  background:var(--card);border-radius:14px;border:1px solid var(--border);
+  box-shadow:var(--shadow);padding:16px;
+}
+.info-box-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.info-box-val{font-size:.95rem;font-weight:700;color:var(--text)}
+.info-box-sub{font-size:.75rem;color:var(--text2);margin-top:2px}
+
+/* ── FEEDBACK ────────── */
+.feedback-card{
+  background:var(--card);border-radius:16px;border:1px solid var(--border);
+  box-shadow:var(--shadow);padding:20px;
+}
+.fb-title{font-size:.9rem;font-weight:600;margin-bottom:14px}
+.star-row{display:flex;gap:6px;margin-bottom:14px}
+.star{font-size:1.6rem;cursor:pointer;opacity:.3;transition:opacity .15s;line-height:1}
+.star.active{opacity:1}
+.fb-textarea{
+  width:100%;border:1px solid var(--border);border-radius:10px;
+  padding:12px;font-family:var(--font);font-size:.88rem;
+  color:var(--text);resize:none;outline:none;min-height:70px;
+  transition:border-color .2s;
+}
+.fb-textarea:focus{border-color:#3b82f6}
+.fb-submit{
+  width:100%;margin-top:12px;padding:12px;border:none;border-radius:10px;
+  background:#111827;color:#fff;font-family:var(--font);font-size:.9rem;
+  font-weight:700;cursor:pointer;transition:background .2s;
+}
+.fb-submit:hover{background:#1f2937}
+
+/* ── REFRESH INDICATOR ── */
+.refresh-bar{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--mono);font-size:.62rem;color:var(--text3);
+  letter-spacing:.08em;margin-bottom:24px;
+}
+.refresh-spinner{
+  width:10px;height:10px;border:1.5px solid var(--border);
+  border-top-color:#3b82f6;border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:#10b981;animation:blink 1.8s ease infinite}
+
+/* ── EMERGENCY STRIP ─── */
+.emergency-strip{
+  background:#fef2f2;border:1px solid #fecaca;border-radius:12px;
+  padding:12px 16px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:.88rem;color:#dc2626;
+}
+.call-112{
+  background:#dc2626;color:#fff;border:none;border-radius:8px;
+  padding:7px 16px;font-family:var(--font);font-weight:800;font-size:.82rem;
+  cursor:pointer;text-decoration:none;
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{opacity:0;animation:fadeUp .5s ease forwards}
+</style>
+
+<div class="wrap">
+
+  <!-- Emergency strip always visible -->
+  <div class="emergency-strip fu" style="animation-delay:.05s">
+    <span>If danger persists, call immediately</span>
+    <a class="call-112" href="tel:112">📞 112</a>
+  </div>
+
+  <!-- Header -->
+  <div class="track-header fu" style="animation-delay:.1s">
+    <div class="ref-badge"><span class="ref-dot"></span>Alert #{{ alert.id }}</div>
+    <h1>Incident Tracking</h1>
+    <p>{{ alert.crime_type|title }} · {{ alert.ward }}</p>
+  </div>
+
+  <!-- Refresh bar -->
+  <div class="refresh-bar fu" style="animation-delay:.12s">
+    <div class="refresh-spinner" id="refreshSpinner"></div>
+    <span id="refreshLabel">Live — updates every 5 seconds</span>
+    <span class="pulse-dot" id="liveDot" style="display:none"></span>
+  </div>
+
+  <!-- Status card -->
+  <div class="status-card fu" id="statusCard" style="animation-delay:.15s">
+    <div class="status-main">
+      <div class="status-icon" id="statusIcon">⏳</div>
+      <div class="status-text">
+        <h2 id="statusTitle">Loading...</h2>
+        <p id="statusDesc">Fetching latest update</p>
+      </div>
+    </div>
+    <div class="status-badge" id="statusBadge">—</div>
+  </div>
+
+  <!-- Officer card (hidden until accepted) -->
+  <div class="officer-card fu" id="officerCard" style="display:none;animation-delay:.2s">
+    <div class="officer-avatar">👮</div>
+    <div class="officer-info">
+      <strong id="officerName">—</strong>
+      <span id="officerSpec">—</span><br>
+      <span id="officerStation" style="color:#3b82f6;font-size:.78rem">—</span>
+    </div>
+    <a class="call-officer" id="officerCall" href="#">📞 Call</a>
+  </div>
+
+  <!-- Step tracker -->
+  <div class="stepper-card fu" style="animation-delay:.22s">
+    <div class="stepper-title">Response Timeline</div>
+    <div class="stepper" id="stepper">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- Info grid -->
+  <div class="info-grid fu" style="animation-delay:.25s">
+    <div class="info-box">
+      <div class="info-box-label">Response Time</div>
+      <div class="info-box-val" id="responseTime">—</div>
+      <div class="info-box-sub">Reported → Accepted</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-label">Area Risk</div>
+      <div class="info-box-val" id="areaRisk">—</div>
+      <div class="info-box-sub">Based on local data</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-label">Station</div>
+      <div class="info-box-val" id="stationName" style="font-size:.82rem">—</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-label">Escalation Risk</div>
+      <div class="info-box-val" id="escRisk">—</div>
+      <div class="info-box-sub">Next 10 minutes</div>
+    </div>
+  </div>
+
+  <!-- Feedback (shown only when resolved) -->
+  <div class="feedback-card fu" id="feedbackCard" style="display:none;animation-delay:.3s">
+    <div class="fb-title">How was your experience?</div>
+    <div class="star-row" id="starRow">
+      <span class="star" data-v="1">★</span>
+      <span class="star" data-v="2">★</span>
+      <span class="star" data-v="3">★</span>
+      <span class="star" data-v="4">★</span>
+      <span class="star" data-v="5">★</span>
+    </div>
+    <textarea class="fb-textarea" id="fbText" placeholder="Tell us about your experience (optional)"></textarea>
+    <button class="fb-submit" onclick="submitFeedback()">Submit Feedback</button>
+  </div>
+
+</div>
+
+<script>
+const ALERT_ID = {{ alert.id }};
+let pollInterval = null;
+let rating = 0;
+let feedbackSubmitted = false;
+
+const STATUS_CONFIG = {
+  pending:   {color:'#6b7280', icon:'⏳', title:'Waiting for Officer',    desc:'Your report is being reviewed. An officer will be assigned shortly.'},
+  accepted:  {color:'#3b82f6', icon:'✅', title:'Officer Assigned',       desc:'An officer has accepted your report and is preparing to respond.'},
+  enroute:   {color:'#f59e0b', icon:'🚔', title:'Officer En Route',       desc:'The officer is on the way to your reported location.'},
+  arrived:   {color:'#8b5cf6', icon:'📍', title:'Officer Has Arrived',    desc:'The officer is now at the incident location.'},
+  resolved:  {color:'#10b981', icon:'✓',  title:'Incident Resolved',      desc:'The incident has been resolved. Thank you for reporting.'},
+  rejected:  {color:'#ef4444', icon:'✗',  title:'Being Reassigned',       desc:'Reassigning to the next available officer.'},
+  escalated: {color:'#f97316', icon:'⬆',  title:'Escalated to SHO',      desc:'Alert sent to the Station Head Officer for immediate action.'},
+};
+
+const STEP_STAGES = [
+  {key:'pending',  label:'Report Received',  tsKey:'created'},
+  {key:'accepted', label:'Officer Assigned', tsKey:'accepted'},
+  {key:'enroute',  label:'En Route',         tsKey:'enroute'},
+  {key:'arrived',  label:'Officer Arrived',  tsKey:'arrived'},
+  {key:'resolved', label:'Resolved',         tsKey:'resolved'},
+];
+const STATUS_ORDER = ['pending','accepted','enroute','arrived','resolved'];
+
+function getCSRF(){
+  const c=document.cookie.split('; ').find(r=>r.startsWith('csrftoken='));
+  return c?decodeURIComponent(c.split('=')[1]):'';
+}
+
+async function fetchLive(){
+  try{
+    const res = await fetch(`/api/incident/live/${ALERT_ID}/`);
+    const data = await res.json();
+    updateUI(data);
+  }catch(e){
+    document.getElementById('refreshLabel').textContent = 'Update failed — retrying...';
+  }
+}
+
+function updateUI(data){
+  const cfg   = STATUS_CONFIG[data.status] || STATUS_CONFIG.pending;
+  const order = STATUS_ORDER.indexOf(data.status);
+
+  // Status card
+  const card = document.getElementById('statusCard');
+  card.style.setProperty('--status-color', cfg.color);
+  document.getElementById('statusIcon').textContent  = cfg.icon;
+  document.getElementById('statusTitle').textContent = cfg.title;
+  document.getElementById('statusDesc').textContent  = cfg.desc;
+  const badge = document.getElementById('statusBadge');
+  badge.textContent = data.status.toUpperCase();
+  badge.style.setProperty('--status-color', cfg.color);
+
+  // Officer card
+  const oc = document.getElementById('officerCard');
+  if(data.officer && data.status !== 'pending'){
+    oc.style.display = 'flex';
+    document.getElementById('officerName').textContent    = data.officer.name;
+    document.getElementById('officerSpec').textContent    = data.officer.specialty;
+    document.getElementById('officerStation').textContent = data.officer.station;
+    const callBtn = document.getElementById('officerCall');
+    callBtn.href = data.officer.phone ? `tel:${data.officer.phone}` : '#';
+    callBtn.style.opacity = data.officer.phone ? '1' : '.4';
+    callBtn.style.pointerEvents = data.officer.phone ? 'auto' : 'none';
+  } else {
+    oc.style.display = 'none';
+  }
+
+  // Stepper
+  const stepper = document.getElementById('stepper');
+  stepper.innerHTML = STEP_STAGES.map((stage, i) => {
+    const currentIdx = STATUS_ORDER.indexOf(data.status);
+    const stageIdx   = STATUS_ORDER.indexOf(stage.key);
+    const isDone     = stageIdx < currentIdx || data.status === 'resolved';
+    const isActive   = stageIdx === currentIdx && data.status !== 'resolved';
+    const ts         = data.timestamps[stage.tsKey];
+    const isLast     = i === STEP_STAGES.length - 1;
+
+    return `
+      <div class="step">
+        <div class="step-left">
+          <div class="step-dot ${isDone?'done':isActive?'active':''}">${isDone?'✓':i+1}</div>
+          ${!isLast?`<div class="step-line ${isDone?'done':''}"></div>`:''}
+        </div>
+        <div class="step-body">
+          <div class="step-label ${isDone||isActive?'done':''}">${stage.label}</div>
+          ${ts?`<div class="step-time">${ts}</div>`:'<div class="step-time" style="color:#d1d5db">Pending</div>'}
+        </div>
+      </div>`;
+  }).join('');
+
+  // Info grid
+  document.getElementById('responseTime').textContent = data.metrics.response_time || 'Pending';
+  document.getElementById('areaRisk').textContent     = data.area_risk_score ? `${data.area_risk_score}/10` : '—';
+  document.getElementById('stationName').textContent  = data.station || '—';
+  document.getElementById('escRisk').textContent      = data.escalation_probability ? `${data.escalation_probability}%` : '—';
+
+  // Feedback card — show only when resolved
+  if(data.status === 'resolved' && !feedbackSubmitted){
+    document.getElementById('feedbackCard').style.display = 'block';
+  }
+
+  // Refresh label
+  const now = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('refreshLabel').textContent = `Last updated: ${now}`;
+  document.getElementById('refreshSpinner').style.display = 'none';
+  document.getElementById('liveDot').style.display = 'inline-block';
+  setTimeout(()=>{
+    document.getElementById('refreshSpinner').style.display = 'block';
+    document.getElementById('liveDot').style.display = 'none';
+  },1000);
+
+  // Stop polling when terminal
+  if(['resolved','rejected'].includes(data.status) && pollInterval){
+    clearInterval(pollInterval);
+    pollInterval = null;
+  }
+}
+
+// Stars
+document.querySelectorAll('.star').forEach(s => {
+  s.addEventListener('click', ()=>{
+    rating = parseInt(s.dataset.v);
+    document.querySelectorAll('.star').forEach((st,i) => {
+      st.classList.toggle('active', i < rating);
+    });
+  });
+});
+
+async function submitFeedback(){
+  try{
+    await fetch('/api/incident/feedback/', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+      credentials:'same-origin',
+      body:JSON.stringify({
+        alert_id: ALERT_ID,
+        rating,
+        feedback: document.getElementById('fbText').value,
+        ai_correct: true,
+      }),
+    });
+    feedbackSubmitted = true;
+    document.getElementById('feedbackCard').innerHTML =
+      '<div style="text-align:center;padding:16px;color:#10b981;font-weight:700;font-size:.95rem">✓ Thank you for your feedback</div>';
+  }catch(e){}
+}
+
+// Initial load + poll
+fetchLive();
+pollInterval = setInterval(fetchLive, 5000);
+</script>
+{% endblock %}

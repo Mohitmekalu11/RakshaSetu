@@ -1,0 +1,353 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Intelligence | Advanced Analytics</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #0ea5e9;
+            --danger: #f43f5e;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --glass: rgba(255, 255, 255, 0.7);
+            --text-main: #0f172a;
+        }
+
+        body {
+            background-color:rgb(176, 225, 213, 0.57);
+            /* Animated Mesh Gradient Background */
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%), 
+                radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.05) 0px, transparent 50%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 5rem;
+        }
+
+        /* Floating Background Elements */
+        .bg-blob {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+            filter: blur(120px);
+            opacity: 0.05;
+            z-index: -1;
+            border-radius: 50%;
+            animation: move 25s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-10%, -10%); }
+            to { transform: translate(20%, 20%); }
+        }
+
+        .main-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Section Headlines */
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Hero Typography */
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Status Pill */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 100px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        /* Metric Box (Replaces compact cards) */
+        .metric-box {
+            padding: 2rem;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-box:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-5px);
+        }
+
+        /* High-End Distribution Progress */
+        .dist-row {
+            margin-bottom: 2.5rem;
+        }
+
+        .dist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 0.75rem;
+        }
+
+        .dist-name { font-weight: 700; font-size: 1.1rem; }
+        .dist-count { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
+
+        .progress-track {
+            height: 12px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 50px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 50px;
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Action Bar */
+        .action-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            display: flex;
+            gap: 1.5rem;
+            z-index: 1000;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+
+        .action-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .action-btn:hover { opacity: 0.7; color: white; }
+
+        @media (max-width: 768px) {
+            .main-wrapper { padding: 2rem 1rem; }
+            .action-bar { width: 90%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-blob"></div>
+
+    <div class="main-wrapper">
+    
+        <!-- =========================
+             HEADER
+        ========================== -->
+        <header data-aos="fade-down">
+            <span class="section-label">Sector Analysis Report</span>
+            <h1 class="hero-title">{{ summary.ward }}</h1>
+    
+            <div class="status-pill">
+                <span class="me-3">
+                    {% if summary.recent_trend.status == "SPIKE" %}
+                        🔴 <strong>Recent spike detected</strong>
+                    {% elif summary.recent_trend.status == "ELEVATED" %}
+                        🟡 <strong>Slight increase observed</strong>
+                    {% else %}
+                        🟢 <strong>Normal activity</strong>
+                    {% endif %}
+                </span>
+                <div class="vr me-3"></div>
+                <span class="text-muted">{{ summary.crime_type }} · 30-Day Projection</span>
+            </div>
+        </header>
+    
+        <!-- =========================
+             30-DAY FORECAST SUMMARY (DOMINANT)
+        ========================== -->
+        <section class="mt-5" data-aos="fade-up">
+            <span class="section-label">30-Day Sector Forecast</span>
+        
+            <div class="metric-box mt-3">
+                <div class="row g-4 text-center">
+                    <div class="col-md-3">
+                        <p class="text-muted small mb-1">Expected Incidents (Next 30 Days)</p>
+                        <h3 class="fw-800 text-primary">
+                            {{ summary.forecast_summary.expected_30d }}
+                        </h3>
+                    </div>
+        
+                    <div class="col-md-3">
+                        <p class="text-muted small mb-1">Primary Risk Crime</p>
+                        <h5 class="fw-bold">{{ summary.forecast_summary.primary_crime }}</h5>
+                    </div>
+        
+                    <div class="col-md-3">
+                        <p class="text-muted small mb-1">Peak Risk Window</p>
+                        <h5 class="fw-bold">{{ summary.forecast_summary.peak_window }}</h5>
+                    </div>
+        
+                    <div class="col-md-3">
+                        <p class="text-muted small mb-1">Model Confidence</p>
+                        <h5 class="fw-bold">{{ summary.forecast_summary.confidence }}</h5>
+                    </div>
+                </div>
+        
+                <hr class="my-4 opacity-10">
+        
+                <p class="text-muted small mb-0 text-center">
+                    Forecast derived from {{ summary.forecast_summary.data_depth }} of historical intelligence.
+                </p>
+            </div>
+        </section>
+        
+    
+        <!-- =========================
+             TEMPORAL INTELLIGENCE
+        ========================== -->
+        <section class="mt-5 pt-4">
+            <span class="section-label">Temporal Risk Intelligence</span>
+    
+            <div class="row mt-4">
+                <!-- Weekly Breakdown -->
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h5 class="fw-bold mb-3">Weekly Risk Distribution</h5>
+                    {% for week in summary.weekly_breakdown %}
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span class="text-muted">{{ week.week }}</span>
+                            <strong>{{ week.count }} incidents</strong>
+                        </div>
+                    {% endfor %}
+                </div>
+    
+                <!-- Hourly / Weekend -->
+                <div class="col-lg-6" data-aos="fade-left">
+                    <h5 class="fw-bold mb-3">Hourly & Day Bias</h5>
+    
+                    {% for period, level in summary.hourly_risk.items %}
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>{{ period }}</span>
+                            <span class="
+                                {% if level == 'HIGH' %}text-danger
+                                {% elif level == 'MEDIUM' %}text-warning
+                                {% else %}text-success{% endif %}
+                            fw-bold">{{ level }}</span>
+                        </div>
+                    {% endfor %}
+    
+                    <p class="text-muted small mt-3">
+                        {{ summary.weekend_bias }}
+                    </p>
+                </div>
+            </div>
+        </section>
+    
+        <!-- =========================
+             OPERATIONAL RECOMMENDATION
+        ========================== -->
+        <section class="mt-5 pt-4" data-aos="fade-up">
+            <span class="section-label">Operational Recommendation</span>
+    
+            <div class="p-4 rounded-4 bg-dark text-white shadow-lg mt-3">
+                <ul class="mb-0">
+                    {% for action in summary.operational_actions %}
+                        <li class="mb-2">{{ action }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    
+        <!-- =========================
+             CRIME DISTRIBUTION
+        ========================== -->
+        <section class="mt-5 pt-4">
+            <span class="section-label">Projected Crime Composition</span>
+    
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    {% for item in summary.crime_distribution %}
+                        <div class="dist-row" data-aos="fade-up">
+                            <div class="dist-header">
+                                <span class="dist-name">{{ item.crime_type }}</span>
+                                <span class="dist-count">{{ item.count }} incidents</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: {{ item.percentage }}%"></div>
+                            </div>
+                            <span class="text-muted small">{{ item.percentage }}% of projected volume</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    
+    </div>
+    
+    <!-- =========================
+         ACTION BAR
+    ========================== -->
+    <div class="action-bar">
+        <a href="#" onclick="window.print()" class="action-btn">
+            <i class="bi bi-printer"></i> Print Intelligence
+        </a>
+        <div class="vr"></div>
+        <a href="#" class="action-btn">
+            <i class="bi bi-share"></i> Share Report
+        </a>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 900, once: true });
+    
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => bar.style.width = width, 200);
+            });
+        });
+    </script>
+    
+</body>
+</html>

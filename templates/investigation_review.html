@@ -1,0 +1,366 @@
+{% extends "sho(base).html" %}
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#f8fafc;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --navy:#0f172a;--blue:#2563eb;--blue-dim:rgba(37,99,235,.07);
+  --green:#059669;--green-dim:rgba(5,150,105,.08);
+  --red:#dc2626;--red-dim:rgba(220,38,38,.07);
+  --amber:#d97706;
+  --text:#111827;--text2:#475569;--text3:#94a3b8;
+  --font:'Sora',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font)}
+
+.rev-page{max-width:1100px;margin:0 auto;padding:28px 24px 80px}
+
+/* HEADER */
+.rev-header{
+  background:var(--navy);border-radius:12px;padding:22px 28px;
+  display:flex;align-items:center;gap:18px;margin-bottom:24px;
+  flex-wrap:wrap;
+}
+.rev-header-title{font-size:1.1rem;font-weight:700;color:#f1f5f9}
+.rev-header-case{font-family:var(--mono);font-size:.65rem;color:#64748b;margin-top:2px}
+.rev-header-right{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.btn-approve{
+  padding:10px 24px;border-radius:8px;border:none;background:#059669;color:#fff;
+  font-family:var(--font);font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;
+}
+.btn-approve:hover{background:#047857;box-shadow:0 0 0 3px rgba(5,150,105,.25)}
+.btn-reject{
+  padding:10px 24px;border-radius:8px;border:1px solid rgba(220,38,38,.4);background:transparent;
+  color:var(--red);font-family:var(--font);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;
+}
+.btn-reject:hover{background:var(--red-dim)}
+
+/* AI PANEL */
+.ai-review-panel{
+  background:var(--navy);border-radius:12px;padding:22px;margin-bottom:20px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;
+}
+@media(max-width:768px){.ai-review-panel{grid-template-columns:1fr}}
+.ai-node{background:rgba(255,255,255,.04);border:1px solid #1e293b;border-radius:8px;padding:16px}
+.ai-node-label{font-family:var(--mono);font-size:.55rem;color:#475569;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+.ai-score-num{font-family:var(--mono);font-size:2rem;font-weight:500;line-height:1;margin-bottom:4px}
+.ai-score-bar{height:4px;background:#1e293b;border-radius:99px;overflow:hidden;margin-bottom:8px}
+.ai-score-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);transition:width 1s ease}
+.ai-node ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.ai-node ul li{font-size:.73rem;color:#94a3b8;line-height:1.5;display:flex;gap:6px}
+.ai-node ul li::before{content:'•';color:#64748b;flex-shrink:0}
+.ai-sho-note{font-size:.82rem;color:#93c5fd;line-height:1.6}
+
+/* LAYOUT */
+.rev-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+@media(max-width:900px){.rev-grid{grid-template-columns:1fr}}
+
+/* REPORT CARD */
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+.rc-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.rc-num{width:30px;height:30px;border-radius:7px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.68rem;flex-shrink:0}
+.rc-title{font-size:.92rem;font-weight:600;color:var(--navy)}
+.rc-content{font-size:.85rem;color:var(--text2);line-height:1.7;white-space:pre-wrap}
+.rc-field{margin-bottom:14px}
+.rc-field-label{font-family:var(--mono);font-size:.58rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.rc-field-val{font-size:.85rem;color:var(--text);line-height:1.6}
+
+/* CHECK PILLS */
+.check-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.check-pill{padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:.6rem;border:1px solid;display:flex;align-items:center;gap:5px}
+.pill-done   {border-color:rgba(5,150,105,.3);color:var(--green);background:var(--green-dim)}
+.pill-missing{border-color:rgba(148,163,184,.25);color:var(--text3);background:rgba(148,163,184,.06)}
+
+/* WITNESS/EVIDENCE TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.data-table th{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5}
+.data-table tr:last-child td{border-bottom:none}
+
+/* DECISION PANEL */
+.decision-panel{position:sticky;top:20px}
+.dp-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px}
+.dp-title{font-family:var(--mono);font-size:.62rem;color:var(--text3);letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
+.completion-ring{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.dp-meta{font-size:.8rem;color:var(--text2);line-height:1.8}
+.dp-meta strong{color:var(--text)}
+
+/* REJECT FORM */
+.reject-form{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.reject-form.on{display:block}
+.reject-ta{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:var(--font);font-size:.85rem;resize:vertical;min-height:80px;outline:none;transition:border-color .18s}
+.reject-ta:focus{border-color:#ef4444}
+.reject-submit{margin-top:10px;width:100%;padding:10px;border:none;border-radius:8px;background:var(--red);color:#fff;font-family:var(--font);font-size:.88rem;font-weight:700;cursor:pointer}
+
+/* VERSION BADGE */
+.version-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-family:var(--mono);font-size:.58rem;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);color:var(--blue)}
+</style>
+
+<div class="rev-page">
+
+  <!-- HEADER -->
+  <div class="rev-header">
+    <div>
+      <div class="rev-header-title">Investigation Report Review</div>
+      <div class="rev-header-case">
+        Case #{{ crime_report.id }} · {{ crime_report.crime_type }} ·
+        Officer: {{ inv_report.officer.full_name }}
+        <span class="version-badge">v{{ inv_report.version }}</span>
+      </div>
+    </div>
+    <div class="rev-header-right">
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="approve"/>
+        <button type="submit" class="btn-approve" onclick="return confirm('Approve this investigation report?')">✓ Approve</button>
+      </form>
+      <button class="btn-reject" onclick="toggleRejectForm()">✗ Return for Revision</button>
+    </div>
+  </div>
+
+  <!-- AI QUALITY PANEL -->
+  <div class="ai-review-panel">
+    <div class="ai-node">
+      <div class="ai-node-label">Prosecution Strength</div>
+      <div class="ai-score-num" id="scoreNum"
+        style="color:{% if ai_review.prosecution_strength >= 70 %}#22c55e{% elif ai_review.prosecution_strength >= 50 %}#f59e0b{% else %}#ef4444{% endif %}">
+        {{ ai_review.prosecution_strength|default:"—" }}
+      </div>
+      <div style="font-family:var(--mono);font-size:.65rem;color:#64748b;margin-bottom:8px">{{ ai_review.strength_label|default:"—" }} · /100</div>
+      <div class="ai-score-bar">
+        <div class="ai-score-fill" id="scoreFill" style="width:{{ ai_review.prosecution_strength|default:0 }}%"></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:.68rem;color:#94a3b8">{{ ai_review.court_readiness|default:"" }}</div>
+    </div>
+    <div class="ai-node">
+      <div class="ai-node-label">Critical Gaps</div>
+      <ul>
+        {% for gap in ai_review.critical_gaps %}
+        <li>{{ gap }}</li>
+        {% empty %}
+        <li style="color:#6ee7b7">No critical gaps found</li>
+        {% endfor %}
+      </ul>
+      {% if ai_review.commendation %}
+      <div style="margin-top:10px;font-size:.73rem;color:#6ee7b7;border-top:1px solid #1e293b;padding-top:8px">✓ {{ ai_review.commendation }}</div>
+      {% endif %}
+    </div>
+    <div class="ai-node">
+      <div class="ai-node-label">SHO Intelligence Note</div>
+      <div class="ai-sho-note">{{ ai_review.sho_note|default:"No specific flags." }}</div>
+      <div style="margin-top:12px;font-family:var(--mono);font-size:.6rem;color:#475569">IPC Validation</div>
+      <div style="font-size:.75rem;color:#94a3b8;margin-top:4px;line-height:1.5">{{ ai_review.ipc_validation|default:"—" }}</div>
+    </div>
+  </div>
+
+  <div class="rev-grid">
+    <div>
+
+      <!-- SECTION 1: Incident Overview -->
+      <div class="report-card">
+        <div class="rc-header">
+          <div class="rc-num">01</div>
+          <div class="rc-title">Incident Overview</div>
+        </div>
+        <div class="field-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div class="rc-field">
+            <div class="rc-field-label">FIR Number</div>
+            <div class="rc-field-val">{{ inv_report.fir_number|default:"Not filed" }}</div>
+          </div>
+          <div class="rc-field">
+            <div class="rc-field-label">IPC Sections</div>
+            <div class="rc-field-val">{{ inv_report.ipc_sections|default:"—" }}</div>
+          </div>
+          <div class="rc-field">
+            <div class="rc-field-label">Date of Occurrence</div>
+            <div class="rc-field-val">{{ inv_report.date_of_occurrence|date:"d M Y"|default:"—" }} {% if inv_report.time_of_occurrence %}at {{ inv_report.time_of_occurrence|time:"H:i" }}{% endif %}</div>
+          </div>
+        </div>
+        <div class="rc-field">
+          <div class="rc-field-label">Incident Summary</div>
+          <div class="rc-content">{{ inv_report.incident_summary }}</div>
+        </div>
+        {% if inv_report.scene_description %}
+        <div class="rc-field" style="margin-top:12px">
+          <div class="rc-field-label">Scene Description</div>
+          <div class="rc-content">{{ inv_report.scene_description }}</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- SECTION 2: Investigation Actions -->
+      <div class="report-card">
+        <div class="rc-header">
+          <div class="rc-num">02</div>
+          <div class="rc-title">Investigation Actions</div>
+        </div>
+        <div class="check-pills">
+          <span class="check-pill {% if inv_report.site_visited %}pill-done{% else %}pill-missing{% endif %}">
+            {% if inv_report.site_visited %}✓{% else %}✗{% endif %} Site Visited
+          </span>
+          <span class="check-pill {% if inv_report.cctv_reviewed %}pill-done{% else %}pill-missing{% endif %}">
+            {% if inv_report.cctv_reviewed %}✓{% else %}✗{% endif %} CCTV
+          </span>
+          <span class="check-pill {% if inv_report.digital_forensics %}pill-done{% else %}pill-missing{% endif %}">
+            {% if inv_report.digital_forensics %}✓{% else %}✗{% endif %} Digital Forensics
+          </span>
+          <span class="check-pill {% if inv_report.arrests_made %}pill-done{% else %}pill-missing{% endif %}">
+            {% if inv_report.arrests_made %}✓{% else %}✗{% endif %} Arrests Made
+          </span>
+          <span class="check-pill {% if inv_report.forensic_sent %}pill-done{% else %}pill-missing{% endif %}">
+            {% if inv_report.forensic_sent %}✓{% else %}✗{% endif %} Forensics Sent
+          </span>
+        </div>
+        <div class="rc-content" style="margin-top:14px">{{ inv_report.action_taken }}</div>
+        {% if inv_report.arrests_made and inv_report.arrest_details %}
+        <div style="margin-top:12px;background:rgba(220,38,38,.05);border:1px solid rgba(220,38,38,.2);border-radius:8px;padding:12px">
+          <div class="rc-field-label" style="color:#fca5a5;margin-bottom:6px">Arrest Details</div>
+          <div class="rc-content">{{ inv_report.arrest_details }}</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- SECTION 3: Witnesses -->
+      {% if inv_report.witness_statements %}
+      <div class="report-card">
+        <div class="rc-header">
+          <div class="rc-num">03</div>
+          <div class="rc-title">Witness Statements ({{ inv_report.witness_count }})</div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Name</th><th>Contact</th><th>Statement Summary</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for w in inv_report.witness_statements %}
+            <tr>
+              <td style="font-family:var(--mono);font-size:.7rem;color:var(--text3)">{{ forloop.counter }}</td>
+              <td>{{ w.name|default:"—" }}</td>
+              <td style="font-family:var(--mono);font-size:.75rem">{{ w.contact|default:"—" }}</td>
+              <td>{{ w.statement_summary|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <!-- SECTION 4: Evidence -->
+      <div class="report-card">
+        <div class="rc-header">
+          <div class="rc-num">04</div>
+          <div class="rc-title">Evidence Chain of Custody</div>
+        </div>
+        {% if inv_report.evidence_items %}
+        <table class="data-table">
+          <thead>
+            <tr><th>#</th><th>Description</th><th>Collected</th><th>Custody Officer</th><th>Location</th></tr>
+          </thead>
+          <tbody>
+            {% for e in inv_report.evidence_items %}
+            <tr>
+              <td style="font-family:var(--mono);font-size:.7rem;color:var(--text3)">{{ forloop.counter }}</td>
+              <td>{{ e.description|default:"—" }}</td>
+              <td style="font-family:var(--mono);font-size:.75rem">{{ e.collection_date|default:"—" }}</td>
+              <td>{{ e.custody_officer|default:"—" }}</td>
+              <td>{{ e.location|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+        {% if inv_report.evidence_notes %}
+        <div style="margin-top:12px">
+          <div class="rc-field-label">Evidence Notes</div>
+          <div class="rc-content">{{ inv_report.evidence_notes }}</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- SECTION 5: Conclusion -->
+      <div class="report-card">
+        <div class="rc-header">
+          <div class="rc-num">05</div>
+          <div class="rc-title">Officer's Conclusion</div>
+        </div>
+        <div class="rc-content">{{ inv_report.officer_conclusion|default:"Not provided." }}</div>
+        {% if inv_report.case_outcome %}
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.2);border-radius:7px;font-family:var(--mono);font-size:.7rem;color:#93c5fd">
+          Recommended Outcome: {{ inv_report.get_case_outcome_display }}
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- DECISION PANEL -->
+    <div class="decision-panel">
+      <div class="dp-card">
+        <div class="dp-title">Report Details</div>
+        <div class="dp-meta">
+          <strong>Officer:</strong> {{ inv_report.officer.full_name }}<br>
+          <strong>Submitted:</strong> {{ inv_report.submitted_at|date:"d M Y, H:i"|default:"Not yet" }}<br>
+          <strong>Version:</strong> v{{ inv_report.version }}<br>
+          <strong>Completion:</strong> {{ completion }}%<br>
+          <strong>Witnesses:</strong> {{ inv_report.witness_count }}<br>
+          <strong>Evidence Items:</strong> {{ inv_report.evidence_items|length }}<br>
+          <strong>Status:</strong> {{ inv_report.get_status_display }}
+        </div>
+      </div>
+
+      <div class="dp-card">
+        <div class="dp-title">SHO Decision</div>
+
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="approve"/>
+          <button type="submit" class="btn-approve" style="width:100%;margin-bottom:10px"
+            onclick="return confirm('Approve and mark case as Resolved?')">
+            ✓ Approve Report
+          </button>
+        </form>
+
+        <button class="btn-reject" style="width:100%" onclick="toggleRejectForm()">
+          ✗ Return for Revision
+        </button>
+
+        <div class="reject-form" id="rejectForm">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="reject"/>
+            <div style="font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-bottom:6px;letter-spacing:.1em;text-transform:uppercase">Revision Instructions</div>
+            <textarea class="reject-ta" name="sho_comments"
+              placeholder="Explain what needs to be corrected, added, or clarified..."></textarea>
+            <button type="submit" class="reject-submit">Send Back to Officer</button>
+          </form>
+        </div>
+      </div>
+
+      <a href="{% url 'sho_dashboard' %}" style="display:block;text-align:center;padding:10px;font-family:var(--mono);font-size:.65rem;color:var(--text3);text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text3)'">
+        ← Back to Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleRejectForm() {
+  document.getElementById('rejectForm').classList.toggle('on');
+}
+
+// Animate score bar on load
+window.addEventListener('DOMContentLoaded', () => {
+  const fill = document.getElementById('scoreFill');
+  if (fill) {
+    fill.style.width = '0%';
+    setTimeout(() => { fill.style.width = '{{ ai_review.prosecution_strength|default:0 }}%'; }, 300);
+  }
+});
+</script>
+{% endblock %}

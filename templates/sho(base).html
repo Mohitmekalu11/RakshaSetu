@@ -1,0 +1,406 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SHO Dashboard | RakshaSetu Premium</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --dark-gold: #b8860b;
+            --bg-dark: #0f172a; /* Deep Midnight Navy */
+            --sidebar-bg: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            background-attachment: fixed;
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(212, 175, 55, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        /* LOGO Section */
+        .logo {
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .logo img {
+            width: 140px;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
+            transition: var(--transition);
+        }
+
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .divider {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* NAVIGATION */
+        .nav {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav li {
+            margin-bottom: 8px;
+            perspective: 1000px;
+        }
+
+        .nav li a {
+            text-decoration: none;
+            color: var(--text-muted);
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            border-radius: 12px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav li a ion-icon, 
+        .nav li a i {
+            font-size: 1.2rem;
+            margin-right: 12px;
+            transition: var(--transition);
+        }
+
+        /* Hover & Active States */
+        .nav li a:hover {
+            background: var(--glass);
+            color: var(--primary-gold);
+            padding-left: 20px;
+        }
+
+        .nav li.active a {
+            background: linear-gradient(45deg, var(--primary-gold), var(--dark-gold));
+            color: #000;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .nav li.active a ion-icon {
+            color: #000;
+        }
+
+        .logout-link {
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+            margin-top: 30px;
+        }
+
+        .logout-link:hover {
+            background: rgba(220, 38, 38, 0.2) !important;
+            border-color: #ef4444 !important;
+            color: #ef4444 !important;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .main-content.full-width {
+            margin-left: 0;
+        }
+
+        /* MENU TOGGLE BUTTON */
+        .menu-toggle {
+            position: fixed;
+            top: 25px;
+            left: 260px;
+            width: 40px;
+            height: 40px;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-gold);
+            color: #000;
+        }
+
+        .menu-toggle.full-width {
+            left: 20px;
+        }
+
+        /* FOOTER */
+        .sidebar-footer {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-footer p {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-wrapper {
+            animation: fadeInDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--sidebar-bg);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-gold);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); width: 260px; }
+            .sidebar.collapsed { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 80px 15px 20px; }
+            .menu-toggle { left: 20px; }
+        }
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .profile-container:hover {
+            transform: scale(1.03);
+        }
+
+        .profile-container .profile {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--secondary-purple);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+        }
+        
+        .profile-container .profile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .profile-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="logo">
+                    <img src="{% static 'logo_rs.png' %}" alt="RakshaSetu Gold">
+                </div>
+                <hr class="divider">
+                <ul class="nav">
+                    <li class="{% if request.resolver_match.url_name == 'sho_dashboard' %}active{% endif %}">
+                        <a href="{% url 'sho_dashboard' %}">
+                            <ion-icon name="grid-outline"></ion-icon>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="{% if request.resolver_match.url_name == 'sho_approved_cases' %}active{% endif %}">
+                        <a href="{% url 'sho_approved_cases' %}">
+                            <ion-icon name="shield-checkmark-outline"></ion-icon>
+                            Reported Cases
+                        </a>
+                    </li>
+                    <li class="{% if request.resolver_match.url_name == 'monthly_crime_predictions' %}active{% endif %}">
+                        <a href="{% url 'monthly_crime_predictions' %}">
+                            <ion-icon name="trending-up-outline"></ion-icon>
+                            Crime Predictions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'crime_news' %}">
+                            <i class="fas fa-crown"></i>   Intelligence News
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="{% url 'dashboard' %}">
+                            <i class="fas fa-file-invoice"></i> Forecasting Report
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'intel_center' %}">
+                            <i class="fas fa-crown"></i>   Crime Intel News
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'officer_dashboard' %}">
+                            <i class="fas fa-crown"></i>   Incident Tracking
+                        </a>
+                    </li>
+                    <div class="nav-right" style="display:flex;align-items:center;gap:12px">
+ 
+                      </div>
+                    <li>
+                        <a href="{% url 'index' %}" style="margin-top: 20px; border: 1px solid rgba(212,175,55,0.2);">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        
+        </aside>
+
+        <main class="main-content" id="main-content">
+            <button class="menu-toggle" id="menu-toggle">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </button>
+            
+            <div class="page-wrapper" style="animation: fadeInDown 0.6s ease-out;">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const menuToggle = document.getElementById('menu-toggle');
+            const icon = menuToggle.querySelector('ion-icon');
+
+            const handleResize = () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('collapsed'); 
+                    mainContent.classList.add('full-width');
+                    menuToggle.classList.add('full-width');
+                    icon.setAttribute('name', 'menu-outline');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('full-width');
+                    menuToggle.classList.remove('full-width');
+                    icon.setAttribute('name', 'chevron-back-outline');
+                }
+            };
+
+            window.addEventListener('resize', handleResize);
+            handleResize();
+
+            menuToggle.addEventListener('click', function () {
+                const isCollapsed = sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('full-width');
+                menuToggle.classList.toggle('full-width');
+                
+                if(window.innerWidth > 768) {
+                    icon.setAttribute('name', isCollapsed ? 'chevron-forward-outline' : 'chevron-back-outline');
+                } else {
+                    icon.setAttribute('name', isCollapsed ? 'close-outline' : 'menu-outline');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

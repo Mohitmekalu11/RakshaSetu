@@ -1,0 +1,269 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General Styles and Theme */
+        :root {
+            --bg-start: #1A1A2E;
+            --bg-end: #0C0B1A;
+            --accent-primary: #00A389; /* Teal for actual data */
+            --accent-secondary: #FF2079; /* Magenta for predictions */
+            --text-primary: #FFFFFF;
+            --text-secondary: #D7A8FF;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --card-bg-fallback: #2C2E43;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative; /* Needed for particles to be a background */
+        }
+        
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place behind all content */
+        }
+        
+        .analytics-card {
+            background-color: var(--card-bg-fallback);
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 900px;
+            text-align: center;
+            position: relative;
+            z-index: 1; /* Ensure card is above particles */
+        }
+        
+        .analytics-card h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            color: var(--accent-primary);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+
+        @keyframes pulse-point {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            70% {
+                transform: scale(1.4);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+        
+        @keyframes subtle-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.005); }
+            100% { transform: scale(1); }
+        }
+
+        .chart-canvas {
+            animation: subtle-pulse 5s infinite ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-card {
+                padding: 20px;
+            }
+            .analytics-card h1 {
+                font-size: 1.8rem;
+            }
+            .chart-wrapper {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+<div class="analytics-card">
+    <h1 id="ward-title">Yearly Analytics</h1>
+    <div class="chart-wrapper">
+        <canvas id="wardChart" class="chart-canvas"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+    // JSON data from Django
+    const wardData = {{ ward_data_json|safe }};
+
+    // Map Ward No to JSON keys
+    const wardMap = {
+        "Ward No.1": "Ghodbunder Road",
+        "Ward No.2": "Dhokali",
+        "Ward No.3": "Saket",
+        "Ward No.4": "Panchpakhadi",
+        "Ward No.5": "Teen Hath Naka",
+        "Ward No.6": "Kolshet",
+        "Ward No.7": "Kasarvadavali",
+        "Ward No.8": "Naupada",
+        "Ward No.9": "Vartak Nagar",
+        "Ward No.10": "Patlipada",
+        "Ward No.11": "Louis Wadi",
+        "Ward No.12": "Kopri",
+        "Ward No.13": "Manpada",
+        "Ward No.14": "Majiwada",
+        "Ward No.15": "Brahmand",
+        "Ward No.16": "Wagle Estate",
+        "Ward No.17": "Charai"
+    };
+
+    // Get ward from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const wardNo = urlParams.get("ward");
+
+    const wardKey = wardMap[wardNo];
+
+    if (!wardKey || !wardData.hasOwnProperty(wardKey)) {
+        document.getElementById("wardChart").parentElement.innerHTML = "<p style='color: #FF2079; text-align: center;'>Error: Ward data not available.</p>";
+        document.getElementById("ward-title").textContent = "Analytics Data Not Found";
+    } else {
+        const selectedWard = wardData[wardKey];
+        const trendData = selectedWard.trend;
+
+        document.getElementById("ward-title").textContent = `Crime Analytics for ${wardKey}`;
+
+        const allYears = Object.keys(trendData).sort();
+
+        const actualDataset = {
+            label: 'Actual',
+            data: allYears.map(y => Number(y) <= 2025 ? trendData[y] : null),
+            borderColor: '#00A389',
+            backgroundColor: 'rgba(0, 163, 137, 0.2)',
+            tension: 0.3,
+            fill: true,
+            pointBackgroundColor: '#00A389',
+            pointRadius: 5,
+            pointHoverRadius: 8
+        };
+
+        const predictedDataset = {
+            label: 'Predicted',
+            data: allYears.map(y => Number(y) >= 2025 ? trendData[y] : null),
+            borderColor: '#FF2079',
+            backgroundColor: 'rgba(255, 32, 121, 0.1)',
+            borderDash: [5, 5],
+            tension: 0.3,
+            fill: false,
+            pointBackgroundColor: '#FF2079',
+            pointRadius: 5,
+            pointHoverRadius: 8
+        };
+
+        const ctx = document.getElementById('wardChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: allYears,
+                datasets: [actualDataset, predictedDataset]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Annual Crime Counts`,
+                        color: '#D7A8FF',
+                        font: { size: 18, weight: 'bold' }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleColor: '#FFFFFF',
+                        bodyColor: '#D7A8FF',
+                        padding: 10,
+                        bodyFont: { size: 14 }
+                    },
+                    legend: {
+                        labels: {
+                            color: '#FFFFFF',
+                            font: { size: 14 }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Year', color: '#D7A8FF' },
+                        ticks: { color: '#FFFFFF' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Crime Count', color: '#D7A8FF' },
+                        ticks: { color: '#FFFFFF' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Particles.js configuration
+    particlesJS("particles-js", {
+        "particles": {
+            "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+            "color": { "value": ["#00A389", "#D7A8FF", "#FF2079"] },
+            "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
+            "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } },
+            "size": { "value": 5, "random": true, "anim": { "enable": false, "speed": 90, "size_min": 0.1, "sync": false } },
+            "line_linked": { "enable": true, "distance": 150, "color": "#444444", "opacity": 0.4, "width": 1 },
+            "move": { "enable": true, "speed": 6, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false, "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } }
+        },
+        "interactivity": {
+            "detect_on": "canvas",
+            "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+            "modes": {
+                "grab": { "distance": 200, "line_linked": { "opacity": 1 } },
+                "bubble": { "distance": 400, "size": 500, "duration": 2, "opacity": 8, "speed": 3 },
+                "repulse": { "distance": 200, "duration": 0.4 },
+                "push": { "particles_nb": 4 },
+                "remove": { "particles_nb": 2 }
+            }
+        },
+        "retina_detect": true
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--font:'Sora',sans-serif;--mono:'JetBrains Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;font-family:var(--font);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+
+.submitted-card{
+  background:#1e293b;border:1px solid #334155;border-radius:16px;
+  padding:48px 40px;max-width:520px;width:100%;text-align:center;
+  animation:fadeUp .5s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.check-circle{
+  width:72px;height:72px;border-radius:50%;background:rgba(5,150,105,.15);
+  border:2px solid #059669;display:flex;align-items:center;justify-content:center;
+  font-size:2rem;margin:0 auto 24px;
+  animation:checkPop .5s ease .3s both;
+}
+@keyframes checkPop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+
+.submitted-title{font-size:1.5rem;font-weight:700;color:#f1f5f9;margin-bottom:8px;letter-spacing:-.02em}
+.submitted-sub{font-size:.88rem;color:#64748b;line-height:1.6;margin-bottom:28px}
+
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.meta-item{background:rgba(255,255,255,.04);border:1px solid #334155;border-radius:8px;padding:12px;text-align:left}
+.meta-label{font-family:var(--mono);font-size:.55rem;color:#475569;letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
+.meta-val{font-size:.85rem;color:#94a3b8;font-weight:500}
+
+.next-steps{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);border-radius:8px;padding:16px;margin-bottom:24px;text-align:left}
+.next-title{font-family:var(--mono);font-size:.58rem;color:#60a5fa;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
+.next-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.next-list li{font-size:.8rem;color:#94a3b8;display:flex;gap:8px;line-height:1.5}
+.next-list li::before{content:'→';color:#60a5fa;flex-shrink:0}
+
+.back-btn{
+  display:inline-block;padding:12px 28px;border-radius:8px;background:#2563eb;color:#fff;
+  font-family:var(--font);font-size:.88rem;font-weight:600;text-decoration:none;
+  transition:all .2s;
+}
+.back-btn:hover{background:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.25)}
+</style>
+
+<div class="submitted-card">
+  <div class="check-circle">✓</div>
+  <div class="submitted-title">Report Submitted</div>
+  <div class="submitted-sub">
+    Your investigation report for Case #{{ crime_report.id }} has been submitted to the SHO for review.
+    You will be notified once a decision is made.
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">Case</div>
+      <div class="meta-val">{{ crime_report.crime_type }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Status</div>
+      <div class="meta-val">{{ inv_report.get_status_display }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Submitted</div>
+      <div class="meta-val">{{ inv_report.submitted_at|date:"d M Y, H:i"|default:"Just now" }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Version</div>
+      <div class="meta-val">v{{ inv_report.version }}</div>
+    </div>
+  </div>
+
+  <div class="next-steps">
+    <div class="next-title">What happens next</div>
+    <ul class="next-list">
+      <li>SHO will review your report and the AI quality assessment</li>
+      <li>If approved, the case will be marked Resolved</li>
+      <li>If returned, you will see revision instructions in the form</li>
+      <li>Check your dashboard for status updates</li>
+    </ul>
+  </div>
+
+  <a href="{% url 'police_dashboard' %}" class="back-btn">← Back to Dashboard</a>
+</div>
+{% endblock %}

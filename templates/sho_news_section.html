@@ -1,0 +1,253 @@
+{% comment %}
+INSTRUCTIONS
+============
+In your sho_police_dashboard.html, find the section that renders top_news_cards / top_alerts.
+Replace ONLY that block with the HTML below.
+Everything else in sho_police_dashboard.html stays exactly the same.
+
+Look for something like:
+  {% for news in top_news_cards %} ...existing news cards...{% endfor %}
+  OR the alerts-container div with the refreshAlerts() JS.
+
+Replace that entire block (and the surrounding card/section wrapper) with what's below.
+{% endcomment %}
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- INTELLIGENCE PANEL — drop-in replacement for news section -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<!-- Paste these styles inside your existing <style> block in sho_police_dashboard.html -->
+<style>
+/* ── INTEL PANEL (scoped to avoid conflicts with existing SHO styles) ── */
+.intel-panel{
+  background:#ffffff;border-radius:.5rem;
+  box-shadow:0 4px 6px rgba(0,0,0,.05),0 1px 3px rgba(0,0,0,.1);
+  border:1px solid var(--sho-border-color);
+  overflow:hidden;
+}
+.intel-panel-header{
+  background:linear-gradient(135deg,#0a0f1e,#111830);
+  padding:16px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.intel-panel-title{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  color:#c9a227;letter-spacing:.2em;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.intel-live-dot{
+  width:5px;height:5px;border-radius:50%;background:#ff2244;
+  animation:intel-blink 1.4s ease infinite;
+}
+@keyframes intel-blink{0%,100%{opacity:1}50%{opacity:.15}}
+.intel-panel-link{
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  color:#c9a227;text-decoration:none;letter-spacing:.1em;
+  padding:4px 12px;border:1px solid rgba(201,162,39,.3);border-radius:3px;
+  transition:all .2s;
+}
+.intel-panel-link:hover{background:rgba(201,162,39,.1);color:#e8c547}
+
+/* AI SITREP strip */
+.intel-sitrep-strip{
+  background:#07091a;border-bottom:1px solid #1c2240;
+  padding:10px 16px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.intel-sitrep-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:.5rem;
+  color:#c9a227;letter-spacing:.18em;text-transform:uppercase;
+  white-space:nowrap;margin-top:1px;
+}
+.intel-sitrep-body{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:#8a93bb;line-height:1.6;flex:1;
+}
+
+/* News cards */
+.intel-cards-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+}
+@media(max-width:768px){.intel-cards-grid{grid-template-columns:1fr}}
+
+.intel-news-card{
+  padding:16px;border-right:1px solid var(--sho-border-color);
+  border-bottom:1px solid var(--sho-border-color);
+  cursor:pointer;transition:background .15s;
+  text-decoration:none;display:block;
+}
+.intel-news-card:nth-child(2n){border-right:none}
+.intel-news-card:nth-last-child(-n+2){border-bottom:none}
+.intel-news-card:hover{background:#f9fafb}
+
+.inc-risk-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.inc-risk-badge{
+  font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:2px 7px;border-radius:2px;
+}
+.inc-risk-badge.HIGH  {background:#fee2e2;color:#b91c1c}
+.inc-risk-badge.MEDIUM{background:#fef3c7;color:#92400e}
+.inc-risk-badge.LOW   {background:#f3f4f6;color:#6b7280}
+.inc-crime-tag{
+  font-size:.5rem;padding:2px 7px;border-radius:2px;
+  background:#eff6ff;color:#1d4ed8;letter-spacing:.08em;
+}
+.inc-escalating{
+  font-size:.5rem;padding:2px 7px;border-radius:2px;
+  background:#fee2e2;color:#b91c1c;letter-spacing:.08em;
+}
+.inc-location{font-size:.55rem;color:#9ca3af;margin-left:auto}
+
+.inc-card-title{
+  font-size:.82rem;font-weight:600;color:#111827;
+  line-height:1.35;margin-bottom:4px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.inc-card-action{
+  font-size:.65rem;color:#3b82f6;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;
+}
+.inc-card-action::before{content:'▸ ';color:#10b981}
+
+/* Panel footer */
+.intel-panel-footer{
+  background:#f9fafb;border-top:1px solid var(--sho-border-color);
+  padding:10px 16px;display:flex;align-items:center;gap:10px;
+}
+.intel-ask-input{
+  flex:1;border:1px solid var(--sho-border-color);border-radius:6px;
+  padding:7px 12px;font-size:.78rem;color:#111827;outline:none;
+  font-family:'JetBrains Mono',monospace;
+  transition:border-color .18s;
+}
+.intel-ask-input::placeholder{color:#9ca3af}
+.intel-ask-input:focus{border-color:#3b82f6}
+.intel-ask-btn{
+  padding:7px 14px;border-radius:6px;border:none;
+  background:#111827;color:#fff;font-size:.7rem;font-weight:600;
+  cursor:pointer;transition:background .18s;white-space:nowrap;
+}
+.intel-ask-btn:hover{background:#374151}
+
+/* Ask answer dropdown */
+.intel-ask-answer{
+  display:none;padding:10px 16px;
+  background:#eff6ff;border-top:1px solid #bfdbfe;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  color:#1d4ed8;line-height:1.7;
+}
+.intel-ask-answer.on{display:block}
+.intel-spinner{
+  width:14px;height:14px;border:2px solid #e5e7eb;border-top-color:#3b82f6;
+  border-radius:50%;animation:intel-spin 1s linear infinite;display:inline-block;
+}
+@keyframes intel-spin{to{transform:rotate(360deg)}}
+</style>
+
+<!-- Link to JetBrains Mono (add once in your base template if not already there) -->
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<!-- ── INTELLIGENCE PANEL ── -->
+<div class="intel-panel">
+
+  <!-- Header -->
+  <div class="intel-panel-header">
+    <div class="intel-panel-title">
+      <span class="intel-live-dot"></span>
+      Intelligence Feed · AI-Powered
+    </div>
+    <a href="{% url 'intel_center' %}" class="intel-panel-link">Open Command Center →</a>
+  </div>
+
+  <!-- AI SITREP strip -->
+  <div class="intel-sitrep-strip">
+    <span class="intel-sitrep-lbl">SITREP</span>
+    <div class="intel-sitrep-body" id="sho-sitrep-text">
+      <span class="intel-spinner"></span> Generating situation report…
+    </div>
+  </div>
+
+  <!-- News cards grid -->
+  <div class="intel-cards-grid" id="sho-intel-cards">
+    {% for news in top_news_cards %}
+    <a href="{% url 'intel_detail' news.id %}" class="intel-news-card">
+      <div class="inc-risk-row">
+        <span class="inc-risk-badge {{ news.risk_level }}">{{ news.risk_level }}</span>
+        <span class="inc-crime-tag">{{ news.crime_type }}</span>
+        {% if news.threat_escalation == "yes" %}
+          <span class="inc-escalating">⬆ ESCALATING</span>
+        {% endif %}
+        <span class="inc-location">📍 {{ news.location }}</span>
+      </div>
+      <div class="inc-card-title">{{ news.title }}</div>
+      <div class="inc-card-action">{{ news.suggested_action|truncatechars:70 }}</div>
+    </a>
+    {% empty %}
+    <div style="grid-column:1/-1;padding:32px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#9ca3af">
+      No intelligence data. 
+      <a href="#" onclick="shoSyncIntel();return false" style="color:#3b82f6">Sync feed</a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Ask AI footer -->
+  <div class="intel-panel-footer">
+    <input class="intel-ask-input" id="sho-ask-input"
+           placeholder="Ask: Which area has rising threats today?"/>
+    <button class="intel-ask-btn" onclick="shoAskIntel()">Ask AI</button>
+  </div>
+  <div class="intel-ask-answer" id="sho-ask-answer"></div>
+
+</div>
+<!-- ── END INTELLIGENCE PANEL ── -->
+
+<!-- Scripts — add this block to your existing <script> tag at bottom of sho_police_dashboard.html -->
+<script>
+// ── Load SITREP on page load ──────────────────────────────────────────────────
+(async function loadShoSitrep() {
+  try {
+    const res  = await fetch('/api/intel/sitrep/');
+    const data = await res.json();
+    document.getElementById('sho-sitrep-text').textContent =
+      data.sitrep || 'Intelligence unavailable.';
+  } catch(e) {
+    document.getElementById('sho-sitrep-text').textContent =
+      'SITREP unavailable — open Command Center for full feed.';
+  }
+})();
+
+// ── Ask Intel from SHO dashboard ─────────────────────────────────────────────
+async function shoAskIntel() {
+  const question = document.getElementById('sho-ask-input').value.trim();
+  const answerEl = document.getElementById('sho-ask-answer');
+  if (!question) return;
+
+  answerEl.innerHTML = '<span class="intel-spinner"></span> Querying intelligence…';
+  answerEl.classList.add('on');
+
+  try {
+    const res  = await fetch('/api/intel/ask/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+      body: JSON.stringify({ question }),
+    });
+    const data = await res.json();
+    answerEl.textContent = data.answer || 'No data in current feed.';
+  } catch(e) {
+    answerEl.textContent = 'Query failed. Try again.';
+  }
+}
+
+document.getElementById('sho-ask-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') shoAskIntel();
+});
+
+// ── Sync intel from SHO dashboard ────────────────────────────────────────────
+async function shoSyncIntel() {
+  try {
+    await fetch('/sync-news/');
+    location.reload();
+  } catch(e) {}
+}
+// NOTE: getCSRFToken() is already defined in your sho_police_dashboard.html — no duplication needed.
+</script>

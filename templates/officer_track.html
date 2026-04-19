@@ -1,0 +1,508 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Navigate to Incident #{{ alert.id }} — CrimeCast</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05080f;--bg2:#08111e;--wire:#142030;--wire2:#1c2d42;
+  --accent:#38bdf8;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;--orange:#fb923c;
+  --text:#d1e8f5;--text2:#5f7b96;--text3:#344a5e;
+  --font:'Syne',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font)}
+
+/* ── FULL SCREEN MAP ── */
+#map{position:fixed;inset:0;z-index:0}
+
+/* ── TOP HUD ── */
+.hud-top{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:linear-gradient(to bottom,rgba(5,8,15,.95),rgba(5,8,15,.0));
+  padding:14px 18px 32px;
+  display:flex;align-items:flex-start;gap:14px;pointer-events:none;
+}
+.hud-top > *{pointer-events:auto}
+.back-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(8,17,30,.85);border:1px solid var(--wire2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;cursor:pointer;flex-shrink:0;color:var(--text);
+  text-decoration:none;transition:border-color .18s;
+}
+.back-btn:hover{border-color:var(--accent)}
+.hud-inc{flex:1}
+.hud-id{font-family:var(--mono);font-size:.55rem;color:var(--text3);letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px}
+.hud-type{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.hud-summary{font-family:var(--mono);font-size:.62rem;color:var(--text2);line-height:1.45;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hud-status-pill{
+  padding:4px 12px;border-radius:99px;font-family:var(--mono);
+  font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid rgba(251,146,60,.4);color:var(--orange);
+  background:rgba(251,146,60,.08);flex-shrink:0;align-self:flex-start;
+}
+
+/* ── ETA CARD (bottom) ── */
+.hud-bottom{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  padding:0 16px 20px;
+}
+.eta-card{
+  background:rgba(8,17,30,.92);border:1px solid var(--wire2);
+  border-radius:18px;padding:18px 20px;
+  backdrop-filter:blur(12px);
+}
+.eta-row{display:flex;align-items:center;gap:0;margin-bottom:14px}
+.eta-block{flex:1;text-align:center}
+.eta-val{font-size:1.6rem;font-weight:700;color:var(--text);letter-spacing:-.03em;line-height:1}
+.eta-label{font-family:var(--mono);font-size:.55rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.eta-divider{width:1px;background:var(--wire2);height:36px;flex-shrink:0}
+.citizen-info{display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid var(--wire)}
+.citizen-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,#1d4ed8,#3b82f6);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;
+}
+.citizen-name{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:1px}
+.citizen-meta{font-family:var(--mono);font-size:.6rem;color:var(--text3)}
+.action-btns{display:flex;gap:8px;margin-left:auto}
+.hud-btn{
+  padding:9px 18px;border-radius:9px;border:1px solid;
+  font-family:var(--mono);font-size:.65rem;cursor:pointer;
+  letter-spacing:.06em;text-transform:uppercase;transition:all .18s;
+  background:transparent;
+}
+.btn-arrived{border-color:rgba(167,139,250,.4);color:#a78bfa}
+.btn-arrived:hover{background:rgba(167,139,250,.12)}
+.btn-resolve{border-color:rgba(34,197,94,.4);color:var(--ok)}
+.btn-resolve:hover{background:rgba(34,197,94,.12)}
+
+/* ── LIVE INDICATOR ── */
+.live-pill{
+  position:fixed;top:72px;right:18px;z-index:101;
+  display:flex;align-items:center;gap:5px;
+  padding:4px 11px;border-radius:99px;
+  background:rgba(8,17,30,.85);border:1px solid rgba(251,146,60,.3);
+  font-family:var(--mono);font-size:.58rem;color:var(--orange);letter-spacing:.1em;
+}
+.live-led{width:5px;height:5px;border-radius:50%;background:var(--orange);animation:ledB 1.2s ease infinite}
+@keyframes ledB{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ── ACCURACY RING ── */
+/* markers are SVG-based — no CSS needed for the dots themselves */
+
+/* ── TOAST ── */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:200;
+  padding:10px 20px;border-radius:10px;font-family:var(--mono);font-size:.72rem;
+  display:none;align-items:center;gap:8px;white-space:nowrap}
+.toast.ok {background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--ok);display:flex}
+.toast.err{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:var(--danger);display:flex}
+
+/* ── LOADING OVERLAY ── */
+.loading-overlay{
+  position:fixed;inset:0;z-index:300;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+}
+.loading-spinner{
+  width:36px;height:36px;border-radius:50%;
+  border:3px solid var(--wire2);border-top-color:var(--accent);
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:var(--mono);font-size:.65rem;color:var(--text3);letter-spacing:.12em}
+@keyframes incPulse {
+    0%,100% { box-shadow: 0 2px 10px rgba(239,68,68,.5); }
+    50%      { box-shadow: 0 2px 20px rgba(239,68,68,1); }
+  }
+</style>
+</head>
+<body>
+
+{% if not alert %}
+<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:var(--mono);font-size:.8rem;color:var(--text3)">
+  Incident not found. <a href="/officer/dashboard/" style="color:var(--accent);margin-left:8px">← Back</a>
+</div>
+{% else %}
+
+<!-- Loading overlay — hidden once GPS+map ready -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">ACQUIRING GPS…</div>
+</div>
+
+<!-- Full-screen map -->
+<div id="map"></div>
+
+<!-- Live indicator -->
+<div class="live-pill"><span class="live-led"></span>LIVE</div>
+
+<!-- Top HUD -->
+<div class="hud-top">
+  <a class="back-btn" href="/officer/dashboard/">←</a>
+  <div class="hud-inc">
+    <div class="hud-id">Incident #{{ alert.id }} · {{ alert.created_at|date:"d M, H:i" }}</div>
+    <div class="hud-type">{{ alert.crime_type|title|default:"Incident" }}</div>
+    <div class="hud-summary">{{ alert.summary|default:alert.incident_text|truncatechars:80 }}</div>
+  </div>
+  <div class="hud-status-pill" id="statusPill">{{ alert.status|upper }}</div>
+</div>
+
+<!-- Bottom ETA card -->
+<div class="hud-bottom">
+  <div class="eta-card">
+    <div class="eta-row">
+      <div class="eta-block">
+        <div class="eta-val" id="etaMin">—</div>
+        <div class="eta-label">ETA (min)</div>
+      </div>
+      <div class="eta-divider"></div>
+      <div class="eta-block">
+        <div class="eta-val" id="etaDist">—</div>
+        <div class="eta-label">Distance (km)</div>
+      </div>
+      <div class="eta-divider"></div>
+      <div class="eta-block">
+        <div class="eta-val" id="etaStatus">—</div>
+        <div class="eta-label">Status</div>
+      </div>
+    </div>
+    <div class="citizen-info">
+      <div class="citizen-avatar">🙋</div>
+      <div>
+        <div class="citizen-name">{{ alert.reporter_name|default:"Citizen" }}</div>
+        <div class="citizen-meta" id="citizenMeta">Waiting for location…</div>
+      </div>
+      <div class="action-btns" id="actionBtns"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+const ALERT_ID   = {{ alert.id }};
+const INC_LAT    = {{ alert.latitude|default:"null" }};
+const INC_LON    = {{ alert.longitude|default:"null" }};
+const POLL_MS    = 4000;
+
+
+let map, officerMarker, citizenMarker, routeLayer;
+let lastOfficerPos = null;
+let lastRoutePos   = null;
+let myLat = null, myLon = null;
+let mapReady = false;
+
+// ── CSRF ──────────────────────────────────────────────────────
+function getCSRF() {
+  const c = document.cookie.split('; ').find(r => r.startsWith('csrftoken='));
+  return c ? decodeURIComponent(c.split('=')[1]) : '';
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+function showToast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = (type==='ok'?'✓ ':'✗ ') + msg;
+  el.className = `toast ${type}`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = 'toast', 3000);
+}
+
+// ── Init map ──────────────────────────────────────────────────
+function initMap(centerLat, centerLon) {
+  map = L.map('map', {
+    zoomControl: false,
+    attributionControl: false,
+  }).setView([centerLat, centerLon], 15);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO',
+    maxZoom: 19,
+  }).addTo(map);
+
+  // Zoom control — top right
+  L.control.zoom({ position: 'topright' }).addTo(map);
+
+  // Incident pin (static red)
+  if (INC_LAT && INC_LON) {
+    const redIcon = L.divIcon({
+        html: `<div style="
+          display:flex;flex-direction:column;align-items:center;
+          filter:drop-shadow(0 2px 10px rgba(239,68,68,.8));@keyframes incPulse {
+  0%,100% { box-shadow: 0 2px 10px rgba(239,68,68,.5); }
+  50%      { box-shadow: 0 2px 20px rgba(239,68,68,1); }
+}  ">
+          <div style="
+            background:#ef4444;color:#fff;font-size:18px;
+            width:40px;height:40px;border-radius:50% 50% 50% 0;
+            transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;
+            border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.5);
+            animation:incPulse 2s ease infinite">
+            <span style="transform:rotate(45deg)">🚨</span>
+          </div>
+          <div style="width:2px;height:10px;background:#ef4444;margin-top:-1px"></div>
+        </div>`,
+        iconSize:[40,58], iconAnchor:[20,58], className:''
+      });
+    L.marker([INC_LAT, INC_LON], {icon:redIcon})
+      .addTo(map)
+      .bindPopup('<b>📍 Incident Location</b>');
+  }
+
+  mapReady = true;
+  document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+// ── Smooth animate officer marker ─────────────────────────────
+function animateOfficer(toLat, toLon) {
+  if (!lastOfficerPos) {
+    officerMarker.setLatLng([toLat, toLon]);
+    return;
+  }
+  const from = lastOfficerPos;
+  const start = performance.now();
+  const dur = 1200;
+  function frame(now) {
+    const t = Math.min((now - start) / dur, 1);
+    officerMarker.setLatLng([
+      from.lat + (toLat - from.lat) * t,
+      from.lon + (toLon - from.lon) * t,
+    ]);
+    if (t < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+// ── Update officer pin ────────────────────────────────────────
+function updateOfficer(lat, lon) {
+    const icon = L.divIcon({
+        html: `<div style="
+          display:flex;flex-direction:column;align-items:center;
+          filter:drop-shadow(0 2px 8px rgba(251,146,60,.7))">
+          <div style="
+            background:#fb923c;color:#fff;font-size:18px;
+            width:36px;height:36px;border-radius:50% 50% 50% 0;
+            transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;
+            border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+            <span style="transform:rotate(45deg)">🚔</span>
+          </div>
+          <div style="width:2px;height:8px;background:#fb923c;margin-top:-1px"></div>
+        </div>`,
+        iconSize:[36,52], iconAnchor:[18,52], className:''
+      });
+  if (officerMarker) {
+    animateOfficer(lat, lon);
+  } else {
+    officerMarker = L.marker([lat, lon], {icon})
+      .addTo(map).bindPopup('<b>🚔 You (Officer)</b>');
+  }
+  lastOfficerPos = {lat, lon};
+}
+
+// ── Update citizen pin ────────────────────────────────────────
+function updateCitizen(lat, lon) {
+    const icon = L.divIcon({
+        html: `<div style="
+          display:flex;flex-direction:column;align-items:center;
+          filter:drop-shadow(0 2px 8px rgba(59,130,246,.7))">
+          <div style="
+            background:#3b82f6;color:#fff;font-size:18px;
+            width:36px;height:36px;border-radius:50% 50% 50% 0;
+            transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;
+            border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+            <span style="transform:rotate(45deg)">🙋</span>
+          </div>
+          <div style="width:2px;height:8px;background:#3b82f6;margin-top:-1px"></div>
+        </div>`,
+        iconSize:[36,52], iconAnchor:[18,52], className:''
+      });
+  if (citizenMarker) {
+    citizenMarker.setLatLng([lat, lon]);
+  } else {
+    citizenMarker = L.marker([lat, lon], {icon})
+      .addTo(map).bindPopup('<b>🙋 Citizen</b>');
+  }
+  document.getElementById('citizenMeta').textContent =
+    `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+}
+
+// ── Draw OSRM route ───────────────────────────────────────────
+async function drawRoute(oLat, oLon, cLat, cLon) {
+  // Skip if barely moved
+  if (lastRoutePos) {
+    if (Math.abs(oLat-lastRoutePos.lat)<0.0001 && Math.abs(oLon-lastRoutePos.lon)<0.0001) return;
+  }
+  lastRoutePos = {lat:oLat, lon:oLon};
+
+  try {
+    const url = `https://router.project-osrm.org/route/v1/driving/${oLon},${oLat};${cLon},${cLat}?overview=full&geometries=geojson`;
+    const r = await fetch(url);
+    const d = await r.json();
+    if (d.code !== 'Ok' || !d.routes?.length) return;
+
+    const coords = d.routes[0].geometry.coordinates.map(c => [c[1],c[0]]);
+    if (routeLayer) map.removeLayer(routeLayer);
+    routeLayer = L.polyline(coords, {
+      color:'#38bdf8', weight:5, opacity:.8, lineCap:'round', lineJoin:'round'
+    }).addTo(map);
+
+    const etaMin  = Math.ceil(d.routes[0].duration / 60);
+    const distKm  = (d.routes[0].distance / 1000).toFixed(1);
+    document.getElementById('etaMin').textContent  = etaMin;
+    document.getElementById('etaDist').textContent = distKm;
+
+    // Fit both markers
+    map.fitBounds(L.latLngBounds([[oLat,oLon],[cLat,cLon]]), {
+      padding:[80,80],
+      maxZoom:17
+    });
+
+  } catch(e) {
+    // Fallback straight line
+    if (routeLayer) map.removeLayer(routeLayer);
+    routeLayer = L.polyline([[oLat,oLon],[cLat,cLon]], {
+      color:'#38bdf8', weight:3, opacity:.5, dashArray:'6 4'
+    }).addTo(map);
+  }
+}
+
+// ── Push officer GPS to backend ───────────────────────────────
+async function pushOfficerLocation(lat, lon) {
+  try {
+    await fetch('/api/officer/update-location/', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+      body: JSON.stringify({latitude:lat, longitude:lon})
+    });
+  } catch(e) {}
+}
+
+// ── Poll citizen location from backend ───────────────────────
+async function pollCitizenLocation() {
+  try {
+    const res  = await fetch(`/api/incident/citizen-location-read/${ALERT_ID}/`);
+    const data = await res.json();
+    if (data.available && data.latitude && data.longitude) {
+      updateCitizen(data.latitude, data.longitude);
+      if (myLat && myLon) {
+        drawRoute(myLat, myLon, data.latitude, data.longitude);
+      }
+    } else if (INC_LAT && INC_LON) {
+      // Fallback to fixed incident coordinates
+      updateCitizen(INC_LAT, INC_LON);
+      if (myLat && myLon) drawRoute(myLat, myLon, INC_LAT, INC_LON);
+    }
+  } catch(e) {}
+}
+
+// ── Poll alert status (for action buttons + status pill) ─────
+async function pollStatus() {
+  try {
+    const res  = await fetch(`/api/incident/live/${ALERT_ID}/`);
+    const data = await res.json();
+    if (!data.ok) return;
+    const a = data.alert;
+
+    document.getElementById('statusPill').textContent = (a.status_label || a.status).toUpperCase();
+    document.getElementById('etaStatus').textContent  = (a.status_label || a.status);
+
+    renderActionBtns(a.status);
+  } catch(e) {}
+}
+
+// ── Action buttons ────────────────────────────────────────────
+const STATUS_LABELS = {arrived:'Arrived',resolved:'Resolved',enroute:'En Route'};
+function renderActionBtns(status) {
+  const el = document.getElementById('actionBtns');
+  if (status === 'enroute') {
+    el.innerHTML = `<button class="hud-btn btn-arrived" onclick="updateStatus('arrived')">✓ Arrived</button>`;
+  } else if (status === 'arrived') {
+    el.innerHTML = `<button class="hud-btn btn-resolve" onclick="updateStatus('resolved')">✔ Resolve</button>`;
+  } else {
+    el.innerHTML = '';
+  }
+}
+
+async function updateStatus(newStatus) {
+  try {
+    const res = await fetch('/api/incident/update-status/', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+      body: JSON.stringify({alert_id:ALERT_ID, status:newStatus}),
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      showToast(`Marked as ${STATUS_LABELS[newStatus] || newStatus}`);
+      pollStatus();
+      if (newStatus === 'resolved') {
+        setTimeout(() => window.location.href = '/officer/dashboard/', 1500);
+      }
+    } else {
+      showToast(data.error || 'Update failed', 'err');
+    }
+  } catch(e) {
+    showToast('Network error','err');
+  }
+}
+
+// ── Boot: get officer GPS first, then init map ────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (!navigator.geolocation) {
+    // No GPS — init map at incident location or Thane default
+    const lat = INC_LAT || 19.2183;
+    const lon = INC_LON || 72.9781;
+    initMap(lat, lon);
+    pollCitizenLocation();
+    pollStatus();
+    setInterval(() => { pollCitizenLocation(); pollStatus(); }, POLL_MS);
+    return;
+  }
+
+  // Get first fix to center map, then watch
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      myLat = pos.coords.latitude;
+      myLon = pos.coords.longitude;
+      initMap(myLat, myLon);
+      updateOfficer(myLat, myLon);
+      pushOfficerLocation(myLat, myLon);
+      pollCitizenLocation();
+      pollStatus();
+
+      // Continuous watch
+      navigator.geolocation.watchPosition(
+        (p) => {
+          myLat = p.coords.latitude;
+          myLon = p.coords.longitude;
+          if (mapReady) updateOfficer(myLat, myLon);
+          pushOfficerLocation(myLat, myLon);
+        },
+        () => {},
+        {enableHighAccuracy:true, maximumAge:0, timeout:8000}
+      );
+
+      setInterval(() => { pollCitizenLocation(); pollStatus(); }, POLL_MS);
+    },
+    () => {
+      // GPS denied — still show map
+      const lat = INC_LAT || 19.2183;
+      const lon = INC_LON || 72.9781;
+      initMap(lat, lon);
+      pollCitizenLocation();
+      pollStatus();
+      setInterval(() => { pollCitizenLocation(); pollStatus(); }, POLL_MS);
+    },
+    {enableHighAccuracy:true, timeout:10000, maximumAge:0}
+  );
+});
+</script>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% extends "crime(base).html" %}
+    {% load static %}
+    {% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Safety Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        :root {
+            /* Dark Mode Variables */
+            --bg-color: #050510;
+            --card-bg: #110E24;
+            --card-bg-light: #1A183C;
+            --text-color: #E0E0E0;
+            --text-secondary: #A0A0A0;
+            --primary-purple: #8B5CF6;
+            --secondary-purple: #4C3C78;
+            --accent-green: #34D399;
+            --accent-yellow: #FACC15;
+            --accent-red: #EF4444;
+            --border-color: #2D264A;
+            --header-bg: #0C0B21;
+            --button-bg: #6D28D9;
+            --button-hover-bg: #7C3AED;
+            --input-bg: #1F1C38;
+            --glow-color: #8B5CF6;
+            --glow-gradient-dark: conic-gradient(from 180deg at 50% 50%, #8B5CF6, #4C3C78, #1A183C, #4C3C78, #8B5CF6);
+            --glow-gradient-hover-dark: conic-gradient(from 180deg at 50% 50%, #8B5CF6, #34D399, #FACC15, #EF4444, #8B5CF6);
+            --body-gradient-dark: radial-gradient(at 5% 5%, rgba(139, 92, 246, 0.1), transparent), 
+                                  radial-gradient(at 95% 95%, rgba(139, 92, 246, 0.1), transparent), 
+                                  radial-gradient(at 20% 80%, rgba(52, 211, 153, 0.05), transparent),
+                                  var(--bg-color);
+            
+            /* Heatmap Specific for Dark Mode */
+            --heatmap-gradient: linear-gradient(90deg, #110E24 0%, #201C42 100%);
+            --heatmap-text-color: #E0E0E0;
+            --heatmap-button-bg: #6D28D9;
+            --heatmap-button-text: #FFFFFF;
+
+            /* Header specific gradient for Dark Mode */
+            --header-bg-gradient: linear-gradient(45deg, rgba(12,11,33,1) 0%, rgba(18,15,40,1) 100%);
+        }
+
+        body.light-mode {
+            /* Light Mode Variables */
+            --bg-color:rgb(144, 130, 177);
+            --card-bg: #FFFFFF;
+            --card-bg-light: #F9F9FB;
+            --text-color: #333333;
+            --text-secondary: #6B7280;
+            --primary-purple: #7C3AED;
+            --secondary-purple: #EBE5F7;
+            --accent-green: #10B981;
+            --accent-yellow: #F59E0B;
+            --accent-red: #EF4444;
+            --border-color: #E5E7EB;
+            --header-bg: #F9F9FB;
+            --button-bg: #6D28D9;
+            --button-hover-bg: #7C3AED;
+            --input-bg: #FFFFFF;
+            --glow-color: #A78BFA;
+            --glow-gradient-dark: conic-gradient(from 180deg at 50% 50%, #7C3AED, #A78BFA, #F9F9FB, #A78BFA, #7C3AED);
+            --glow-gradient-hover-dark: conic-gradient(from 180deg at 50% 50%, #7C3AED, #10B981, #F59E0B, #EF4444, #7C3AED);
+            --body-gradient-dark: none;
+
+            /* Heatmap Specific for Light Mode */
+            --heatmap-gradient: linear-gradient(90deg, #E0F2F7 0%, #FCEEEF 100%);
+            --heatmap-text-color: #333333;
+            --heatmap-button-bg: #333333;
+            --heatmap-button-text: #FFFFFF;
+
+            /* Header specific gradient for Light Mode */
+            --header-bg-gradient: linear-gradient(45deg, #F9F9FB 0%, #FFFFFF 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-size: 14px;
+            background: var(--body-gradient-dark);
+        }
+
+        .dashboard-container {
+            width: 95%;
+            max-width: 1200px;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Card base style with glow effect */
+        .card-base {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-base:before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px; right: -1px; bottom: -1px;
+            border-radius: 12px;
+            z-index: -1;
+            background: var(--glow-gradient-dark);
+            padding: 1px;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+        }
+
+        .card-base:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px var(--glow-color);
+        }
+        
+        .card-base:hover:before {
+            background: var(--glow-gradient-hover-dark);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--header-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            background-image: var(--header-bg-gradient);
+        }
+        
+        /* New styling for icons in header */
+        .header .left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header .left ion-icon {
+            font-size: 2.2rem;
+            color: var(--primary-purple);
+        }
+
+        .header .title h3 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-color);
+            letter-spacing: 0.5px;
+        }
+
+        .header .title p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .header .right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.1);
+            color: var(--primary-purple);
+        }
+
+        /* Profile Section */
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .profile-container:hover {
+            transform: scale(1.03);
+        }
+
+        .profile-container .profile {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--secondary-purple);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+        }
+        
+        .profile-container .profile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .profile-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .header .emergency-button {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .header .emergency-button:hover {
+            background-color: var(--secondary-purple);
+            box-shadow: 0 0 10px var(--secondary-purple);
+        }
+
+        /* New styles to make <a> tags look like buttons */
+        .report-crime-section .report-with-identity,
+        .report-crime-section .report-anonymously {
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+            font-size: 13px;
+            display: block; /* Make it take the full width */
+            border: none;
+        }
+
+        .report-crime-section .report-with-identity {
+            background: linear-gradient(90deg, #8B5CF6, #7C3AED);
+            color: white;
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4);
+        }
+
+        .report-crime-section .report-anonymously {
+            background-color: transparent;
+            color: var(--primary-purple);
+            border: 1px solid var(--primary-purple);
+            box-shadow: none;
+        }
+        
+        .report-crime-section .report-with-identity:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.6);
+        }
+
+        .report-crime-section .report-anonymously:hover {
+            background-color: var(--secondary-purple);
+            color: white;
+            box-shadow: 0 4-5px 10px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Main Content Grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .section-header ion-icon {
+            font-size: 1.5rem;
+            color: var(--primary-purple);
+        }
+
+        /* Heatmap Section */
+        .heatmap-section {
+            grid-column: span 4;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: var(--heatmap-gradient);
+            padding: 50px 25px;
+            box-shadow: none;
+            border: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--heatmap-text-color); /* Correctly set text color */
+        }
+        
+        .heatmap-section ion-icon {
+            font-size: 3rem;
+            color: var(--heatmap-text-color);
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .heatmap-section h4 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--heatmap-text-color);
+        }
+
+        .heatmap-section p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin: 5px 0 20px;
+        }
+        
+        .heatmap-section .view-heatmap-button {
+            background: var(--heatmap-button-bg);
+            color: var(--heatmap-button-text);
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .heatmap-section .view-heatmap-button:hover {
+            background: var(--button-hover-bg);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.8);
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .stat-card h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .stat-card .value {
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-color);
+            letter-spacing: -1px;
+        }
+        
+        .stat-card .value-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-color);
+            letter-spacing: -1px;
+        }
+
+        .stat-card .value-with-icon ion-icon {
+            font-size: 1.5rem;
+        }
+
+        .stat-card .description {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Stats card specific styling */
+        .stat-card.your-area ion-icon { color: var(--primary-purple); }
+        .stat-card.thane-score ion-icon { color: var(--accent-green); }
+        .stat-card.safest-ward ion-icon { color: var(--accent-green); }
+        .stat-card.active-alerts ion-icon { color: var(--accent-yellow); }
+
+
+        /* Bottom Grid */
+        .bottom-grid {
+            grid-column: span 4;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+        }
+
+        .ward-safety-scores {
+            padding: 25px;
+        }
+        
+        .ward-safety-scores h4 {
+            margin: 0;
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Report a Crime & Emergency Contacts Card Styling */
+        .report-crime-section, .emergency-contacts {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .report-crime-section:before, .emergency-contacts:before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px; right: -1px; bottom: -1px;
+            border-radius: 12px;
+            z-index: -1;
+            background: conic-gradient(from 180deg at 50% 50%, #8B5CF6, #4C3C78, #1A183C, #4C3C78, #8B5CF6);
+            padding: 1px;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+        }
+
+        .report-crime-section:hover, .emergency-contacts:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px var(--glow-color);
+        }
+        
+        .report-crime-section:hover:before, .emergency-contacts:hover:before {
+            background: conic-gradient(from 180deg at 50% 50%, #8B5CF6, #34D399, #FACC15, #EF4444, #8B5CF6);
+        }
+        
+        /* Report a Crime Button Styling */
+        .report-crime-section h4 {
+            margin: 0 0 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Common style for both buttons to ensure they look uniform */
+        .report-crime-section .report-with-identity,
+        .report-crime-section .report-anonymously {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        /* New styles to make <a> tags look like buttons */
+        .report-crime-section .report-with-identity,
+        .report-crime-section .report-anonymously {
+            display: block;
+            text-align: center;
+            
+            text-decoration: none;
+            /* Re-add button-specific styles that were previously tied to <button> */
+            line-height: normal; 
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .report-crime-section .report-with-identity {
+            text-decoration: none;  
+            background: linear-gradient(90deg, #8B5CF6, #7C3AED);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4);
+        }
+
+        .report-crime-section .report-anonymously {
+            background-color: transparent;
+            color: var(--primary-purple);
+            border: 1px solid var(--primary-purple);
+            box-shadow: none;
+        }
+
+        .report-crime-section .report-with-identity:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.6);
+        }
+
+        .report-crime-section .report-anonymously:hover {
+            background-color: var(--secondary-purple);
+            color: white;
+            box-shadow: 0 4-5px 10px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Emergency Contacts Styling */
+        .emergency-contacts h4 {
+            margin: 0 0 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .contact-item {
+            background-color: var(--card-bg-light);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .contact-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .contact-item a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        
+        .contact-item a:hover {
+            color: var(--primary-purple);
+            text-decoration: underline;
+        }
+
+        .contact-item ion-icon {
+            font-size: 1.2rem;
+            color: var(--primary-purple);
+        }
+
+        /* Ward Safety Scores Grid */
+        .ward-scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .ward-score-card {
+            background-color: var(--card-bg-light);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .ward-score-card:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .ward-score-card .ward-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        /* Radial Progress Bar Styles */
+        .radial-progress {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 5px;
+        }
+
+        .radial-progress .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .radial-progress svg {
+            transform: rotate(-90deg);
+        }
+
+        .radial-progress .track {
+            fill: none;
+            stroke: var(--secondary-purple);
+            stroke-width: 8;
+        }
+
+        .radial-progress .progress {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: butt; /* Changed from 'round' to 'butt' */
+            transition: stroke 0.3s ease;
+        }
+
+        /* New keyframes for the animation */
+        @keyframes animate-progress {
+            from {
+                stroke-dashoffset: 289.02; /* Updated circumference for r=46 */
+            }
+            to {
+                stroke-dashoffset: var(--target-offset);
+            }
+        }
+
+        /* Profile Sidebar Styles */
+        .profile-sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px; /* Initially off-screen */
+            width: 300px;
+            height: 100%;
+            background-color: var(--card-bg);
+            border-left: 1px solid var(--border-color);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+            transition: right 0.4s ease-in-out;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .profile-sidebar.open {
+            right: 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--primary-purple);
+        }
+
+        .profile-img-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 40px auto 20px;
+            overflow: hidden;
+            border: 3px solid var(--primary-purple);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+        
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sidebar-placeholder-img {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-purple);
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .profile-field {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .profile-field strong {
+            color: var(--text-secondary);
+        }
+
+        #editProfileBtn, .save-btn, .cancel-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            border: none;
+        }
+
+        #editProfileBtn {
+            background-color: var(--primary-purple);
+            color: white;
+        }
+
+        #editProfileBtn:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        .save-btn {
+            background-color: var(--accent-green);
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: var(--accent-red);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+        
+        .change-pic-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            border: 1px solid var(--primary-purple);
+            background: none;
+            color: var(--primary-purple);
+        }
+
+        .change-pic-btn:hover {
+            background-color: var(--secondary-purple);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="header card-base">
+            <div class="left">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                <div class="title">
+                    <h3>Citizen Safety Dashboard</h3>
+                    <p>Stay informed, stay safe</p>
+                </div>
+            </div>
+            <div class="right">
+                <button id="theme-toggle-btn" class="theme-toggle-btn">
+                    <ion-icon name="moon-outline"></ion-icon>
+                </button>
+                
+                <div class="profile-container">
+                    <div class="profile">
+                        {% if request.user.userprofile.profile_image %}
+                            <img id="profileImageHome" src="{{ request.user.userprofile.profile_image.url }}" alt="Profile Image">
+                        {% else %}
+                            {{ request.user.username|slice:":1" }}
+                        {% endif %}
+                    </div>
+                    <div class="profile-info">
+                        <h5> {{ request.user.username }}</h5>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <section class="heatmap-section card-base">
+                <div class="section-header">
+                    <ion-icon name="map-outline"></ion-icon>
+                    <h4>Thane Crime Heatmap</h4>
+                </div>
+                <p>Interactive visualization of crime density across wards</p>
+                <a href="{% url 'monthly_crime_predictions' %}" class="view-heatmap-button">
+                    View Thane Crime Map
+                </a>
+                
+            </section>
+
+            <div class="stat-card card-base your-area">
+                <div class="value-with-icon">
+                    <ion-icon name="location-outline"></ion-icon>
+                    {{ your_area_score }}%
+                </div>
+                <h5>Your Area Safety ({{ your_area }})</h5>
+                <div class="description">Compared to city average</div>
+            </div>
+
+            <div class="stat-card card-base thane-score">
+                <div class="value-with-icon">
+                    <ion-icon name="stats-chart-outline"></ion-icon>
+                    {{ city_avg_score }}%
+                </div>
+                <h5>Thane Safety Score</h5>
+                <div class="description">Average safety across Thane</div>
+            </div>
+
+            <div class="stat-card card-base safest-ward">
+                <div class="value-with-icon">
+                    <ion-icon name="shield-checkmark-outline"></ion-icon>
+                    {{ safest_area_score }}%
+                </div>
+                <h5>Safest Ward</h5>
+                <div class="description">{{ safest_area }}</div>
+            </div>
+
+            <div class="stat-card card-base active-alerts">
+                <div class="value-with-icon">
+                    <ion-icon name="alert-circle-outline"></ion-icon>
+                    {{ active_alerts }}
+                </div>
+                <h5>Active Alerts</h5>
+                <div class="description">Recent cases in last 7 days</div>
+            </div>
+        </div>
+
+        <div class="bottom-grid">
+            <section class="ward-safety-scores card-base">
+                <div class="section-header">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <h4>Ward Safety Scores</h4>
+                </div>
+                <p>Ward safety compared as percentages — higher is safer</p>
+
+                <div class="ward-scores-grid">
+                    {% for ward, score in ward_scores.items %}
+                    <div class="ward-score-card">
+                        <div class="radial-progress">
+                            <svg viewBox="0 0 100 100">
+                                <circle class="track" cx="51" cy="50" r="46"></circle>
+                                <circle class="progress" cx="51" cy="50" r="46" style="--score: {{ score }};"></circle>
+                            </svg>
+                            <div class="score-text">{{ score }}</div>
+                        </div>
+                        <div class="ward-name">{{ ward }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            
+            <div class="right-column">
+                <section class="report-crime-section">
+                    <div class="section-header">
+                        <ion-icon name="megaphone-outline"></ion-icon>
+                        <h4>Report a Crime</h4>
+                    </div>
+                    <a href="{% url 'crime_report' %}" style="text-decoration: none;">
+                        <button class="report-with-identity">Report with Identity</button>
+                    </a>
+                    <button class="report-anonymously">Report Anonymously</button>
+                    <p >Your reports help police prevent future crimes</p>
+                </section>
+                
+                <section class="emergency-contacts">
+                    <div class="section-header">
+                        <ion-icon name="call-outline"></ion-icon>
+                        <h4>Emergency Contacts</h4>
+                    </div>
+                    <ul class="contact-list">
+                        <li class="contact-item">
+                            <ion-icon name="call-outline"></ion-icon>
+                            <a href="tel:100">Police 100</a>
+                        </li>
+                        <li class="contact-item">
+                            <ion-icon name="call-outline"></ion-icon>
+                            <a href="tel:108">Ambulance 108</a>
+                        </li>
+                        <li class="contact-item">
+                            <ion-icon name="call-outline"></ion-icon>
+                            <a href="tel:1091">Women Helpline 1091</a>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+    
+    <div class="profile-sidebar" id="profileSidebar">
+        <button class="close-btn" id="profileCloseBtn">&times;</button>
+        
+        <div class="profile-img-container">
+          {% if request.user.userprofile.profile_image %}
+            <img id="profileImageSidebar" src="{{ request.user.userprofile.profile_image.url }}" alt="Profile Image">
+          {% else %}
+            <div class="sidebar-placeholder-img">
+              {{ request.user.username|slice:":1" }}
+            </div>
+          {% endif %}
+        </div>
+    
+        
+        <div id="profileView">
+          <div class="profile-field">
+            <strong>Full Name:</strong> <span id="fullNameText">{{ request.user.get_full_name }}</span>
+          </div>
+          <div class="profile-field">
+            <strong>Contact:</strong> <span id="contactText">{{ request.user.userprofile.contact }}</span>
+          </div>
+          <div class="profile-field">
+            <strong>Address:</strong> <span id="addressText">{{ request.user.userprofile.address }}</span>
+          </div>
+          
+          <button type="button" id="editProfileBtn">Edit Profile</button>
+        </div>
+    
+        <div id="profileEdit" style="display: none;">
+          <form id="profileEditForm" enctype="multipart/form-data">
+            <button type="button" id="changeProfileBtn" class="change-pic-btn">Change Picture</button>
+            <input type="file" id="editProfileImage" accept="image/*" style="display: none;">
+    
+            <div class="form-group">
+              <label for="editFullName">Full Name:</label>
+              <input type="text" id="editFullName" value="{{ request.user.get_full_name }}">
+            </div>
+            <div class="form-group">
+              <label for="editContact">Contact:</label>
+              <input type="text" id="editContact" value="{{ request.user.userprofile.contact }}">
+            </div>
+            <div class="form-group">
+              <label for="editAddress">Address:</label>
+              <input type="text" id="editAddress" value="{{ request.user.userprofile.address }}">
+            </div>
+            
+    
+            <button type="button" id="saveProfileBtn" class="save-btn">Save Changes</button>
+            <button type="button" id="cancelProfileBtn" class="cancel-btn">Cancel</button>
+          </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const themeToggleButton = document.getElementById('theme-toggle-btn');
+        const body = document.body;
+
+        themeToggleButton.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLightMode = body.classList.contains('light-mode');
+            themeToggleButton.querySelector('ion-icon').setAttribute('name', isLightMode ? 'moon-outline' : 'sunny-outline');
+            setRadialProgressBars();
+        });
+
+        // Set initial icon based on current mode
+        const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (prefersLight) {
+            body.classList.add('light-mode');
+            themeToggleButton.querySelector('ion-icon').setAttribute('name', 'moon-outline');
+        } else {
+            themeToggleButton.querySelector('ion-icon').setAttribute('name', 'sunny-outline');
+        }
+
+        // Function to set the radial progress bar color and animation
+        function setRadialProgressBars() {
+            const wardScores = document.querySelectorAll('.ward-score-card');
+            const circumference = 2 * Math.PI * 46; // Circumference for r=46 is ~289.027
+            
+            wardScores.forEach(card => {
+                const scoreText = card.querySelector('.score-text').textContent;
+                const score = parseFloat(scoreText.replace('%', ''));
+                const progressBar = card.querySelector('.progress');
+                
+                const offset = circumference * (1 - score / 100);
+                
+                progressBar.style.strokeDasharray = circumference;
+                progressBar.style.setProperty('--target-offset', offset);
+                
+                // Trigger the animation
+                progressBar.style.animation = 'none';
+                void progressBar.offsetWidth; // Trigger reflow to restart animation
+                progressBar.style.animation = `animate-progress 1s ease-in-out forwards`;
+
+                if (score >= 80) {
+                    progressBar.style.stroke = 'var(--accent-green)';
+                } else if (score >= 50) {
+                    progressBar.style.stroke = 'var(--accent-yellow)';
+                } else {
+                    progressBar.style.stroke = 'var(--accent-red)';
+                }
+            });
+        }
+        
+        // Initial call to set colors and offsets on page load
+        document.addEventListener('DOMContentLoaded', setRadialProgressBars);
+
+        // Open Sidebar
+        document.querySelector('.profile-container').addEventListener('click', function () {
+          document.getElementById('profileSidebar').classList.add('open');
+        });
+
+        // Close Sidebar
+        document.getElementById('profileCloseBtn').addEventListener('click', function () {
+          document.getElementById('profileSidebar').classList.remove('open');
+        });
+
+        // Toggle between View and Edit Modes
+        document.getElementById('editProfileBtn').addEventListener('click', function () {
+          document.getElementById('profileView').style.display = 'none';
+          document.getElementById('profileEdit').style.display = 'block';
+        });
+
+        document.getElementById('cancelProfileBtn').addEventListener('click', function () {
+          document.getElementById('profileEdit').style.display = 'none';
+          document.getElementById('profileView').style.display = 'block';
+        });
+
+        // Click "Change Picture" to Open File Input
+        document.getElementById("changeProfileBtn").addEventListener("click", function () {
+          document.getElementById("editProfileImage").click();
+        });
+
+        // Preview Selected Profile Image Before Upload
+        document.getElementById("editProfileImage").addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              document.getElementById("profileImageSidebar").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // Save Profile Changes via AJAX (Including Image)
+        document.getElementById("saveProfileBtn").addEventListener("click", function () {
+          let formData = new FormData();
+          formData.append("first_name", document.getElementById("editFullName").value.split(" ")[0] || "");
+          formData.append("last_name", document.getElementById("editFullName").value.split(" ").slice(1).join(" ") || "");
+          formData.append("contact", document.getElementById("editContact").value);
+          formData.append("address", document.getElementById("editAddress").value);
+          
+          // Handle Profile Image Upload
+          let profileImage = document.getElementById("editProfileImage").files[0];
+          if (profileImage) {
+              formData.append("profile_image", profileImage);
+          }
+
+          fetch("{% url 'update_profile' %}", {
+              method: "POST",
+              headers: {
+                  "X-CSRFToken": "{{ csrf_token }}"
+              },
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === "success") {
+                  // ✅ Update Text Fields
+                  document.getElementById("fullNameText").innerText = document.getElementById("editFullName").value;
+                  document.getElementById("contactText").innerText = document.getElementById("editContact").value;
+                  document.getElementById("addressText").innerText = document.getElementById("editAddress").value;
+                 
+                  // ✅ Update Profile Image in Sidebar & Home Page
+                  if (data.profile_image_url) {
+                      let newImageUrl = data.profile_image_url + "?t=" + new Date().getTime(); // Prevent caching
+                      
+                      document.getElementById("profileImageSidebar").src = newImageUrl; // Sidebar Profile Image
+                      document.getElementById("profileImageHome").src = newImageUrl; // Home Page Profile Image
+                  }
+
+                  // ✅ Close Edit Mode
+                  document.getElementById("profileEdit").style.display = "none";
+                  document.getElementById("profileView").style.display = "block";
+
+                  Swal.fire({
+                      icon: "success",
+                      title: "Profile Updated!",
+                      text: data.message,
+                      showConfirmButton: false,
+                      timer: 2000
+                  });
+              } else {
+                  Swal.fire({
+                      icon: "error",
+                      title: "Update Failed",
+                      text: data.message
+                  });
+              }
+          })
+          .catch(error => {
+              Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Something went wrong!"
+              });
+              console.error("Error:", error);
+          });
+        });
+    </script>
+</body>
+</html>
+{% endblock content %}

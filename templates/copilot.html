@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Safety Copilot</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f8;
+            display: flex;
+            justify-content: center;
+        }
+
+        .chat-container {
+            width: 700px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .chat-header {
+            padding: 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+            background: white;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 15px;
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: #4f46e5;
+            color: white;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background: #f1f1f1;
+            color: black;
+        }
+
+        .urgent {
+            background: #ffdddd;
+            color: #b00020;
+            font-weight: bold;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: white;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background: #4338ca;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">🛡 Safety Copilot</div>
+
+    <div id="chatBox" class="chat-messages"></div>
+
+    <div class="chat-input">
+        <input id="msgInput" placeholder="Describe what happened..." />
+        <button onclick="sendMsg()">Send</button>
+    </div>
+</div>
+
+
+</body>
+</html>

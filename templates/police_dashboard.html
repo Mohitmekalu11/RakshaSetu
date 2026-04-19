@@ -1,0 +1,509 @@
+{% extends "police(base).html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Officer Performance Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* Your existing styles */
+        :root {
+            --bg-light: #F0F2F5;
+            --card-bg: #FFFFFF;
+            --primary-teal: #00796B;
+            --accent-green: #388E3C;
+            --accent-yellow: #FBC02D;
+            --accent-orange: #F57C00;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --status-under-investigation: #3498db;
+            --status-pending: #f39c12;
+            --status-resolved: #2ecc71;
+            --selected-filter: #0d1b2a;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* --- New Responsive Metrics Row --- */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metrics-row .card {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .metrics-row .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+        
+        .metrics-row .card-body h5 {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .metrics-row .card-body h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            margin: 0.1rem 0;
+            transition: color 0.3s ease-in-out;
+        }
+        
+        .metrics-row .card:hover .card-body h2 { color: var(--accent-green); }
+
+        .metrics-row .card-body p {
+            color: var(--text-light);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+        
+        .metrics-row .card .card-body h5 ion-icon {
+            font-size: 1.3rem;
+            color: var(--primary-teal);
+            transition: color 0.3s ease-in-out;
+        }
+        
+        .metrics-row .card:hover .card-body h5 ion-icon { color: var(--accent-green); }
+        
+        /* --- General Dashboard Styles --- */
+        .reports-title {
+            text-align: center;
+            font-size: 24px;
+            color: rgba(10, 22, 34, 0.96);
+            margin: 40px 0 30px;
+            position: relative;
+        }
+
+        .reports-title::after {
+            content: "";
+            width: 260px;
+            height: 4px;
+            background: rgba(13, 27, 42, 0.88);
+            display: block;
+            margin: 10px auto 0;
+            border-radius: 2px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        /* Assigned Cases Section */
+        .assigned-cases {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .filter-container label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .filter-dropdown {
+            position: relative;
+            flex: 1;
+        }
+        
+        .filter-dropdown select {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            font-size: 1rem;
+            border: 2px solid var(--primary-teal);
+            border-radius: 0.5rem;
+            background-color: var(--bg-light);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            color: var(--text-dark);
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+        
+        .filter-dropdown select:hover {
+            border-color: var(--accent-green);
+        }
+
+        .filter-dropdown ion-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--primary-teal);
+            font-size: 1.5rem;
+        }
+
+        .case-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .case-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .case-header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            text-align: center;
+        }
+
+        .case-header h4 { justify-self: start; }
+.case-header .severity-badge { justify-self: center; }
+.case-header .header-badges { justify-self: end; }
+        .case-status-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            color: #fff;
+            margin-left: 600px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .case-status-badge.under-investigation { background-color: var(--status-under-investigation); }
+        .case-status-badge.pending { background-color: var(--status-pending); }
+        .case-status-badge.resolved { background-color: var(--status-resolved); }
+
+        .case-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .case-body p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .case-body strong {
+            color: var(--text-dark);
+        }
+
+        .case-footer {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            flex: 1 1 auto;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .btn:hover { transform: scale(1.03); }
+
+        .btn.view { background: linear-gradient(135deg, #0d1b2a, rgb(43, 81, 151)); }
+        .btn.update { background: linear-gradient(135deg, #1e5128, #2c7a7b); }
+        
+        .case-footer form {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1 1 100%;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .case-footer form select {
+            padding: 8px 10px;
+            width: auto;
+            min-width: 150px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s;
+            flex: 1 1 auto;
+        }
+        
+        .case-footer form select:focus { border-color: var(--primary-teal); }
+        
+        .severity-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            color: #fff;
+            cursor: default;
+            /* New styles to center it */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-width: 30px; /* Ensure a minimum width for single-digit scores */
+        }
+
+        .severity-badge.low { background: #27ae60; }
+        .severity-badge.medium { background: #f1c40f; }
+        .severity-badge.high { background: #e74c3c; }
+
+        /* Alerts */
+        .alert {
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            border-radius: 6px;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        .alert-disapproved { background: #e74c3c; color: #fff; }
+        .alert-pending { background: #e67e22; color: #fff; }
+        
+        /* SweetAlert2 Overrides */
+        .swal2-popup { font-size: 16px; }
+
+    </style>
+</head>
+
+<body>
+    {% if request.user.userprofile.disapproval_message %}
+        <div class="alert alert-disapproved">
+            <strong>Account Disapproved:</strong> {{ request.user.userprofile.disapproval_message }}
+        </div>
+    {% elif not request.user.userprofile.is_approved %}
+        <div class="alert alert-pending">
+            Your account is pending approval by the admin. Please check back later.
+        </div>
+    {% else %}
+        <div class="dashboard-header">
+            <img src="{% static 'police_bg1.png' %}" alt="Officer Badge" class="header-image header-image-left">
+            <div class="header-content">
+                <h2>Welcome, Officer {{ officer_profile.user.username }}</h2><br>
+                <p><strong>Station:</strong> {{ officer_profile.station_name }} | <strong> Badge ID:</strong> {{ officer_profile.badge_id }}</p>
+            </div>
+            <img src="{% static 'policewomen.png' %}" alt="Officer Badge" class="header-image header-image-right">
+        </div>
+
+        <div class="metrics-row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><ion-icon name="checkmark-done-circle-outline"></ion-icon> Resolution Rate</h5>
+                        <h2>{{ metrics.resolution_rate }}%</h2>
+                        <p class="mb-0">{{ metrics.resolution_comment }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><ion-icon name="document-text-outline"></ion-icon> Total Cases</h5>
+                        <h2>{{ metrics.total_cases }}</h2>
+                        <p class="mb-0">{{ metrics.case_breakdown }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="reports-title">Assigned Cases</h3>
+        <div class="assigned-cases">
+            {% if assigned_reports %}
+                <div class="filter-container">
+                    <label for="case-filter">Filter by Status:</label>
+                    <div class="filter-dropdown">
+                        <select id="case-filter">
+                            <option value="All" selected>All Cases</option>
+                            <option value="Under Investigation">Under Investigation</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                        <ion-icon name="filter-outline"></ion-icon>
+                    </div>
+                </div>
+                <div class="case-list">
+                    {% for report in assigned_reports %}
+                        <div class="case-card" data-status="{{ report.resolution_status }}">
+                            <div class="case-header">
+                                <h4>
+                                    <ion-icon name="clipboard-outline"></ion-icon> {{ report.crime_type }}
+                                </h4>
+                                <span class="severity-badge {% if report.severity_score < 3 %}low{% elif report.severity_score < 7 %}medium{% else %}high{% endif %}">
+                                    {{ report.severity_score }}
+                                </span>
+                                <div class="header-badges">
+                                    <span class="case-status-badge {{ report.resolution_status|slugify }}">
+                                        {{ report.resolution_status }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="case-body">
+                                <p><strong>Address:</strong> {{ report.address }}</p>
+                                <p><strong>Reported:</strong> {{ report.reported_at|date:"M d, Y" }}</p>
+                                <p><strong>Description:</strong> {{ report.description|truncatechars:100 }}</p>
+                            </div>
+                            <div class="case-footer">
+                                <a href="{% url 'officer_case_detail' report.id %}"
+                                                    class="btn view"
+                                                    style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                                                    <ion-icon name="eye-outline"></ion-icon> View Case
+                                                    </a>
+                                <form action="{% url 'update_report_status' report.id %}" method="post">
+                                    {% csrf_token %}
+                                    <select name="resolution_status" onchange="this.form.submit()">
+                                        <option value="Pending" {% if report.resolution_status == "Pending" %}selected{% endif %}>Pending</option>
+                                        <option value="Under Investigation" {% if report.resolution_status == "Under Investigation" %}selected{% endif %}>Under Investigation</option>
+                                        <option value="Resolved" {% if report.resolution_status == "Resolved" %}selected{% endif %}>Resolved</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; font-size: 18px; color: var(--text-light);">No reports assigned to you yet. Stay vigilant, officer!</p>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    <script>
+        function viewEvidence(reportId) {
+            fetch(`/view-evidence/${reportId}/`, {
+                method: 'GET',
+                credentials: 'same-origin'
+            })
+            .then(response => response.ok ? response.json() : Promise.reject("Failed to load evidence"))
+            .then(data => {
+                let evidenceHtml = "";
+                if (data.video_url) {
+                    evidenceHtml += `<video width="320" height="240" controls style="border: 2px solid #0d1b2a; border-radius: 5px;">
+                                        <source src="${data.video_url}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video><br><br>`;
+                }
+                if (data.photo_urls && data.photo_urls.length > 0) {
+                    data.photo_urls.forEach(url => {
+                        evidenceHtml += `<img src="${url}" alt="Evidence Photo" style="max-width: 100%; margin-bottom: 10px; border: 2px solid #0d1b2a; border-radius: 5px;"><br>`;
+                    });
+                }
+                if (!evidenceHtml) {
+                    evidenceHtml = "<p>No evidence available.</p>";
+                }
+                Swal.fire({
+                    title: "Evidence",
+                    html: evidenceHtml,
+                    width: '600px'
+                });
+            })
+            .catch(error => Swal.fire("Error", "Failed to load evidence", "error"));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterDropdown = document.getElementById('case-filter');
+            const caseCards = document.querySelectorAll('.case-card');
+
+            filterDropdown.addEventListener('change', (event) => {
+                const selectedStatus = event.target.value;
+                caseCards.forEach(card => {
+                    const cardStatus = card.getAttribute('data-status');
+                    if (selectedStatus === 'All' || cardStatus === selectedStatus) {
+                        card.style.display = 'flex';
+                        card.style.animation = 'fadeInUp 0.8s ease forwards';
+                        card.style.opacity = '0';
+                        setTimeout(() => card.style.opacity = '1', 10);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

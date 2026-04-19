@@ -1,0 +1,381 @@
+{% extends "police(base).html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Case Detail — {{ report.crime_type }}</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --navy: #0d1b2a;
+      --teal: #00796b;
+      --light: #f5f7fa;
+      --card: #fff;
+      --border: #e0e4ed;
+    }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--light); color: #333; }
+    .detail-page { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: var(--teal); font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; margin-bottom: 1.25rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    /* Section card */
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .section-card h3 {
+      font-size: 1rem; font-weight: 700; color: var(--navy);
+      margin: 0 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.6rem;
+    }
+
+    /* Info grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem 1.5rem;
+      font-size: 0.88rem;
+    }
+    .info-item label {
+      display: block; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: #6c757d; margin-bottom: 0.15rem;
+    }
+    .info-item span { color: var(--navy); font-weight: 500; }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-block; padding: 0.25rem 0.85rem;
+      border-radius: 50px; font-size: 0.8rem; font-weight: 600;
+    }
+    .badge-pending     { background: #fff3cd; color: #856404; }
+    .badge-invest      { background: #cfe2ff; color: #084298; }
+    .badge-awaiting    { background: #fde2bc; color: #7c4a00; }
+    .badge-resolved    { background: #d1e7dd; color: #0a3622; }
+
+    /* Severity bar */
+    .severity-bar-wrap { margin-top: 0.5rem; }
+    .severity-bar-track {
+      height: 8px; background: #e0e4ed; border-radius: 4px; overflow: hidden;
+    }
+    .severity-bar-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+    }
+    .severity-label { font-size: 0.75rem; color: #6c757d; margin-top: 0.25rem; }
+
+    /* Evidence gallery */
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+    .evidence-item { position: relative; border-radius: 8px; overflow: hidden; }
+    .evidence-item img {
+      width: 100%; height: 160px; object-fit: cover; display: block;
+      border: 1px solid var(--border);
+    }
+    .evidence-ai-badge {
+      position: absolute; bottom: 6px; left: 6px;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 0.15rem 0.5rem; border-radius: 4px;
+    }
+    .badge-verified { background: #d1e7dd; color: #0a3622; }
+    .badge-review   { background: #fff3cd; color: #856404; }
+    .badge-flagged  { background: #f8d7da; color: #58151c; }
+
+    /* Video */
+    .evidence-video {
+      width: 100%; max-width: 480px; border-radius: 8px;
+      border: 1px solid var(--border); display: block; margin-top: 0.75rem;
+    }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 2rem; margin-top: 0.75rem; }
+    .timeline::before {
+      content: ""; position: absolute; left: 0.7rem; top: 0.5rem; bottom: 0.5rem;
+      width: 2px; background: var(--border);
+    }
+    .tl-entry { position: relative; margin-bottom: 1rem; padding-left: 0.75rem; }
+    .tl-dot {
+      position: absolute; left: -1.6rem; top: 0.3rem;
+      width: 1rem; height: 1rem; border-radius: 50%;
+      background: var(--teal); border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--teal);
+    }
+    .tl-label { font-weight: 700; font-size: 0.88rem; color: var(--navy); }
+    .tl-desc  { font-size: 0.82rem; color: #555; }
+    .tl-time  { font-size: 0.75rem; color: #9ca3af; }
+
+    /* Investigation form */
+    .inv-form label {
+      display: block; font-size: 0.82rem; font-weight: 700;
+      color: var(--navy); margin: 0.85rem 0 0.3rem;
+    }
+    .inv-form textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: 6px;
+      padding: 0.6rem 0.8rem; font-size: 0.88rem; font-family: inherit;
+      resize: vertical; min-height: 80px; color: #333; box-sizing: border-box;
+    }
+    .inv-form textarea:focus { outline: none; border-color: var(--teal); }
+    .btn-submit-inv {
+      margin-top: 1rem;
+      background: var(--navy); color: #fff; border: none;
+      padding: 0.65rem 1.5rem; border-radius: 6px; font-size: 0.9rem;
+      font-weight: 600; cursor: pointer;
+    }
+    .btn-submit-inv:hover { background: var(--teal); }
+
+    /* Status update */
+    .status-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .btn-status {
+      padding: 0.5rem 1.2rem; border-radius: 6px;
+      border: none; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-investigate { background: #cfe2ff; color: #084298; }
+    .btn-investigate:hover { background: #b6d4fe; }
+    .btn-file        { background: #0d1b2a; color: #fff; }
+    .btn-file:hover  { background: #00796b; }
+
+    /* Alert messages */
+    .msg-success {
+      background: #d1e7dd; color: #0a3622; border-radius: 6px;
+      padding: 0.6rem 1rem; font-size: 0.88rem; margin-bottom: 1rem;
+    }
+    .msg-error {
+      background: #f8d7da; color: #58151c; border-radius: 6px;
+      padding: 0.6rem 1rem; font-size: 0.88rem; margin-bottom: 1rem;
+    }
+
+    /* Existing inv report view */
+    .inv-view p { font-size: 0.88rem; margin: 0.4rem 0; }
+    .inv-view strong { color: var(--navy); }
+    .inv-status-approved { color: #0a3622; font-weight: 700; }
+    .inv-status-rejected { color: #58151c; font-weight: 700; }
+    .inv-status-pending  { color: #856404; font-weight: 700; }
+  </style>
+</head>
+
+<body>
+<div class="detail-page">
+
+  <a href="{% url 'police_dashboard' %}" class="back-link">← Back to Dashboard</a>
+
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="{% if msg.tags == 'error' %}msg-error{% else %}msg-success{% endif %}">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {# ── Case overview ── #}
+  <div class="section-card">
+    <h3>Case Overview</h3>
+    <div class="info-grid">
+      <div class="info-item">
+        <label>Crime type</label>
+        <span>{{ report.crime_type }}</span>
+      </div>
+      <div class="info-item">
+        <label>Status</label>
+        <span>
+          {% if report.resolution_status == "Pending" %}
+            <span class="status-badge badge-pending">Pending</span>
+          {% elif report.resolution_status == "Under Investigation" %}
+            <span class="status-badge badge-invest">Under Investigation</span>
+          {% elif report.resolution_status == "Awaiting Approval" %}
+            <span class="status-badge badge-awaiting">Awaiting SHO Approval</span>
+          {% elif report.resolution_status == "Resolved" %}
+            <span class="status-badge badge-resolved">Resolved ✓</span>
+          {% else %}
+            <span class="status-badge badge-pending">{{ report.resolution_status }}</span>
+          {% endif %}
+        </span>
+      </div>
+      <div class="info-item">
+        <label>Address</label>
+        <span>{{ report.address }}</span>
+      </div>
+      <div class="info-item">
+        <label>Reported at</label>
+        <span>{{ report.reported_at|date:"d M Y, H:i" }}</span>
+      </div>
+      <div class="info-item">
+        <label>Reported by</label>
+        <span>{{ report.reported_by.get_full_name|default:report.reported_by.username }}</span>
+      </div>
+      <div class="info-item">
+        <label>Station</label>
+        <span>{{ report.station.name|default:"N/A" }}</span>
+      </div>
+    </div>
+
+    {% if report.severity_score %}
+    <div class="severity-bar-wrap" style="margin-top:1rem;">
+      <div style="font-size:0.82rem;font-weight:700;color:#1a233a;margin-bottom:0.3rem;">
+        Severity: {{ report.severity_score|floatformat:1 }} / 10
+      </div>
+      <div class="severity-bar-track">
+        <div class="severity-bar-fill"
+             style="width:{{ report.severity_score|floatformat:0 }}0%;"></div>
+      </div>
+      <div class="severity-label">
+        {% if report.severity_score < 4 %}Low priority
+        {% elif report.severity_score < 7 %}Medium priority
+        {% else %}High priority — act promptly{% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <p style="margin-top:1rem;font-size:0.9rem;"><strong>Description:</strong><br>
+      {{ report.description }}</p>
+  </div>
+
+  {# ── Evidence ── #}
+  <div class="section-card">
+    <h3>Evidence</h3>
+
+    {% if report.video %}
+    <p style="font-size:0.85rem;font-weight:700;color:#1a233a;margin-bottom:0.4rem;">Video:</p>
+    <video class="evidence-video" controls>
+      <source src="{{ report.video.url }}" type="video/mp4">
+      Your browser does not support video.
+    </video>
+    {% endif %}
+
+    {% if photos %}
+    <p style="font-size:0.85rem;font-weight:700;color:#1a233a;margin:1rem 0 0.4rem;">Photos:</p>
+    <div class="evidence-grid">
+      {% for photo in photos %}
+      <div class="evidence-item">
+        <img src="{{ photo.photos.url }}" alt="Evidence photo">
+        <span class="evidence-ai-badge
+          {% if photo.verification_status == 'Verified' %}badge-verified
+          {% elif photo.verification_status == 'Review' %}badge-review
+          {% else %}badge-flagged{% endif %}">
+          {% if photo.verification_status == 'Verified' %}✓ Authentic
+          {% elif photo.verification_status == 'Review' %}⚠ Review
+          {% else %}🚨 Flagged{% endif %}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if not report.video and not photos %}
+    <p style="color:#6c757d;font-size:0.88rem;">No evidence files uploaded.</p>
+    {% endif %}
+  </div>
+
+  {# ── Timeline ── #}
+  <div class="section-card">
+    <h3>Case Timeline</h3>
+    <div class="timeline">
+      {% for entry in timeline %}
+      <div class="tl-entry">
+        <div class="tl-dot"></div>
+        <div class="tl-label">{{ entry.icon }} {{ entry.label }}</div>
+        <div class="tl-desc">{{ entry.description }}</div>
+        {% if entry.timestamp %}
+        <div class="tl-time">{{ entry.timestamp|date:"d M Y, H:i" }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# ── Status update (only if not resolved/awaiting) ── #}
+  {% if report.resolution_status == "Pending" %}
+  <div class="section-card">
+    <h3>Start Investigation</h3>
+    <p style="font-size:0.88rem;color:#555;">
+      Mark this case as under investigation to begin working on it.
+    </p>
+    <form action="{% url 'update_report_status' report.id %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="resolution_status" value="Under Investigation">
+      <button type="submit" class="btn-status btn-investigate">
+        Start Investigation
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  {# ── Investigation report ── #}
+  {% if report.resolution_status in "Under Investigation,Awaiting Approval" or inv %}
+  <div class="section-card">
+    <h3>Investigation Report</h3>
+
+    {% if inv and inv.sho_approved is True %}
+      <div class="inv-view">
+        <p class="inv-status-approved">✅ SHO Approved — Case Resolved</p>
+        <p><strong>Summary:</strong> {{ inv.summary }}</p>
+        <p><strong>Actions taken:</strong> {{ inv.action_taken }}</p>
+        {% if inv.evidence_notes %}
+        <p><strong>Evidence notes:</strong> {{ inv.evidence_notes }}</p>
+        {% endif %}
+        <p><strong>Reviewed at:</strong> {{ inv.reviewed_at|date:"d M Y, H:i" }}</p>
+      </div>
+
+    {% elif inv and inv.sho_approved is False %}
+      <div style="background:#fff3cd;border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.88rem;">
+        <strong>⚠ Returned by SHO for re-investigation.</strong><br>
+        {% if inv.evidence_notes %}{{ inv.evidence_notes }}{% endif %}
+      </div>
+      {# Let officer re-file #}
+      <form class="inv-form" action="{% url 'submit_investigation' report.id %}" method="post">
+        {% csrf_token %}
+        {% for field in inv_form %}
+          <label>{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<p style="color:#e74c3c;font-size:0.8rem;">{{ field.errors.0 }}</p>{% endif %}
+        {% endfor %}
+        <button type="submit" class="btn-submit-inv">Re-submit Investigation Report</button>
+      </form>
+
+    {% elif inv and inv.sho_approved is None %}
+      <div class="inv-view">
+        <p class="inv-status-pending">⏳ Awaiting SHO review</p>
+        <p><strong>Summary:</strong> {{ inv.summary }}</p>
+        <p><strong>Actions taken:</strong> {{ inv.action_taken }}</p>
+        <p><strong>Submitted:</strong> {{ inv.submitted_at|date:"d M Y, H:i" }}</p>
+      </div>
+
+    {% else %}
+      {# Not filed yet #}
+      <p style="font-size:0.88rem;color:#555;margin-bottom:0.75rem;">
+        Document your investigation and submit it to the SHO for approval.
+        Your report must cover findings, actions taken, and evidence collected.
+      </p>
+      <form class="inv-form" action="{% url 'submit_investigation' report.id %}" method="post">
+        {% csrf_token %}
+        {% for field in inv_form %}
+          <label>{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<p style="color:#e74c3c;font-size:0.8rem;">{{ field.errors.0 }}</p>{% endif %}
+        {% endfor %}
+        <button type="submit" class="btn-submit-inv">Submit to SHO for Approval</button>
+      </form>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+</body>
+</html>
+{% endblock %}

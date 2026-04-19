@@ -1,0 +1,974 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CrimeWatch Dashboard</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- jQuery & Chart.js library -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Leaflet.js CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Leaflet Heatmap Plugin -->
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+  <style>
+    /* Global Styles for Clean, Light Theme */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url("{% static 'Crime_bg.png' %}") no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    /* Sidebar (Navigation) Styles */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(135deg, #0066cc, #00ccff);
+      color: #f0f0f0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .sidebar .logo img {
+      width: 550px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 20px;
+    }
+    .sidebar .logo h1 {
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      margin: 20px 0;
+    }
+    .nav {
+      list-style: none;
+    }
+    .nav li {
+      margin: 20px 0;
+    }
+    .nav li a {
+      text-decoration: none;
+      color: #f0f0f0;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .nav li a i {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+    .nav li a:hover,
+    .nav li.active a {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+    /* Main Content Styles */
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      background: #fff;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: linear-gradient(90deg, rgb(98, 210, 230), #0066cc);
+      border-radius: 8px;
+    }
+    /* Advanced Filter Prompt Styles */
+    .advanced-filter-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .advanced-filter-text {
+      font-size: 22px;
+      color: #191919;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    /* Advanced Filter Button Styles */
+    .filter-btn {
+      background: linear-gradient(90deg, rgb(75, 0, 130), rgb(138, 43, 226));
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      margin-left: 30px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 560px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .filter-btn:hover {
+      transform: scale(1.05);
+    }
+    /* Advanced Filter Panel Styles */
+    #filter-panel {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    #filter-panel form label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    #filter-panel form input[type="date"],
+    #filter-panel form select {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 15px;
+    }
+    #filter-panel form input[type="checkbox"] {
+      margin-right: 5px;
+    }
+    /* Button Container for Apply and Clear */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    /* Apply Filters Button Styles */
+    #applyFilters {
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    #applyFilters:hover {
+      background: linear-gradient(45deg, #28a745, #34d058);
+      transform: scale(1.05);
+    }
+    /* Clear Filters Button Styles */
+    #clearFilters {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    #clearFilters:hover {
+      background: linear-gradient(45deg, #dc3545, #e4606d);
+      transform: scale(1.05);
+    }
+    /* Stats Cards */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: #fafafa;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      transition: transform 0.3s;
+      cursor: pointer;
+      text-align: center;
+    }
+    .card:hover {
+      transform: translateY(-15px);
+    }
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      color: #666;
+    }
+    .card p {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    /* Chart Card Styles */
+    .chart-card {
+      background: #fafafa;
+      border-radius: 8px;
+      padding: 20px;
+      flex: 1;
+      min-width: 300px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      margin-bottom: 20px;
+    }
+    .chart-card canvas {
+      width: 100%;
+      height: auto;
+    }
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .profile {
+        margin-top: 10px;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+      }
+      .sidebar .logo {
+        margin-bottom: 0;
+      }
+      .nav {
+        display: flex;
+      }
+      .nav li {
+        margin: 0 10px;
+      }
+    }
+    canvas {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      background: transparent;
+    }
+    #backButton {
+      display: none;
+      margin: 10px auto;
+      padding: 8px 16px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    /* Header Profile Styles */
+    .header .profile {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #F69F2F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s;
+      border: 2px solid #fff;
+    }
+    .header .profile:hover {
+      transform: scale(1.1);
+    }
+    .profile-image {
+      /* Additional styling if needed */
+    }
+    /* Profile Edit Sidebar Styles */
+    .profile-sidebar {
+      position: fixed;
+      top: 0;
+      right: -320px; /* Hidden off-screen */
+      width: 320px;
+      height: 100%;
+      background-color: #fff;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+      transition: right 0.3s ease;
+      padding: 20px;
+      z-index: 1100;
+    }
+    .profile-sidebar.open {
+      right: 0;
+    }
+    .profile-sidebar .close-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: none;
+      border: none;
+      font-size: 30px;
+      cursor: pointer;
+    }
+    .profile-sidebar .form-group {
+      margin-bottom: 15px;
+    }
+    .profile-sidebar .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .profile-sidebar .form-group input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .profile-sidebar .save-btn {
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    /* Profile Image in Sidebar */
+    .profile-img-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .profile-img-container img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .sidebar-placeholder-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #F69F2F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      font-size: 36px;
+      color: #fff;
+    }
+    /* New: Profile Update Form (Industry Standard) */
+    /* View Mode */
+    #profileView .profile-field {
+      margin-bottom: 10px;
+      font-size: 16px;
+      padding: 5px 0;
+    }
+    #profileView .profile-field strong {
+      display: inline-block;
+      width: 90px;
+    }
+    #profileView #editProfileBtn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #profileView #editProfileBtn:hover {
+      background: #0056b3;
+    }
+    /* Edit Mode */
+    #profileEdit .form-group {
+      margin-bottom: 15px;
+    }
+    #profileEdit label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    #profileEdit input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #profileEdit .save-btn, #profileEdit .cancel-btn {
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #profileEdit .cancel-btn {
+      background: #dc3545;
+      margin-left: 10px;
+    }
+    #profileEdit .save-btn:hover {
+      background: #218838;
+    }
+    #profileEdit .cancel-btn:hover {
+      background: #c82333;
+    }
+    .profile img,
+    .profile-image img,
+    .profile-img-container img {
+      width: 125px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white; /* Optional: Adds a white border */
+    }
+    #changeProfileBtn{
+      display: block;
+      margin: 10px auto; /* Center it properly */
+      padding: 8px 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+    #changeProfileBtn:hover {
+      background: #0056b3;
+      transform: scale(1.05);
+    }
+    
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar (Navigation) -->
+    <aside class="sidebar">
+      <div>
+        <div class="logo">
+          <img src="{% static 'logo_rs.png' %}" alt="Logo">
+        </div>
+        <!-- Divider below the logo -->
+        <hr class="divider">
+        <ul class="nav">
+          <li class="active"><a href="{% url 'crime_chart' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="{% url 'crime_map' %}"><i class="fas fa-chart-line"></i> Map Analytics</a></li>
+          <li><a href="{% url 'crime_report' %}"><i class="fas fa-user-shield"></i> Report a Crime</a></li>
+          <li><a href="{% url 'crime_report_status' %}"><i class="fas fa-cog"></i> Track Your Report</a></li>
+          <li><a href="{% url 'index' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="main">
+      <div class="header">
+        <div class="advanced-filter-container">
+          <h1 class="advanced-filter-text">Want to search accurately? Try our advanced filters:</h1>
+          <button id="toggleFilters" class="filter-btn">Advanced Filters</button>
+        </div>
+        <div class="profile">
+          <div class="profile-image">
+            {% if request.user.userprofile.profile_image %}
+            <img  id="profileImageHome" src="{{ request.user.userprofile.profile_image.url }}" alt="Profile Image">
+            {% else %}
+              <div class="placeholder-img mb-3">
+                {{ request.user.username|slice:":1" }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Advanced Filter Panel -->
+      <div id="filter-panel" style="display: none;">
+        <form id="filterForm">
+          <div style="margin-bottom: 15px;">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate">
+            &nbsp;&nbsp;
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="state">State:</label>
+            <select id="state" name="state">
+              <option value="">All</option>
+              {% for state in states %}
+                <option value="{{ state }}">{{ state }}</option>
+              {% endfor %}
+            </select>
+            &nbsp;&nbsp;
+            <label for="district">District:</label>
+            <select id="district" name="district">
+              <option value="">All</option>
+              {% for district in districts %}
+                <option value="{{ district }}">{{ district }}</option>
+              {% endfor %}
+            </select>
+            &nbsp;&nbsp;
+            <label for="city">City:</label>
+            <select id="city" name="city">
+              <option value="">All</option>
+              {% for city in cities %}
+                <option value="{{ city }}">{{ city }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label>Crime Type:</label>
+            {% for crime in crime_types %}
+              <input type="checkbox" name="crimeType" value="{{ crime }}"> {{ crime }}
+            {% endfor %}
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label>Case Status Tracker:</label>
+            <input type="checkbox" name="caseStatus" value="Ongoing"> Ongoing
+            <input type="checkbox" name="caseStatus" value="Solved"> Solved
+            <input type="checkbox" name="caseStatus" value="Unsolved"> Unsolved
+          </div>
+          <!-- Container for buttons with spacing -->
+          <div class="button-container">
+            <button type="button" id="applyFilters">Apply Filters</button>
+            <button type="button" id="clearFilters">Clear All</button>
+          </div>
+        </form>
+      </div>
+      
+      <div class="stats">
+        <div class="card">
+          <h3>
+            <i class="fa fa-search fa-fade" style="color: #3498db; --fa-animation-duration: 2s; --fa-fade-opacity: 0.4;margin-right: 10px;"></i>
+            Total Crimes
+          </h3>
+          <p>{{ total_crimes }}</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-trophy fa-bounce" style="color: #f1c40f; --fa-animation-duration: 3s;margin-right: 10px;"></i> Solved Cases</h3>
+          <p>{{ solved_cases }}</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-exclamation-circle fa-flip" style="color: #ff4d4d; --fa-animation-duration: 3s;margin-right: 10px;"></i> Unsolved Cases</h3> 
+          <p>{{ unsolved_cases }}</p>
+        </div>
+      </div>
+      
+      <div class="main-container">
+        <div class="content">
+          <!-- Chart Card for Crime Trends -->
+          <div class="chart-card">
+            <h1>Crime Trends</h1>
+            <canvas id="mainChart"></canvas>
+            <button id="backButton">⬅ Go Back</button>
+          </div>
+    
+          <!-- Chart Card for Case Status Distribution -->
+          <div class="chart-card">
+            <h2>Case Status Distribution</h2>
+            <canvas id="caseStatusChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+    
+      <script>
+        // Global filter parameters object to store filter form values.
+        let filterParams = {};
+      
+        // Toggle filter panel visibility
+        document.getElementById('toggleFilters').addEventListener('click', function() {
+          const panel = document.getElementById('filter-panel');
+          panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
+        });
+      
+        // Clear filters functionality
+        document.getElementById('clearFilters').addEventListener('click', function() {
+          document.getElementById('filterForm').reset();
+          filterParams = {};
+          fetchChartData(currentLevel, filterParams);
+        });
+      
+        // Apply filters functionality
+        document.getElementById('applyFilters').addEventListener('click', function() {
+          const formData = new FormData(document.getElementById('filterForm'));
+          // Build filter params from the form
+          let params = {};
+          const startDate = formData.get('startDate');
+          const endDate = formData.get('endDate');
+          if(startDate) params.startDate = startDate;
+          if(endDate) params.endDate = endDate;
+      
+          // These values are coming from the filter form
+          const formState = formData.get('state');
+          const formDistrict = formData.get('district');
+          const formCity = formData.get('city');
+          if(formState) params.state = formState;
+          if(formDistrict) params.district = formDistrict;
+          if(formCity) params.city = formCity;
+      
+          let crimeTypes = formData.getAll('crimeType');
+          if(crimeTypes.length > 0) params.crimeType = crimeTypes.join(',');
+          let caseStatuses = formData.getAll('caseStatus');
+          if(caseStatuses.length > 0) params.caseStatus = caseStatuses.join(',');
+      
+          // Save these as global filter parameters
+          filterParams = params;
+      
+          // Fetch data with current level and filter params
+          fetchChartData(currentLevel, filterParams);
+        });
+      </script>
+      
+      <script>
+        let currentLevel = 'year';
+        let selectedYear = null;
+        let selectedGender = null;
+        let selectedState = null;
+        let selectedDistrict = null;
+        let caseStatusChart;
+      
+        // Merge drill-down params with filterParams before making the request.
+        function fetchChartData(level, extraParams = {}) {
+          // Merge filterParams and extraParams so that filters are preserved.
+          let params = Object.assign({}, filterParams, extraParams);
+          let queryString = Object.keys(params).map(k => `&${k}=${encodeURIComponent(params[k])}`).join('');
+          $.ajax({
+            url: `{% url 'crime_chart' %}?level=${level}` + queryString,
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+              updateChart(level, data);
+              updateCaseStatusChart(params);
+              document.getElementById('backButton').style.display = (level !== 'year') ? 'block' : 'none';
+            }
+          });
+        }
+      
+        function updateChart(level, data) {
+          let datasets = [];
+          let colors = ['#4fc3f7', '#81c784', '#ffb74d', '#e57373', '#9575cd', '#4db6ac', '#f06292', '#ffd54f'];
+          Object.keys(data.data).forEach((crimeType, index) => {
+            let bgColor;
+            if (level === 'year') {
+              if (crimeType.toLowerCase() === 'male') {
+                bgColor = '#2196F3';
+              } else if (crimeType.toLowerCase() === 'female') {
+                bgColor = '#E91E63';
+              } else {
+                bgColor = colors[index % colors.length];
+              }
+            } else {
+              bgColor = colors[index % colors.length];
+            }
+            datasets.push({
+              label: crimeType,
+              data: data.data[crimeType],
+              backgroundColor: bgColor
+            });
+          });
+          mainChart.data.labels = data.labels;
+          mainChart.data.datasets = datasets;
+          mainChart.update();
+        }
+      
+        function updateCaseStatusChart(params) {
+          let queryString = Object.keys(params).map(k => `&${k}=${encodeURIComponent(params[k])}`).join('');
+          $.ajax({
+            url: `{% url 'crime_chart' %}?level=case_status` + queryString,
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+              let chartData = {
+                labels: ['Ongoing', 'Solved', 'Unsolved'],
+                datasets: [{
+                  data: [data.ongoing, data.solved, data.unsolved],
+                  backgroundColor: ['#00BCD4', '#8BC34A', '#E91E63']
+                }]
+              };
+              if (caseStatusChart) {
+                caseStatusChart.data = chartData;
+                caseStatusChart.update();
+              } else {
+                let ctx = document.getElementById('caseStatusChart').getContext('2d');
+                caseStatusChart = new Chart(ctx, {
+                  type: 'doughnut',
+                  data: chartData,
+                  options: {
+                    responsive: true,
+                    cutout: '50%',
+                    plugins: {
+                      legend: {
+                        labels: {
+                          color: '#333333',
+                          font: {
+                            size: 14,
+                            weight: 'bold'
+                          }
+                        }
+                      }
+                    }
+                  }
+                });
+              }
+            }
+          });
+        }
+      
+        // Drill-down navigation with merging of filter values
+        document.getElementById('backButton').addEventListener('click', function () {
+          if (currentLevel === 'city') {
+            currentLevel = 'district';
+            fetchChartData('district', { year: selectedYear, gender: selectedGender });
+          } else if (currentLevel === 'district') {
+            currentLevel = 'state';
+            fetchChartData('state', { year: selectedYear, gender: selectedGender });
+          } else if (currentLevel === 'state') {
+            currentLevel = 'year';
+            selectedYear = selectedGender = selectedState = selectedDistrict = null;
+            fetchChartData('year');
+          }
+        });
+      
+        document.addEventListener("DOMContentLoaded", function() {
+          let ctx = document.getElementById('mainChart').getContext('2d');
+          window.mainChart = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: [], datasets: [] },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: { 
+                  beginAtZero: true, 
+                  ticks: { color: '#333333' }
+                },
+                x: { 
+                  ticks: { color: '#333333' }
+                }
+              },
+              plugins: {
+                legend: {
+                  labels: {
+                    color: '#333333',
+                    font: {
+                      size: 14,
+                      weight: 'bold'
+                    }
+                  }
+                }
+              },
+              onClick: (event, elements) => {
+                if (elements.length > 0) {
+                  let clickedLabel = mainChart.data.labels[elements[0].index];
+                  if (currentLevel === 'year') {
+                    selectedYear = clickedLabel;
+                    selectedGender = elements[0].datasetIndex === 0 ? "Male" : "Female";
+                    currentLevel = 'state';
+                    // Merge drilldown with filterParams
+                    fetchChartData('state', { year: selectedYear, gender: selectedGender });
+                  } else if (currentLevel === 'state') {
+                    selectedState = clickedLabel;
+                    currentLevel = 'district';
+                    fetchChartData('district', { year: selectedYear, gender: selectedGender, state: selectedState });
+                  } else if (currentLevel === 'district') {
+                    selectedDistrict = clickedLabel;
+                    currentLevel = 'city';
+                    fetchChartData('city', { year: selectedYear, gender: selectedGender, state: selectedState, district: selectedDistrict });
+                  }
+                }
+              }
+            }
+          });
+          fetchChartData('year');
+        });
+      </script>
+
+      <div class="profile-sidebar" id="profileSidebar">
+        <button class="close-btn" id="profileCloseBtn">&times;</button>
+        
+        <div class="profile-img-container">
+          {% if request.user.userprofile.profile_image %}
+            <img id="profileImageSidebar" src="{{ request.user.userprofile.profile_image.url }}" alt="Profile Image">
+          {% else %}
+            <div class="sidebar-placeholder-img">
+              {{ request.user.username|slice:":1" }}
+            </div>
+          {% endif %}
+        </div>
+    
+        
+        <!-- Profile View Mode -->
+        <div id="profileView">
+          <div class="profile-field">
+            <strong>Full Name:</strong> <span id="fullNameText">{{ request.user.get_full_name }}</span>
+          </div>
+          <div class="profile-field">
+            <strong>Contact:</strong> <span id="contactText">{{ request.user.userprofile.contact }}</span>
+          </div>
+          <div class="profile-field">
+            <strong>Address:</strong> <span id="addressText">{{ request.user.userprofile.address }}</span>
+          </div>
+         
+          <button type="button" id="editProfileBtn">Edit Profile</button>
+        </div>
+    
+        <!-- Profile Edit Mode -->
+        <div id="profileEdit" style="display: none;">
+          <form id="profileEditForm" enctype="multipart/form-data">
+            <button type="button" id="changeProfileBtn" class="change-pic-btn">Change Picture</button>
+        <input type="file" id="editProfileImage" accept="image/*" style="display: none;">
+    
+            <div class="form-group">
+              <label for="editFullName">Full Name:</label>
+              <input type="text" id="editFullName" value="{{ request.user.get_full_name }}">
+            </div>
+            <div class="form-group">
+              <label for="editContact">Contact:</label>
+              <input type="text" id="editContact" value="{{ request.user.userprofile.contact }}">
+            </div>
+            <div class="form-group">
+              <label for="editAddress">Address:</label>
+              <input type="text" id="editAddress" value="{{ request.user.userprofile.address }}">
+            </div>
+            
+    
+            <button type="button" id="saveProfileBtn" class="save-btn">Save Changes</button>
+            <button type="button" id="cancelProfileBtn" class="cancel-btn">Cancel</button>
+          </form>
+        </div>
+      </div>
+    
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script>
+        // Open Sidebar
+        document.querySelector('.profile').addEventListener('click', function () {
+          document.getElementById('profileSidebar').classList.add('open');
+        });
+    
+        // Close Sidebar
+        document.getElementById('profileCloseBtn').addEventListener('click', function () {
+          document.getElementById('profileSidebar').classList.remove('open');
+        });
+    
+        // Toggle between View and Edit Modes
+        document.getElementById('editProfileBtn').addEventListener('click', function () {
+          document.getElementById('profileView').style.display = 'none';
+          document.getElementById('profileEdit').style.display = 'block';
+        });
+    
+        document.getElementById('cancelProfileBtn').addEventListener('click', function () {
+          document.getElementById('profileEdit').style.display = 'none';
+          document.getElementById('profileView').style.display = 'block';
+        });
+    
+        // Click "Change Picture" to Open File Input
+        document.getElementById("changeProfileBtn").addEventListener("click", function () {
+          document.getElementById("editProfileImage").click();
+        });
+    
+        // Preview Selected Profile Image Before Upload
+        document.getElementById("editProfileImage").addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              document.getElementById("profileImageSidebar").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+    
+        // Save Profile Changes via AJAX (Including Image)
+        document.getElementById("saveProfileBtn").addEventListener("click", function () {
+          let formData = new FormData();
+          formData.append("first_name", document.getElementById("editFullName").value.split(" ")[0] || "");
+          formData.append("last_name", document.getElementById("editFullName").value.split(" ").slice(1).join(" ") || "");
+          formData.append("contact", document.getElementById("editContact").value);
+          formData.append("address", document.getElementById("editAddress").value);
+         
+      
+          // Handle Profile Image Upload
+          let profileImage = document.getElementById("editProfileImage").files[0];
+          if (profileImage) {
+              formData.append("profile_image", profileImage);
+          }
+      
+          fetch("{% url 'update_profile' %}", {
+              method: "POST",
+              headers: {
+                  "X-CSRFToken": "{{ csrf_token }}"
+              },
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === "success") {
+                  // ✅ Update Text Fields
+                  document.getElementById("fullNameText").innerText = document.getElementById("editFullName").value;
+                  document.getElementById("contactText").innerText = document.getElementById("editContact").value;
+                  document.getElementById("addressText").innerText = document.getElementById("editAddress").value;
+               
+      
+                  // ✅ Update Profile Image in Sidebar & Home Page
+                  if (data.profile_image_url) {
+                      let newImageUrl = data.profile_image_url + "?t=" + new Date().getTime(); // Prevent caching
+                      
+                      document.getElementById("profileImageSidebar").src = newImageUrl; // Sidebar Profile Image
+                      document.getElementById("profileImageHome").src = newImageUrl; // Home Page Profile Image
+                  }
+      
+                  // ✅ Close Edit Mode
+                  document.getElementById("profileEdit").style.display = "none";
+                  document.getElementById("profileView").style.display = "block";
+      
+                  Swal.fire({
+                      icon: "success",
+                      title: "Profile Updated!",
+                      text: data.message,
+                      showConfirmButton: false,
+                      timer: 2000
+                  });
+              } else {
+                  Swal.fire({
+                      icon: "error",
+                      title: "Update Failed",
+                      text: data.message
+                  });
+              }
+          })
+          .catch(error => {
+              Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Something went wrong!"
+              });
+              console.error("Error:", error);
+          });
+      });
+      
+      
+        
+      </script>
+    </body>
+    </html>
+  

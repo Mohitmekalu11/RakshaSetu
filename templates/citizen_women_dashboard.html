@@ -1,0 +1,960 @@
+{% extends "crime(base).html" %}
+{% load static %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women Safety Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        :root {
+            --women-primary-pink: #E91E63;
+            --women-secondary-purple: #9C27B0;
+            --women-light-pink: #FCE4EC;
+            --women-light-purple: #F3E5F5;
+            --women-text-dark: #333;
+            --women-text-light: #fff;
+            --women-bg-color:rgb(255, 138, 138);
+            --women-card-bg: #fff;
+            --women-danger-red: #D32F2F;
+            --women-safe-green: #4CAF50;
+            --women-warning-yellow: #FFC107;
+            --women-border-color: #f0f0f0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to top right,rgb(244, 200, 215),rgb(255, 142, 159));
+            color: var(--women-text-dark);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(252, 228, 236, 0.7);
+            border-radius: 1.5rem;
+            background-color: var(--women-card-bg);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 2px solid var(--women-light-pink);
+            margin-bottom: 2rem;
+        }
+
+        .header .title h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--women-primary-pink);
+            letter-spacing: -0.5px;
+        }
+
+        .header .title p {
+            font-size: 0.9rem;
+            color: var(--women-secondary-purple);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .helpline {
+            font-size: 1.2rem;
+            color: var(--women-secondary-purple);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .helpline i {
+            color: var(--women-primary-pink);
+        }
+
+        .sos-card {
+            background: linear-gradient(145deg, var(--women-light-pink), var(--women-light-purple));
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid var(--women-primary-pink);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sos-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: rgba(233, 30, 99, 0.1);
+            border-radius: 50%;
+        }
+
+        .sos-card h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--women-primary-pink);
+            margin: 0 0 0.5rem;
+        }
+
+        .sos-card p {
+            color: var(--women-text-dark);
+            margin: 0.5rem auto 1.5rem;
+            max-width: 600px;
+        }
+
+        .sos-button-wrapper {
+            position: relative;
+            display: inline-block;
+            z-index: 10;
+        }
+
+        .sos-button {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background-color: var(--women-danger-red);
+            color: var(--women-text-light);
+            font-size: 2.5rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 20px rgba(211, 47, 47, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sos-button:active {
+            transform: scale(0.95);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3), 0 0 10px rgba(211, 47, 47, 0.8);
+        }
+
+        .sos-button-wrapper .pulse {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: var(--women-danger-red);
+            opacity: 0;
+            animation: pulse-ring 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+            pointer-events: none; 
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+
+        .sos-button-text {
+            font-size: 0.8rem;
+            color: var(--women-text-dark);
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--women-card-bg);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.safe-area {
+            border-color: var(--women-safe-green);
+        }
+
+        .stat-card.safe-routes {
+            border-color: var(--women-secondary-purple);
+        }
+
+        .stat-card.response-time {
+            border-color: var(--women-warning-yellow);
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--women-text-dark);
+            margin: 0;
+        }
+
+        .stat-card .value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0.25rem 0 0;
+        }
+
+        .stat-card .description {
+            font-size: 0.8rem;
+            color: var(--women-text-dark);
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        .stat-card.safe-area .value {
+            color: var(--women-safe-green);
+        }
+
+        .stat-card.sos .value {
+            color: var(--women-danger-red);
+        }
+
+        .stat-card.safe-routes .value {
+            color: var(--women-secondary-purple);
+        }
+
+        .stat-card.response-time .value {
+            color: var(--women-warning-yellow);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .map-container {
+            position: relative;
+            height: 500px;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--women-border-color);
+        }
+
+        #heatmap-map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .emergency-contacts {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .contact-section-card {
+            background-color: var(--women-card-bg);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--women-light-pink);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-header i {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+            color: var(--women-secondary-purple);
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--women-text-dark);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--women-light-pink);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .contact-number-display {
+            font-weight: 600;
+            color: var(--women-primary-pink);
+        }
+
+        .contact-item button {
+            background-color: var(--women-primary-pink);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .contact-item button:hover {
+            background-color: #C2185B;
+        }
+        
+        .add-contact-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background-color: white;
+            transition: border-color 0.2s ease;
+        }
+        
+        .input-group:focus-within {
+            border-color: var(--women-primary-pink);
+        }
+
+        .input-prefix {
+            padding: 0.75rem 0.5rem;
+            background-color: #eee;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-right: 1px solid #ccc;
+        }
+
+        #newContact {
+            border: none;
+            padding: 0.75rem;
+            flex-grow: 1;
+            font-size: 0.9rem;
+        }
+
+        #newContact:focus {
+            outline: none;
+        }
+
+        #addContactBtn {
+            background-color: var(--women-secondary-purple);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #addContactBtn:hover {
+            background-color: #6A1B9A;
+        }
+
+        #saveContactsBtn {
+            width: 100%;
+            margin-top: 1rem;
+            background-color: var(--women-safe-green);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        #saveContactsBtn:hover {
+            background-color: #388E3C;
+        }
+        
+        .official-helplines h3 {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            color: var(--women-primary-pink);
+        }
+
+        .official-helplines .helpline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .official-helplines .helpline-item:last-child {
+            border-bottom: none;
+        }
+
+        .official-helplines .helpline-item .name {
+            font-weight: 500;
+        }
+
+        .official-helplines .helpline-item .number {
+            font-weight: 700;
+            color: var(--women-primary-pink);
+        }
+        /* ======================================================= */
+.add-contact-container {
+    /* Use Flexbox for easy vertical stacking and alignment */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Space between elements */
+    
+    /* Overall Card/Form Look */
+    width: min(100%, 400px); /* Responsive width, max 400px */
+    margin: 2rem auto; /* Center the form on the page */
+    padding: 2rem;
+    background-color: #ffffff; /* Clean white background */
+    border-radius: 12px;
+    
+    /* Sophisticated Shadow (Ambient + Direct) */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05),
+                0 15px 30px rgba(0, 0, 0, 0.1);
+    
+    /* Font Styling */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ======================================================= */
+/* 2. Input Fields and Grouping (The Core Elements) */
+/* ======================================================= */
+
+/* Target all main input elements for consistent styling */
+#contactName, 
+#contactNumber,
+.input-group {
+    /* Full width within the container */
+    width: 100%;
+}
+
+/* Base Input Styles */
+#contactName, 
+#contactNumber {
+    padding: 1rem 1.25rem;
+    border: 2px solid #e0e0e0; /* Light border */
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    outline: none; /* Remove default focus outline */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Focus State: The "Next-Level" part for UX */
+#contactName:focus, 
+#contactNumber:focus {
+    border-color: #007bff; /* Primary brand color on focus */
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2); /* Subtle glow effect */
+}
+
+/* Placeholder text styling */
+::placeholder {
+    color: #9e9e9e;
+    font-style: italic;
+}
+
+/* ======================================================= */
+/* 3. Input Group (Phone Prefix) */
+/* ======================================================= */
+.input-group {
+    display: flex; /* Flexbox for the prefix and the input */
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden; /* Contains the prefix and input neatly */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Focus State for the entire group */
+.input-group:focus-within {
+    border-color: #007bff;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+}
+
+.input-prefix {
+    background-color: #f8f9fa; /* Light grey background for the prefix */
+    color: #6c757d; /* Muted text color */
+    padding: 1rem 0.75rem;
+    border-right: 1px solid #e0e0e0;
+    font-weight: 600;
+    /* Center the text vertically within its space */
+    display: flex;
+    align-items: center;
+}
+
+/* Overriding individual input styles inside the group */
+.input-group #contactNumber {
+    flex-grow: 1; /* Make the input take the remaining space */
+    border: none; /* Remove individual border */
+    padding: 1rem 1.25rem; /* Consistent padding */
+}
+
+/* Remove focus styles from the input itself when inside the group */
+.input-group #contactNumber:focus {
+    box-shadow: none;
+    border-color: transparent;
+}
+
+/* ======================================================= */
+/* 4. Button Styling */
+/* ======================================================= */
+#addContactBtn {
+    /* Color and Size */
+    background-color: #28a745; /* Inviting success green */
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    
+    /* Styling Enhancements */
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    
+    /* Ensure it fills the width */
+    width: 100%; 
+}
+
+/* Button Hover/Active States */
+#addContactBtn:hover {
+    background-color: #218838; /* Darker green on hover */
+    box-shadow: 0 6px 12px rgba(40, 167, 69, 0.5);
+}
+
+#addContactBtn:active {
+    /* Subtle press down effect */
+    transform: translateY(1px); 
+    box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+}
+        
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title">
+                <h1>Women Safety Dashboard</h1>
+                <p>Your safety is our priority</p>
+            </div>
+            <div class="helpline">
+                <i class="fas fa-phone"></i> Helpline: 1091
+            </div>
+        </div>
+
+        <!-- SOS CARD -->
+        <div class="sos-card">
+            <h2>Emergency SOS</h2>
+            <p>Press the button below to send an instant alert to your trusted contacts with your live location.</p>
+            <div class="sos-button-wrapper">
+                <button id="sosButton" class="sos-button">SOS</button>
+                <div class="pulse"></div>
+            </div>
+            <p class="sos-button-text">Your location will be shared securely with your emergency contacts.</p>
+        </div>
+
+        <!-- STATS GRID -->
+        <div class="stats-grid">
+            <div class="stat-card safe-area">
+                <h3>Your Area Safety</h3>
+                <p class="value">{{ safety_score }}</p>
+                <p class="description">Women safety score</p>
+            </div>
+            <div class="stat-card recent-crimes">
+                <h3>Recent Crimes</h3>
+                <p class="value">{{ recent_crimes }}</p>
+                <p class="description">In last 7 days</p>
+            </div>
+            <div class="stat-card common-crime">
+                <h3>Common Crime Type</h3>
+                <p class="value">{{ most_common_crime|title }}</p>
+                <p class="description">Most reported crime</p>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- MAP -->
+            <div class="map-container">
+                <div class="card-header" style="padding: 1rem 1.5rem;">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h2>Thane Crime Map</h2>
+                </div>
+                <p style="font-size:0.875rem; opacity:0.8; margin:-1rem 1.5rem 1rem;">
+                    Areas with reported incidents and safety scores.
+                </p>
+                <div id="heatmap-map"></div>
+            </div>
+
+            <!-- TRUSTED CONTACTS -->
+            <div class="emergency-contacts">
+                <div class="contact-section-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-plus"></i>
+                        <h2>Trusted Contacts</h2>
+                    </div>
+                    <p style="font-size:0.875rem; opacity:0.8;">Add family or friends to receive SOS alerts.</p>
+
+                    <div id="contactsList"></div>
+
+                    <div class="add-contact-container">
+                        <input type="text" id="contactName" placeholder="Name" />
+                        <div class="input-group">
+                            <span class="input-prefix">+91</span>
+                            <input type="text" id="contactNumber" placeholder="Phone number" maxlength="10" />
+                        </div>
+                        <button id="addContactBtn">Add Contact</button>
+                    </div>
+                </div>
+
+                <!-- OFFICIAL HELPLINES -->
+                <div class="contact-section-card official-helplines">
+                    <div class="card-header">
+                        <i class="fas fa-phone-volume"></i>
+                        <h2>Official Helplines</h2>
+                    </div>
+                    <div class="helpline-item"><span>Women Helpline</span><span>1091</span></div>
+                    <div class="helpline-item"><span>Police Control Room</span><span>100</span></div>
+                    <div class="helpline-item"><span>Child Helpline</span><span>1098</span></div>
+                    <div class="helpline-item"><span>Fire & Ambulance</span><span>101 / 102</span></div>
+                </div>
+        </div>
+    </div>
+
+    <!-- Leaflet Map -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // ==========================================================
+    // =============== 🗺️ CRIME MAP INITIALIZATION ===============
+    // ==========================================================
+    const map = L.map("heatmap-map").setView([19.2183, 72.9781], 12);
+
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    }).addTo(map);
+
+    function getColor(score) {
+        if (score > 80) return "#4caf50"; // Green: High Safety
+        if (score > 60) return "#FFC107"; // Yellow: Medium Safety
+        return "#E91E63"; // Red: Low Safety
+    }
+
+    // ward_data from Django view
+    const wardData = {{ ward_data|safe }};
+    const scoreMap = {};
+    Object.keys(wardData).forEach(ward => (scoreMap[ward] = wardData[ward]));
+
+    fetch("{% static 'data/thane_wards.json' %}")
+        .then(response => response.json())
+        .then(geojsonData => {
+            L.geoJSON(geojsonData, {
+                style: feature => {
+                    const wardName = feature.properties.lgd_name || feature.properties.NAME || "Unknown";
+                    const score = scoreMap[wardName] ? scoreMap[wardName].safety_score : 50;
+                    return {
+                        fillColor: getColor(score),
+                        weight: 2,
+                        opacity: 1,
+                        color: "white",
+                        dashArray: "3",
+                        fillOpacity: 0.7,
+                    };
+                },
+                onEachFeature: (feature, layer) => {
+                    const wardName = feature.properties.lgd_name || feature.properties.NAME || "Unknown";
+                    const data = scoreMap[wardName] || { safety_score: "N/A", crime_count: "N/A" };
+                    layer.bindPopup(`
+                        <b>${wardName}</b><br>
+                        Safety Score: ${data.safety_score}<br>
+                        Women Incidents: ${data.crime_count}
+                    `);
+                },
+            }).addTo(map);
+        });
+
+    // ==========================================================
+    // =============== 📱 TRUSTED CONTACTS LOGIC =================
+    // ==========================================================
+
+    // CSRF helper
+    function getCSRFToken() {
+        const name = "csrftoken";
+        const cookie = document.cookie.split("; ").find(r => r.startsWith(name + "="));
+        return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+    }
+
+    const listContainer = document.getElementById("contactsList");
+
+    // ===== Load Contacts =====
+    function loadContacts() {
+        fetch("/get_contacts/")
+            .then(res => res.json())
+            .then(data => {
+                listContainer.innerHTML = "";
+                if (data.length === 0) {
+                    listContainer.innerHTML =
+                        `<p style="text-align:center;color:#999;">No trusted contacts added yet.</p>`;
+                    return;
+                }
+                data.forEach(c => {
+                    const div = document.createElement("div");
+                    div.className = "contact-item";
+                    div.innerHTML = `
+                        <span><b>${c.name}</b> — ${c.phone_number}</span>
+                        <button class="removeBtn" data-id="${c.id}">Remove</button>
+                    `;
+                    listContainer.appendChild(div);
+                });
+            });
+    }
+
+    // ===== Add Contact =====
+    document.getElementById("addContactBtn").addEventListener("click", () => {
+        const name = document.getElementById("contactName").value.trim();
+        const phone = document.getElementById("contactNumber").value.trim();
+
+        if (!name || !/^[6-9]\d{9}$/.test(phone)) {
+            alert("Enter valid name and 10-digit phone number.");
+            return;
+        }
+
+        fetch("/add_contact/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRFToken(),
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({ name, phone }),
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    loadContacts();
+                    document.getElementById("contactName").value = "";
+                    document.getElementById("contactNumber").value = "";
+                }
+            });
+    });
+
+    // ===== Remove Contact =====
+    listContainer.addEventListener("click", e => {
+        if (e.target.classList.contains("removeBtn")) {
+            const id = e.target.getAttribute("data-id");
+            fetch(`/remove_contact/${id}/`, {
+                method: "POST",
+                headers: { "X-CSRFToken": getCSRFToken() },
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "deleted") loadContacts();
+                });
+        }
+    });
+
+    // ==========================================================
+    // =============== 🚨 SOS ALERT FUNCTION =====================
+    // ==========================================================
+    document.getElementById("sosButton").addEventListener("click", () => {
+        if (!navigator.geolocation) {
+            Swal.fire({
+                icon: "error",
+                title: "GPS Not Available",
+                text: "Geolocation is not supported by your browser. Please enable GPS.",
+                confirmButtonColor: "#E91E63",
+            });
+            return;
+        }
+
+        // Step 1: 10-second countdown popup
+        let countdownValue = 10;
+
+        Swal.fire({
+            title: "Sending SOS...",
+            html: `Alerting officers in <b style="font-size:1.4rem; color:#E91E63;">${countdownValue}</b> seconds`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Send Now",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#E91E63",
+            cancelButtonColor: "#555",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                const htmlEl = Swal.getHtmlContainer().querySelector("b");
+                const timer = setInterval(() => {
+                    countdownValue--;
+                    htmlEl.textContent = countdownValue;
+                    if (countdownValue <= 0) {
+                        clearInterval(timer);
+                        Swal.clickConfirm();
+                    }
+                }, 1000);
+                Swal._sosTimer = timer;
+            },
+            willClose: () => clearInterval(Swal._sosTimer),
+        }).then(result => {
+
+            // Cancelled
+            if (result.isDismissed) {
+                Swal.fire({
+                    icon: "info",
+                    title: "SOS Cancelled",
+                    text: "Your SOS alert was cancelled.",
+                    confirmButtonColor: "#E91E63",
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+                return;
+            }
+
+            // Step 2: Getting location
+            Swal.fire({
+                title: "Getting your location...",
+                text: "Please wait.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => Swal.showLoading(),
+            });
+
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    const { latitude, longitude } = pos.coords;
+
+                    // Step 3: Send to backend
+                    fetch("/api/sos/trigger/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": getCSRFToken(),
+                        },
+                        credentials: "same-origin",
+                        body: JSON.stringify({ latitude, longitude }),
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        // Step 4: Show result
+                        if (data.status === "notified" && data.officers_alerted?.length) {
+                            const officerList = data.officers_alerted.map(o =>
+                                `<div style="background:#fce4ec;border-radius:8px;padding:6px 12px;margin:6px 0;font-size:0.9rem;text-align:left;">
+                                    👮 <b>${o.name}</b> &nbsp;·&nbsp; ${o.distance_km} km away
+                                </div>`
+                            ).join("");
+
+                            Swal.fire({
+                                icon: "success",
+                                title: "SOS Alert Sent!",
+                                html: `
+                                    <p style="margin-bottom:10px;">
+                                        <b>${data.officers_alerted.length}</b> officer(s) alerted nearby.<br>
+                                        Your trusted contacts have also been notified.
+                                    </p>
+                                    ${officerList}
+                                    <p style="margin-top:12px;font-size:0.85rem;color:#555;">
+                                        If danger persists, call <b>112</b> directly.
+                                    </p>
+                                `,
+                                confirmButtonText: "OK, I understand",
+                                confirmButtonColor: "#E91E63",
+                                allowOutsideClick: false,
+                            });
+
+                        } else if (data.status === "escalated_to_sho") {
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Escalated to SHO",
+                                html: `
+                                    <p>${data.message}</p>
+                                    <p style="margin-top:10px;font-size:0.85rem;color:#555;">
+                                        If danger persists, call <b>112</b> directly.
+                                    </p>
+                                `,
+                                confirmButtonColor: "#E91E63",
+                                allowOutsideClick: false,
+                            });
+
+                        } else {
+                            Swal.fire({
+                                icon: "success",
+                                title: "SOS Sent!",
+                                text: data.message || "SOS alert sent successfully!",
+                                confirmButtonColor: "#E91E63",
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Network Error",
+                            html: `Could not send SOS alert.<br><b>Please call 112 directly.</b>`,
+                            confirmButtonColor: "#E91E63",
+                        });
+                    });
+                },
+                // GPS error
+                () => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Location Error",
+                        html: `Could not get your location.<br>
+                               Please enable GPS and try again.<br><br>
+                               <b>If emergency, call 112 directly.</b>`,
+                        confirmButtonColor: "#E91E63",
+                    });
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
+            );
+        });
+    });
+
+    // Load contacts when page loads
+    loadContacts();
+});
+</script>
+</body>
+
+{% endblock content %}

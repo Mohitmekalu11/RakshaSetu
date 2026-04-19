@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up</title>
+  <script src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+  {% load static %}
+  <style>
+    /* Basic resets and fonts */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Background video styling */
+    #background-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    /* Form container styling */
+    .form-box {
+      width: 420px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .form-box h2 {
+      font-size: 38px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .input-box {
+      position: relative;
+      width: 100%;
+      height: 50px;
+      margin: 15px 0;
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      padding: 0 20px;
+    }
+    .input-box .icon {
+      font-size: 20px;
+      color: white;
+      margin-right: 10px;
+    }
+    .input-box input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      color: white;
+    }
+    .input-box input::placeholder {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .toggle-password {
+      cursor: pointer;
+    }
+    .role-selection {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+    }
+    .role-option {
+      width: 48%;
+      padding: 10px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .role-option:hover,
+    .role-option.selected {
+      background: rgba(255, 255, 255, 0.5);
+      color: black;
+    }
+    .btn {
+      width: 100%;
+      height: 45px;
+      background: white;
+      border: none;
+      border-radius: 40px;
+      color: #02519f;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.4s ease, color 0.3s ease;
+    }
+    .btn:hover {
+      background: #35b6d2;
+      color: white;
+    }
+    /* Popup message styling */
+    .popup-message {
+      display: none;
+      position: fixed;
+      left: 50%;
+      top: 20px;
+      transform: translateX(-50%);
+      background-color: #fff;
+      color: black;
+      font-weight: 500;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 1000;
+      animation: moveFromTop 0.5s ease forwards;
+    }
+    @keyframes moveFromTop {
+      0% {
+        top: -100px;
+        opacity: 0;
+      }
+      100% {
+        top: 20px;
+        opacity: 1;
+      }
+    }
+    .popup-message ion-icon {
+      color: red;
+      vertical-align: middle;
+      margin-right: 8px;
+      font-size: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Video -->
+  <video autoplay muted loop id="background-video">
+    <source src="{% static 'lg.mp4' %}" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Popup container for error/success messages -->
+  <div id="popup-message" class="popup-message"></div>
+
+  <div class="form-box">
+    <form id="signup-form" method="POST" action="{% url 'signup_citizen' %}" >
+      {% csrf_token %}
+      <h2>Sign Up</h2>
+      
+      <!-- Common Fields for both roles -->
+      <div class="common-fields">
+        <div class="input-box">
+          <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+          <input type="email" placeholder="Enter your email" name="email" required />
+        </div>
+        <div class="input-box">
+          <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+          <input type="text" placeholder="Enter your username" name="username" required />
+        </div>
+        <div class="input-box">
+          <span class="icon toggle-password"><ion-icon name="eye-outline"></ion-icon></span>
+          <input type="password" placeholder="Enter your password" id="password" name="password" required />
+        </div>
+        <div class="input-box">
+          <span class="icon toggle-password"><ion-icon name="lock-closed-outline"></ion-icon></span>
+          <input type="password" placeholder="Confirm your password" id="confirm-password" name="confirm-password" required />
+        </div>
+      </div>
+      
+      <button type="submit" class="btn">Sign Up</button>
+    </form>
+
+    <script>
+      
+
+      // Toggle password visibility for both password fields
+      document.querySelectorAll('.toggle-password').forEach(item => {
+        item.addEventListener('click', function () {
+          const passwordField = this.nextElementSibling;
+          const eyeIcon = this.querySelector('ion-icon');
+          if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.setAttribute('name', 'eye-off-outline');
+          } else {
+            passwordField.type = 'password';
+            eyeIcon.setAttribute('name', 'eye-outline');
+          }
+        });
+      });
+
+      // Display Django messages via popup
+      const popupMessage = document.getElementById('popup-message');
+      const messages = [];
+      {% for message in messages %}
+      messages.push({
+        level: "{{ message.level_tag }}",
+        message: "{{ message }}",
+        tags: "{{ message.tags }}"
+      });
+      {% endfor %}
+
+      if (messages.length > 0) {
+        messages.forEach(function (msg) {
+          // Customize background based on message type (error in this example)
+          if (msg.tags === 'error') {
+            popupMessage.style.backgroundColor = '#fff';
+            popupMessage.innerHTML = `<ion-icon name="alert-circle-outline"></ion-icon> ${msg.message}`;
+            popupMessage.style.display = 'block';
+            setTimeout(() => { popupMessage.style.display = 'none'; }, 5000);
+          }
+        });
+      }
+    </script>
+  </div>
+</body>
+</html>

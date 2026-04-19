@@ -1,0 +1,346 @@
+{% extends "base(hire).html" %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Freelancer Profile</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-image: url("{% static 'img1.png' %}");
+      color: #333;
+      padding: 20px;
+    }
+
+    .profile-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      padding: 40px;
+      background: #2c3e50;
+      color: white;
+    }
+
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 5px solid #fff;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .profile-image:hover {
+      transform: scale(1.05);
+    }
+
+    .profile-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-info {
+      margin-left: 20px;
+    }
+
+    .profile-name {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .profile-job-title {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+      color: #ecf0f1;
+    }
+
+    .profile-location {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .hire-button {
+      padding: 10px 20px;
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .hire-button:hover {
+      background-color: #c0392b;
+    }
+
+    .profile-body {
+      padding: 40px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      padding-top: 100px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      width: 80%;
+      max-width: 700px;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+    }
+
+    .close {
+      position: absolute;
+      top: 50px;
+      right: 50px;
+      font-size: 40px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+    }
+
+    .add-skill-container {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    #newSkill {
+      padding: 10px;
+      font-size: 1rem;
+      width: 200px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #addSkillButton {
+      margin-left: 10px;
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #addSkillButton:hover {
+      background-color: #2ecc71;
+    }
+
+    .removeSkillButton {
+      margin-left: 10px;
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      font-size: 0.8rem;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .removeSkillButton:hover {
+      background-color: #c0392b;
+    }
+
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      /* Stack items vertically */
+      align-items: center;
+      /* Center items horizontally */
+      justify-content: center;
+      /* Center items horizontally */
+      padding: 40px;
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      /* Center text */
+    }
+
+    .profile-info {
+      /* Remove margin-left to avoid shifting the content */
+    }
+
+    .profile-image {
+      margin-bottom: 20px;
+      /* Add some space between the image and the profile info */
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-image" id="profileImage">
+        {% if request.user.profile.profile_image %}
+        <img src="{{ request.user.profile.profile_image.url }}" alt="Freelancer Profile Picture">
+        {% else %}
+        {{ request.user.username|slice:":1" }}
+        {% endif %}
+      </div>
+      <div class="profile-info">
+        <h1 class="profile-name">Welcome {{ request.user.username }} </h1>
+        
+
+      </div>
+    </div>
+
+    <div class="profile-body">
+      <section class="about-section">
+        <h2>Bio :</h2>
+        <p>{{ profile.bio }}</p>
+      </section>
+      <section class="about-section">
+        <h2>Location :</h2>
+        <p>{{  profile.location  }}</p>
+      </section>
+      <section class="portfolio-section">
+        <h2>Skills :</h2>
+        <p>{{  profile.skills }}</p>
+      </section>
+      <section class="portfolio-section">
+        <h2>Rate :</h2>
+        <p>{{  profile.rate }}</p>
+      </section>
+      <section class="portfolio-section">
+        <h2>Experience :</h2>
+        <p>{{  profile.experience }}</p>
+      </section>
+      <section class="portfolio-section">  
+        <h2>Availability :</h2>
+        <p>{{  profile.availabilty }}</p>
+      </section>
+      <section class="portfolio-section">  
+        <h2>Contact :</h2>
+        <p>{{  profile.contact }}</p>
+      </section>
+      <section class="portfolio-section">
+        <h2>Mail :</h2>
+        <p>{{  profile.mail }}</p>
+      </section>
+      
+
+      
+  <!-- Modal for full-size profile image -->
+  <div id="myModal" class="modal">
+    <span class="close" id="closeModal">&times;</span>
+    <div class="modal-content" id="modalImage">
+      {% if request.user.profile.profile_image %}
+      <img src="{{ request.user.profile.profile_image.url }}" alt="Freelancer Full Profile Picture">
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    // Get the modal
+    var modal = document.getElementById('myModal');
+    var profileImage = document.getElementById('profileImage');
+    var closeModal = document.getElementById('closeModal');
+
+    // When the user clicks on the profile image, open the modal
+    profileImage.onclick = function () {
+      modal.style.display = 'block';
+    }
+
+    // When the user clicks on close (x), close the modal
+    closeModal.onclick = function () {
+      modal.style.display = 'none';
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
+
+  <script>
+    // Get the elements
+    const addSkillButton = document.getElementById('addSkillButton');
+    const newSkillInput = document.getElementById('newSkill');
+    const skillsList = document.getElementById('skillsList');
+
+    // Function to add a new skill
+    addSkillButton.addEventListener('click', function () {
+      const newSkill = newSkillInput.value.trim();
+
+      if (newSkill !== '') {
+        // Create a new list item and add the skill
+        const li = document.createElement('li');
+        li.innerHTML = `${newSkill} <button class="removeSkillButton">x</button>`;
+
+        // Append the new skill to the skills list
+        skillsList.appendChild(li);
+
+        // Add the remove skill functionality to the new button
+        li.querySelector('.removeSkillButton').addEventListener('click', function () {
+          skillsList.removeChild(li);
+        });
+
+        // Clear the input field
+        newSkillInput.value = '';
+      }
+    });
+
+    // Add remove functionality to pre-existing skills
+    document.querySelectorAll('.removeSkillButton').forEach(button => {
+      button.addEventListener('click', function () {
+        const li = this.parentElement;
+        skillsList.removeChild(li);
+      });
+    });
+  </script>
+
+
+  {% endblock content %}

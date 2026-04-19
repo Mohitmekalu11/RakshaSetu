@@ -1,0 +1,224 @@
+{% extends "admin(base).html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crime Report Approval</title>
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    /* General Styling */
+    body {
+      background-color: #f4f7f9;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container2 {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-weight: 700;
+    }
+
+    /* Grid Layout */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card Design */
+    .product-card {
+      background-color: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      padding: 15px;
+      text-align: center;
+      color: #fff;
+      font-size: 1.2em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .card-body {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      color: #555;
+    }
+
+    .card-body p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .card-body p strong {
+      color: #333;
+    }
+
+    /* Button Styles */
+    .btn-container {
+      display: flex;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      text-align: center;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+      filter: brightness(1.1);
+    }
+
+    .approve {
+      background: linear-gradient(135deg, #28a745, #1e7e34);
+    }
+
+    .reject {
+      background: linear-gradient(135deg, #dc3545, #a71d2a);
+    }
+
+    .view {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+    }
+
+    .no-reports {
+      text-align: center;
+      font-size: 16px;
+      color: #777;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container2">
+  <h2>Pending Crime Reports</h2>
+
+  {% if reports %}
+    <div class="card-grid">
+      {% for report in reports %}
+        <div class="product-card">
+          <div class="card-header">
+            {{ report.crime_type }}
+          </div>
+          <div class="card-body">
+            <p><strong>Description:</strong> {{ report.description }}</p>
+            <p><strong>Location:</strong> {{ report.address }}</p>
+            <p><strong>Reported At:</strong> {{ report.reported_at }}</p>
+            <div class="btn-container">
+              <button class="btn approve" onclick="approveCrime({{ report.id }})">
+                <i class="fa-solid fa-check"></i> Approve
+              </button>
+              <button class="btn reject" onclick="rejectCrime({{ report.id }})">
+                <i class="fa-solid fa-times"></i> Reject
+              </button>
+              <button class="btn view" onclick="viewEvidence({{ report.id }})">
+                <i class="fa-solid fa-eye"></i> View Evidence
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="no-reports">No pending crime reports.</p>
+  {% endif %}
+</div>
+
+<script>
+  function approveCrime(reportId) {
+    fetch(`/approve-crime/${reportId}/`, {
+      method: 'POST',
+      credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => Swal.fire("Approved!", data.message, "success").then(() => location.reload()))
+    .catch(() => Swal.fire("Error", "Something went wrong", "error"));
+  }
+
+  function rejectCrime(reportId) {
+    fetch(`/reject-crime/${reportId}/`, {
+      method: 'POST',
+      credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => Swal.fire("Rejected!", data.message, "error").then(() => location.reload()))
+    .catch(() => Swal.fire("Error", "Something went wrong", "error"));
+  }
+
+  function viewEvidence(reportId) {
+    fetch(`/view-evidence/${reportId}/`, {
+      method: 'GET',
+      credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+      let evidenceHtml = data.video_url 
+        ? `<video width="320" height="240" controls><source src="${data.video_url}" type="video/mp4"></video><br><br>`
+        : '';
+
+      evidenceHtml += data.photo_urls 
+        ? data.photo_urls.map(url => `<img src="${url}" alt="Evidence" style="max-width: 100%; margin-bottom: 10px;">`).join('')
+        : "<p>No evidence available.</p>";
+
+      Swal.fire({ title: "Evidence", html: evidenceHtml, width: '600px' });
+    })
+    .catch(() => Swal.fire("Error", "Failed to load evidence", "error"));
+  }
+</script>
+
+</body>
+</html>
+{% endblock content %}

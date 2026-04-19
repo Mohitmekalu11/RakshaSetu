@@ -1,0 +1,423 @@
+{% extends "crime(base).html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report a Crime</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary: #1a233a;
+            --accent: #27457a;
+            --highlight: #8c73b0;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --warn: #f39c12;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0d111c;
+        }
+        .container2 {
+            width: 100%; max-width: 720px;
+            background: #161b22;
+            padding: 30px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.4);
+            margin: 40px auto;
+            border: 1px solid rgba(255,255,255,.1);
+        }
+        h2 { text-align:center; color: var(--highlight); margin-bottom:30px; font-size:24px; }
+        h3 { color: #c9d1d9; font-size: 1rem; margin: 0 0 1rem; }
+        label { display:block; font-weight:600; margin:15px 0 8px; color:#c9d1d9; font-size:15px; }
+        input, textarea, select {
+            width:100%; padding:12px; margin-bottom:20px;
+            border:1px solid rgba(255,255,255,.2); border-radius:6px;
+            font-size:15px; background:#21262d; color:#c9d1d9;
+            transition: border-color .2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline:none; border-color: var(--highlight);
+            box-shadow: 0 0 0 3px rgba(140,115,176,.25);
+        }
+        select {
+            -webkit-appearance:none; -moz-appearance:none; appearance:none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238c73b0'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat:no-repeat; background-position:right 12px center;
+            padding-right:40px; cursor:pointer;
+        }
+        textarea { resize:vertical; min-height:100px; }
+        button {
+            width:100%; padding:14px; background: var(--primary);
+            border:none; border-radius:6px; color:#fff; font-size:16px;
+            font-weight:bold; cursor:pointer; margin-top:10px;
+            transition: background .25s, transform .1s;
+        }
+        button:hover:not(:disabled) { background: #152238; transform: translateY(-1px); }
+        button:disabled { opacity:.5; cursor:not-allowed; }
+        button.btn-prev { background: #6c757d; }
+        button.btn-prev:hover:not(:disabled) { background: #5a6268; }
+        .btn-group { display:flex; gap:10px; margin-top:20px; }
+        .btn-group button { margin-top:0; }
+
+        /* Stepper */
+        .step-progress {
+            display:flex; justify-content:center; gap:0; margin-bottom:30px;
+        }
+        .step-indicator {
+            display:flex; align-items:center; gap:8px;
+            padding:8px 16px; border-radius:50px; font-size:13px;
+            font-weight:600; color:#8b949e; transition: all .3s;
+        }
+        .step-indicator.active {
+            background: rgba(140,115,176,.2); color: var(--highlight);
+        }
+        .step-indicator.completed { color: var(--success); }
+        .step-indicator span.num {
+            width:22px; height:22px; border-radius:50%;
+            display:inline-flex; align-items:center; justify-content:center;
+            font-size:11px; background:rgba(255,255,255,.1);
+        }
+        .step-indicator.active span.num { background: var(--highlight); color:#fff; }
+        .step-indicator.completed span.num { background: var(--success); color:#fff; }
+
+        /* Address autocomplete */
+        .address-wrap { position: relative; margin-bottom:20px; }
+        .address-wrap input { margin-bottom:0; }
+        .suggestions {
+            position:absolute; top:100%; left:0; right:0; z-index:999;
+            background:#21262d; border:1px solid rgba(255,255,255,.2);
+            border-radius:0 0 6px 6px; max-height:220px; overflow-y:auto;
+            display:none;
+        }
+        .suggestions div { padding:10px 14px; cursor:pointer; color:#c9d1d9; font-size:14px; }
+        .suggestions div:hover { background:#2b3a55; }
+
+        /* Evidence verification section */
+        .verify-box {
+            background: #0d111c; border:1px solid rgba(255,255,255,.1);
+            border-radius:8px; padding:20px; margin-top:15px;
+        }
+        .verify-box h4 { color:#c9d1d9; margin:0 0 12px; font-size:.95rem; }
+        progress {
+            width:100%; height:8px; border-radius:4px; margin:8px 0;
+            appearance:none; -webkit-appearance:none;
+        }
+        progress::-webkit-progress-bar { background:#2d333b; border-radius:4px; }
+        progress::-webkit-progress-value { background: var(--highlight); border-radius:4px; }
+        #status-text { color:#8b949e; font-size:13px; font-style:italic; }
+
+        /* Per-photo results */
+        .photo-results { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+        .photo-result-item {
+            background:#1c2230; border-radius:6px; padding:10px 14px;
+            font-size:13px; border-left:3px solid #555;
+        }
+        .photo-result-item.verified { border-color: var(--success); }
+        .photo-result-item.review   { border-color: var(--warn); }
+        .photo-result-item.flagged  { border-color: var(--error); }
+        .photo-result-item .filename { font-weight:700; color:#c9d1d9; }
+        .photo-result-item .result-label {
+            display:inline-block; margin-left:8px;
+            padding:1px 8px; border-radius:50px; font-size:11px; font-weight:700;
+        }
+        .label-verified { background:#1a3d2b; color:#2ecc71; }
+        .label-review   { background:#3d2e0a; color:#f39c12; }
+        .label-flagged  { background:#3d0a0a; color:#e74c3c; }
+        .photo-flags { margin-top:6px; color:#8b949e; font-size:12px; }
+        .photo-flags li { margin-left:16px; }
+    </style>
+</head>
+<body>
+<div class="container2">
+    <h2>🚨 Report a Crime</h2>
+
+    <div class="step-progress">
+        <div class="step-indicator active" id="indicator1">
+            <span class="num">1</span> Details
+        </div>
+        <div class="step-indicator" id="indicator2">
+            <span class="num">2</span> Evidence
+        </div>
+        <div class="step-indicator" id="indicator3">
+            <span class="num">3</span> Submit
+        </div>
+    </div>
+
+    <form id="crime-report-form" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {# ── Step 1 — Crime details ── #}
+        <div class="step" id="step1">
+            <h3>Step 1: Crime Details</h3>
+
+            <label for="crime_type">Crime type</label>
+            <select id="crime_type" name="crime_type" required>
+                <option value="">Select a category...</option>
+                <option>Theft</option>
+                <option>Assault</option>
+                <option>Robbery</option>
+                <option>Fraud / Cheating</option>
+                <option>Cybercrime</option>
+                <option>Domestic Violence</option>
+                <option>Narcotics</option>
+                <option>Kidnapping</option>
+                <option>Murder</option>
+                <option>Burglary</option>
+                <option>Other</option>
+            </select>
+
+            <label for="description">Describe what happened</label>
+            <textarea id="description" name="description" required
+                placeholder="Include time, what you saw, any suspects or vehicles..."></textarea>
+
+            <label for="address">Incident location</label>
+            <div class="address-wrap">
+                <input type="text" id="address" name="address" autocomplete="off"
+                    placeholder="Start typing address...">
+                <div class="suggestions" id="suggestions"></div>
+            </div>
+            <input type="hidden" id="latitude"  name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+
+            <label for="station">Nearest police station</label>
+            <select id="station" name="station" required>
+                <option value="">Select a station...</option>
+                {% for station in stations %}
+                <option value="{{ station.id }}">{{ station.name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="button" onclick="goToStep2()">Next → Upload Evidence</button>
+        </div>
+
+        {# ── Step 2 — Evidence upload + AI verification ── #}
+        <div class="step" id="step2" style="display:none;">
+            <h3>Step 2: Upload Evidence</h3>
+
+            <label for="photos">Photos (JPEG/PNG, max 50 MB each)</label>
+            <input type="file" id="photos" name="photos" multiple accept="image/*" class="file-input">
+
+            <label for="video">Video clip (optional, max 50 MB)</label>
+            <input type="file" id="video" name="video" accept="video/*" class="file-input">
+
+            <button type="button" id="verifyBtn">🔍 Verify Evidence with AI</button>
+
+            <div class="verify-box" id="verifyBox" style="display:none;">
+                <h4>Verification</h4>
+                <progress id="progress-bar" value="0" max="100"></progress>
+                <p id="status-text">Awaiting verification...</p>
+                <div class="photo-results" id="photo-results"></div>
+            </div>
+
+            <div class="btn-group" style="margin-top:20px;">
+                <button type="button" class="btn-prev" onclick="nextStep(1)">← Previous</button>
+                <button type="button" id="toStep3" disabled
+                    onclick="nextStep(3)">Next → Submit Report</button>
+            </div>
+        </div>
+
+        {# ── Step 3 — Submit ── #}
+        <div class="step" id="step3" style="display:none;">
+            <h3>Step 3: Submit Report</h3>
+            <p style="color:#8b949e;font-size:14px;line-height:1.6;">
+                Your report is ready. Any flagged evidence will be noted and reviewed
+                by the Station House Officer before case approval.
+            </p>
+            <div id="ai-warning-box" style="display:none;
+                background:#3d1a0a;border:1px solid #e74c3c;border-radius:8px;
+                padding:14px;margin-bottom:16px;font-size:13px;color:#f5b7b1;">
+                ⚠️ One or more photos were flagged as possibly AI-generated.
+                Your report will still be submitted, but the SHO will manually
+                review your evidence before approving the case.
+            </div>
+            <button type="submit" id="finalSubmitBtn">Submit Report</button>
+            <div class="btn-group">
+                <button type="button" class="btn-prev" onclick="nextStep(2)">← Previous</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+// ── Stepper ──────────────────────────────────────────────────────────────────
+function updateProgressStepper(step) {
+    document.querySelectorAll(".step-indicator").forEach((ind, i) => {
+        ind.classList.remove('active', 'completed');
+        if (i + 1 < step) ind.classList.add('completed');
+    });
+    document.getElementById("indicator" + step).classList.add('active');
+}
+
+function nextStep(step) {
+    document.querySelectorAll(".step").forEach(s => s.style.display = "none");
+    document.getElementById("step" + step).style.display = "block";
+    updateProgressStepper(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => nextStep(1));
+
+function goToStep2() {
+    const ct = document.getElementById("crime_type").value;
+    const desc = document.getElementById("description").value.trim();
+    const addr = document.getElementById("address").value.trim();
+    const stn  = document.getElementById("station").value;
+    if (!ct || !desc || !addr || !stn) {
+        Swal.fire("Missing fields", "Please fill in all fields before proceeding.", "warning");
+        return;
+    }
+    nextStep(2);
+}
+
+// ── Address autocomplete ─────────────────────────────────────────────────────
+document.getElementById("address").addEventListener("input", function () {
+    const q = this.value;
+    const box = document.getElementById("suggestions");
+    if (q.length < 3) { box.innerHTML = ""; box.style.display = "none"; return; }
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&q=${encodeURIComponent(q)}`)
+        .then(r => r.json())
+        .then(data => {
+            box.innerHTML = "";
+            box.style.display = data.length ? "block" : "none";
+            data.forEach(loc => {
+                const d = document.createElement("div");
+                d.textContent = loc.display_name;
+                d.onclick = () => {
+                    document.getElementById("address").value   = loc.display_name;
+                    document.getElementById("latitude").value  = loc.lat;
+                    document.getElementById("longitude").value = loc.lon;
+                    box.innerHTML = ""; box.style.display = "none";
+                };
+                box.appendChild(d);
+            });
+        });
+});
+
+// ── Evidence verification ────────────────────────────────────────────────────
+document.getElementById("verifyBtn").addEventListener("click", function () {
+    const photos = document.getElementById("photos").files;
+    if (photos.length === 0) {
+        Swal.fire("No photos", "Upload at least one photo to verify.", "warning");
+        return;
+    }
+
+    const btn        = this;
+    const verifyBox  = document.getElementById("verifyBox");
+    const progressEl = document.getElementById("progress-bar");
+    const statusEl   = document.getElementById("status-text");
+    const resultsEl  = document.getElementById("photo-results");
+    const toStep3    = document.getElementById("toStep3");
+
+    btn.disabled = true;
+    toStep3.disabled = true;
+    verifyBox.style.display = "block";
+    resultsEl.innerHTML = "";
+    progressEl.value = 0;
+    statusEl.textContent = "🔍 Scanning evidence for AI-generation signals...";
+
+    // Animated progress
+    let prog = 0;
+    const ticker = setInterval(() => {
+        prog = Math.min(prog + 8, 90);
+        progressEl.value = prog;
+        if (prog < 40) statusEl.textContent = `📂 Loading files (${prog}%)...`;
+        else if (prog < 70) statusEl.textContent = `🔬 Analysing metadata + colour patterns...`;
+        else statusEl.textContent = `🧪 Running Error Level Analysis...`;
+    }, 250);
+
+    const formData = new FormData();
+    for (let f of photos) formData.append("photos", f);
+    const video = document.getElementById("video").files[0];
+    if (video) formData.append("video", video);
+
+    fetch("/verify_evidence/", { method: "POST", body: formData })
+        .then(r => r.json())
+        .then(data => {
+            clearInterval(ticker);
+            progressEl.value = 100;
+
+            const s = data.summary || {};
+            statusEl.textContent =
+                `✅ Scanned ${s.total || 0} photo(s): ` +
+                `${s.verified || 0} verified, ${s.review || 0} review, ${s.flagged || 0} flagged.`;
+
+            // Render per-photo results
+            (data.photo_results || []).forEach(r => {
+                const cls = r.status.toLowerCase();
+                const labelCls = `label-${cls}`;
+                const flagHtml = r.flags.length
+                    ? `<ul class="photo-flags">${r.flags.map(f => `<li>${f}</li>`).join('')}</ul>`
+                    : '';
+                resultsEl.innerHTML += `
+                    <div class="photo-result-item ${cls}">
+                        <span class="filename">${r.filename}</span>
+                        <span class="result-label ${labelCls}">
+                          ${cls === 'verified' ? '✓ Authentic' :
+                            cls === 'review'   ? '⚠ Review' : '🚨 Flagged'}
+                          ${r.confidence}%
+                        </span>
+                        ${flagHtml}
+                    </div>`;
+            });
+
+            if (!data.blocked) {
+                toStep3.disabled = false;
+            } else {
+                Swal.fire({
+                    title: "Evidence Blocked",
+                    text: data.message,
+                    icon: "error"
+                });
+            }
+
+            // Show warning on step 3 if any review/flagged
+            if ((s.review || 0) + (s.flagged || 0) > 0 && !data.blocked) {
+                document.getElementById("ai-warning-box").style.display = "block";
+            }
+        })
+        .catch(() => {
+            clearInterval(ticker);
+            progressEl.value = 0;
+            statusEl.textContent = "❌ Network error during verification. Please retry.";
+        })
+        .finally(() => { btn.disabled = false; });
+});
+
+// ── Final submission ─────────────────────────────────────────────────────────
+document.getElementById("crime-report-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const btn = document.getElementById("finalSubmitBtn");
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    fetch('/api/report_crime/', { method: 'POST', body: new FormData(this) })
+        .then(r => r.json())
+        .then(data => {
+            Swal.fire({
+                title: data.success ? "Report Submitted!" : "Submission Failed",
+                html: data.success
+                    ? `<p>Your report has been received.</p>
+                       <p style="font-size:13px;color:#888;">
+                         Track it in <strong>My Reports</strong>.</p>`
+                    : data.message,
+                icon: data.success ? "success" : "error"
+            }).then(() => {
+                if (data.success) {
+                    this.reset();
+                    nextStep(1);
+                    document.getElementById("toStep3").disabled = true;
+                    document.getElementById("verifyBox").style.display = "none";
+                    document.getElementById("photo-results").innerHTML = "";
+                }
+            });
+        })
+        .catch(() => Swal.fire("Error", "Something went wrong. Please try again.", "error"))
+        .finally(() => { btn.disabled = false; btn.textContent = "Submit Report"; });
+});
+</script>
+</body>
+</html>
+{% endblock content %}

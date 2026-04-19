@@ -1,0 +1,147 @@
+{% extends "base(hire).html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("{% static 'img1.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        color: white;
+        padding-top: 50px
+    }
+
+
+
+    .form-container {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+        width: 900px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px;
+        height: 60px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: none;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    textarea {
+        min-height: 100px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border: 1px solid #007BFF;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #007BFF;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+
+<body>
+
+
+    <div class="form-container">
+        <h2>Update Your Profile hire</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="bio">Bio:</label>
+            <textarea id="bio" name="bio"></textarea><br>
+
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location"><br>
+
+            <!-- New Experience and Contact Fields -->
+            <label for="mail">Mail Address:</label>
+            <input type="mail" id="mail" name="mail"><br>
+
+            <label for="contact">Contact:</label>
+            <input type="text" id="contact" name="contact"><br>
+            <div>
+                <label for="id_profile_image">Profile Image :</label>
+
+                {{ form.profile_image }}
+            </div>
+
+
+
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+    <script>
+        // Get the elements
+        const addSkillButton = document.getElementById('addSkillButton');
+        const newSkillInput = document.getElementById('newSkill');
+        const skillsList = document.getElementById('skillsList');
+
+        // Function to add a new skill
+        addSkillButton.addEventListener('click', function () {
+            const newSkill = newSkillInput.value.trim();
+
+            if (newSkill !== '') {
+                // Create a new list item and add the skill
+                const li = document.createElement('li');
+                li.innerHTML = `${newSkill} <button class="removeSkillButton">x</button>`;
+
+                // Append the new skill to the skills list
+                skillsList.appendChild(li);
+
+                // Add the remove skill functionality to the new button
+                li.querySelector('.removeSkillButton').addEventListener('click', function () {
+                    skillsList.removeChild(li);
+                });
+
+
+                newSkillInput.value = '';
+            }
+        });
+
+        // Add remove functionality to pre-existing skills
+        document.querySelectorAll('.removeSkillButton').forEach(button => {
+            button.addEventListener('click', function () {
+                const li = this.parentElement;
+                skillsList.removeChild(li);
+            });
+        });
+    </script>
+    {% endblock %}

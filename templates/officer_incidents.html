@@ -1,0 +1,363 @@
+{% extends "sho(base).html" %}
+{% load static %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090f;--bg2:#0c0f1a;--bg3:#111526;--wire:#1a1f2e;--wire2:#232940;
+  --text:#e2e8f8;--text2:#8891aa;--text3:#4a5068;
+  --pending:#6b7280;--accepted:#3b82f6;--enroute:#f59e0b;
+  --arrived:#8b5cf6;--resolved:#10b981;--rejected:#ef4444;--escalated:#f97316;
+  --font:'Syne',sans-serif;--body:'Instrument Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(59,130,246,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.03) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+/* ── TOPBAR ─────────── */
+.topbar{
+  background:var(--bg2);border-bottom:1px solid var(--wire);
+  padding:0 24px;height:52px;display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:100;
+}
+.tb-logo{font-family:var(--mono);font-size:.65rem;color:#22d3ee;letter-spacing:.15em}
+.tb-title{font-family:var(--font);font-size:.95rem;font-weight:700}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+.tb-status{font-family:var(--mono);font-size:.6rem;color:#10b981;display:flex;align-items:center;gap:6px;letter-spacing:.1em}
+.led{width:6px;height:6px;border-radius:50%;background:#10b981;animation:led 2s ease infinite}
+@keyframes led{0%,100%{opacity:1;box-shadow:0 0 4px #10b981}50%{opacity:.3;box-shadow:none}}
+.tb-time{font-family:var(--mono);font-size:.62rem;color:var(--text3)}
+
+/* ── LAYOUT ─────────── */
+.page{max-width:900px;margin:0 auto;padding:28px 20px 80px;position:relative;z-index:1}
+
+/* ── SECTION HEADER ── */
+.sec-hd{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:16px;display:flex;align-items:center;gap:8px;
+}
+.sec-hd::before{content:'';width:12px;height:1px;background:#3b82f6}
+.count-badge{
+  background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);
+  border-radius:5px;padding:2px 8px;font-size:.58rem;color:#60a5fa;
+}
+
+/* ── ALERT CARD ─────── */
+.alert-card{
+  background:var(--bg2);border:1px solid var(--wire);border-radius:16px;
+  margin-bottom:16px;overflow:hidden;transition:border-color .2s;
+}
+.alert-card:hover{border-color:var(--wire2)}
+.ac-strip{height:3px;width:100%;transition:background .3s}
+
+.ac-body{padding:18px 20px}
+.ac-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.ac-left{display:flex;align-items:center;gap:10px}
+.ac-sev-icon{font-size:1.2rem;line-height:1}
+.ac-title{font-family:var(--font);font-size:.95rem;font-weight:700;color:var(--text)}
+.ac-sub{font-family:var(--mono);font-size:.6rem;color:var(--text3);letter-spacing:.06em;margin-top:2px}
+
+/* Status pill */
+.status-pill{
+  padding:3px 10px;border-radius:5px;font-family:var(--mono);font-size:.58rem;
+  letter-spacing:.1em;text-transform:uppercase;border:1px solid;white-space:nowrap;flex-shrink:0;
+}
+
+/* Chips */
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.chip{
+  padding:2px 9px;border-radius:4px;font-family:var(--mono);
+  font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid;
+}
+.chip-blue  {border-color:rgba(59,130,246,.3);color:#60a5fa;background:rgba(59,130,246,.06)}
+.chip-orange{border-color:rgba(249,115,22,.3);color:#fb923c;background:rgba(249,115,22,.06)}
+.chip-green {border-color:rgba(16,185,129,.3);color:#34d399;background:rgba(16,185,129,.06)}
+.chip-purple{border-color:rgba(139,92,246,.3);color:#a78bfa;background:rgba(139,92,246,.06)}
+
+/* Summary */
+.ac-summary{font-size:.85rem;color:var(--text2);line-height:1.6;margin-bottom:12px}
+
+/* Actions */
+.ac-actions{display:flex;gap:8px;flex-wrap:wrap}
+.action-btn{
+  padding:9px 18px;border-radius:8px;border:none;
+  font-family:var(--font);font-size:.82rem;font-weight:700;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;
+}
+.btn-accept{background:linear-gradient(135deg,#059669,#047857);color:#fff;box-shadow:0 2px 8px rgba(5,150,105,.3)}
+.btn-accept:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(5,150,105,.4)}
+.btn-enroute{background:linear-gradient(135deg,#d97706,#b45309);color:#fff;box-shadow:0 2px 8px rgba(217,119,6,.3)}
+.btn-enroute:hover{transform:translateY(-1px)}
+.btn-arrived{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.btn-arrived:hover{transform:translateY(-1px)}
+.btn-resolve{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.3)}
+.btn-resolve:hover{transform:translateY(-1px)}
+.btn-reject{background:transparent;border:1px solid rgba(239,68,68,.4);color:#ef4444}
+.btn-reject:hover{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.6)}
+.btn-nav{
+  background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);
+  color:#22d3ee;text-decoration:none;padding:9px 18px;border-radius:8px;
+  font-family:var(--font);font-size:.82rem;font-weight:700;
+}
+
+/* Timeline inside card */
+.ac-timeline{
+  border-top:1px solid var(--wire);margin-top:12px;padding-top:12px;
+  display:none;
+}
+.ac-timeline.open{display:block}
+.tl-row{
+  display:flex;gap:10px;align-items:flex-start;padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);font-size:.8rem;
+}
+.tl-row:last-child{border-bottom:none}
+.tl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-body{flex:1}
+.tl-status{font-family:var(--mono);font-size:.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+.tl-note{color:var(--text3);font-size:.78rem;margin-top:1px}
+.tl-time{font-family:var(--mono);font-size:.58rem;color:var(--text3);white-space:nowrap;flex-shrink:0}
+.tl-toggle{
+  font-family:var(--mono);font-size:.6rem;color:var(--text3);cursor:pointer;
+  margin-top:10px;display:flex;align-items:center;gap:4px;
+  background:none;border:none;padding:0;
+}
+.tl-toggle:hover{color:var(--text2)}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:var(--bg2);border:1px solid var(--wire2);border-radius:12px;
+  padding:12px 18px;font-family:var(--mono);font-size:.72rem;color:var(--text);
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.22,1,.36,1);
+  display:flex;align-items:center;gap:8px;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-dot{width:7px;height:7px;border-radius:50%}
+
+/* Empty state */
+.empty-state{
+  text-align:center;padding:60px 20px;color:var(--text3);
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+}
+.empty-icon{font-size:2.5rem;opacity:.2;margin-bottom:12px}
+
+/* Loading */
+.shim{background:linear-gradient(90deg,var(--bg3) 25%,var(--wire2) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shim 1.5s infinite;border-radius:8px}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="toast-dot" id="toastDot"></span><span id="toastMsg"></span></div>
+
+<!-- Topbar -->
+<div class="topbar">
+  <span class="tb-logo">RakshaSetu</span>
+  <div style="width:1px;height:20px;background:var(--wire)"></div>
+  <span class="tb-title">My Incidents</span>
+  <div class="tb-right">
+    <div class="tb-status"><span class="led"></span>LIVE</div>
+    <div style="width:1px;height:20px;background:var(--wire)"></div>
+    <span class="tb-time" id="clock">—</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="sec-hd">
+    Assigned Incidents
+    <span class="count-badge" id="countBadge">—</span>
+  </div>
+  <div id="alertList">
+    <div class="shim" style="height:120px;margin-bottom:16px"></div>
+    <div class="shim" style="height:120px"></div>
+  </div>
+</div>
+
+<script>
+let pollTimer = null;
+let alerts    = [];
+
+// ── Clock ────────────────────────────────────────────────────
+(function tick(){
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})+' IST';
+  setTimeout(tick,1000);
+})();
+
+function getCSRF(){
+  const c=document.cookie.split('; ').find(r=>r.startsWith('csrftoken='));
+  return c?decodeURIComponent(c.split('=')[1]):'';
+}
+
+const SEV_ICON = {low:'🟡',medium:'🟠',high:'🔴',critical:'🆘'};
+const STATUS_COLOR = {
+  pending:'#6b7280',accepted:'#3b82f6',enroute:'#f59e0b',
+  arrived:'#8b5cf6',resolved:'#10b981',rejected:'#ef4444',escalated:'#f97316'
+};
+const BTN_MAP = {
+  accepted: {label:'▶ Start (En Route)', cls:'btn-enroute', next:'enroute'},
+  enroute:  {label:'📍 Mark Arrived',    cls:'btn-arrived', next:'arrived'},
+  arrived:  {label:'✓ Resolve',          cls:'btn-resolve', next:'resolved'},
+};
+
+// ── Fetch alerts ──────────────────────────────────────────────
+async function loadAlerts(){
+  try{
+    const res  = await fetch('/api/incident/pending/',{credentials:'same-origin'});
+    const data = await res.json();
+    alerts     = data.alerts || [];
+    renderAlerts();
+    document.getElementById('countBadge').textContent = alerts.length;
+  }catch(e){
+    document.getElementById('alertList').innerHTML =
+      '<div class="empty-state"><div class="empty-icon">⚠</div>Connection error</div>';
+  }
+}
+
+// ── Render ────────────────────────────────────────────────────
+function renderAlerts(){
+  const list = document.getElementById('alertList');
+  if(!alerts.length){
+    list.innerHTML='<div class="empty-state"><div class="empty-icon">✓</div>No active incidents</div>';
+    return;
+  }
+  list.innerHTML = alerts.map(a => renderCard(a)).join('');
+}
+
+function renderCard(a){
+  const col  = STATUS_COLOR[a.status] || '#6b7280';
+  const next = BTN_MAP[a.status];
+
+  const actionBtns = [];
+  if(a.status === 'pending'){
+    actionBtns.push(`<button class="action-btn btn-accept" onclick="doAction(${a.id},'accepted')">✅ Accept</button>`);
+    actionBtns.push(`<button class="action-btn btn-reject" onclick="doAction(${a.id},'rejected')">✗ Reject</button>`);
+  } else if(next){
+    actionBtns.push(`<button class="action-btn ${next.cls}" onclick="doAction(${a.id},'${next.next}')">${next.label}</button>`);
+  }
+  if(a.maps_url){
+    actionBtns.push(`<a class="action-btn btn-nav" href="${a.maps_url}" target="_blank">🗺 Navigate</a>`);
+  }
+
+  return `
+  <div class="alert-card" id="card-${a.id}" style="animation:fadeUp .4s ease">
+    <div class="ac-strip" style="background:${col}"></div>
+    <div class="ac-body">
+      <div class="ac-top">
+        <div class="ac-left">
+          <span class="ac-sev-icon">${SEV_ICON[a.severity]||'🔴'}</span>
+          <div>
+            <div class="ac-title">${(a.crime_type||'Incident').toUpperCase()} · Alert #${a.id}</div>
+            <div class="ac-sub">${a.station} · ${a.created_at} · ${a.seconds_ago}s ago</div>
+          </div>
+        </div>
+        <span class="status-pill" style="border-color:${col}44;color:${col};background:${col}11">${a.status}</span>
+      </div>
+
+      <div class="chips">
+        <span class="chip chip-blue">${a.severity}</span>
+        <span class="chip chip-orange">ESC ${a.escalation_probability}%</span>
+        <span class="chip chip-purple">Risk ${a.area_risk_score}/10</span>
+        ${a.ward?`<span class="chip chip-green">${a.ward}</span>`:''}
+      </div>
+
+      <div class="ac-summary">${a.summary||a.incident_text.slice(0,120)}</div>
+
+      <div class="ac-actions">${actionBtns.join('')}</div>
+
+      <button class="tl-toggle" onclick="toggleTimeline(${a.id})">
+        <span id="tl-arrow-${a.id}">▼</span> Timeline
+      </button>
+      <div class="ac-timeline" id="tl-${a.id}">
+        <div style="color:var(--text3);font-family:var(--mono);font-size:.65rem;padding:8px 0">Loading...</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Toggle timeline ───────────────────────────────────────────
+async function toggleTimeline(id){
+  const tl  = document.getElementById(`tl-${id}`);
+  const arr = document.getElementById(`tl-arrow-${id}`);
+  if(tl.classList.contains('open')){
+    tl.classList.remove('open');
+    arr.textContent = '▼';
+    return;
+  }
+  tl.classList.add('open');
+  arr.textContent = '▲';
+  try{
+    const res  = await fetch(`/api/incident/timeline/${id}/`,{credentials:'same-origin'});
+    const data = await res.json();
+    const entries = data.timeline || [];
+    if(!entries.length){
+      tl.innerHTML='<div style="color:var(--text3);font-family:var(--mono);font-size:.65rem;padding:8px 0">No timeline yet</div>';
+      return;
+    }
+    const col = STATUS_COLOR;
+    tl.innerHTML = entries.map(t=>`
+      <div class="tl-row">
+        <div class="tl-dot" style="background:${col[t.status]||'#6b7280'}"></div>
+        <div class="tl-body">
+          <div class="tl-status">${t.status}</div>
+          <div class="tl-note">${t.note}</div>
+        </div>
+        <div class="tl-time">${t.timestamp}</div>
+      </div>
+    `).join('');
+  }catch(e){
+    tl.innerHTML='<div style="color:var(--rejected);font-family:var(--mono);font-size:.65rem;padding:8px 0">Failed to load</div>';
+  }
+}
+
+// ── Do action (status update) ─────────────────────────────────
+async function doAction(alertId, newStatus){
+  const card = document.getElementById(`card-${alertId}`);
+  if(card) card.style.opacity = '.5';
+
+  try{
+    const res  = await fetch('/api/incident/update-status/',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCSRF()},
+      credentials:'same-origin',
+      body:JSON.stringify({alert_id:alertId, status:newStatus}),
+    });
+    const data = await res.json();
+
+    if(data.status === 'ok' || data.action === 'rejected'){
+      showToast(data.message || `Status → ${newStatus}`, '#10b981');
+      await loadAlerts();  // Refresh
+    } else {
+      showToast(data.error || 'Update failed', '#ef4444');
+      if(card) card.style.opacity = '1';
+    }
+  }catch(e){
+    showToast('Network error', '#ef4444');
+    if(card) card.style.opacity = '1';
+  }
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg, color='#10b981'){
+  const t   = document.getElementById('toast');
+  const dot = document.getElementById('toastDot');
+  document.getElementById('toastMsg').textContent = msg;
+  dot.style.background = color;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ── Init ──────────────────────────────────────────────────────
+loadAlerts();
+pollTimer = setInterval(loadAlerts, 8000);
+</script>
+{% endblock %}

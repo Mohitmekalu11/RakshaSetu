@@ -1,0 +1,602 @@
+
+{% extends "crime(base).html" %}
+
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Crime Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Leaflet.heat plugin for heatmap functionality -->
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+      .leaflet-interactive {
+        transition: fill-opacity 0.5s, stroke-opacity 0.5s;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      /* Wrap map and toggle control together */
+      .map-container {
+        position: relative;
+        width: 100%;
+        height: 800px;
+      }
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+      /* Error message */
+      .error-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 500px;
+        z-index: 1100;
+      }
+      .error-message h2 {
+        color: #e74c3c;
+        margin-bottom: 15px;
+      }
+      .error-message p {
+        color: #34495e;
+        line-height: 1.6;
+      }
+      /* Modal Styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease, visibility 0.5s;
+        z-index: 1200;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .modal-content {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transform: scale(0.8);
+        transition: transform 0.5s ease;
+        position: relative;
+      }
+      .modal-overlay.active .modal-content {
+        transform: scale(1);
+      }
+      .modal-header h2 {
+        margin: 0;
+        font-size: 24px;
+        color: #333;
+        font-weight: bold;
+      }
+      .modal-body {
+        margin-top: 15px;
+        font-size: 16px;
+        color: #555;
+        line-height: 1.5;
+      }
+      .modal-body h3 {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #333;
+        font-weight: bold;
+      }
+      .modal-body ul {
+        list-style-type: disc;
+        margin-left: 20px;
+      }
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: transparent;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        color: #999;
+      }
+      .modal-close:hover {
+        color: #333;
+      }
+      /* Question Mark Icon Button */
+      .info-btn {
+        position: absolute;
+        bottom: 40px; /* Positioned above the toggle control inside the map container */
+        right: 20px;
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1300;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+      .info-btn:hover {
+        background: #0056b3;
+      }
+      /* Toggle Button Control */
+      .toggle-wrapper {
+        position: absolute;
+        bottom: 130px;
+        left: 45%;
+        transform: translateX(-50%);
+        z-index: 1300;
+        display: flex;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .toggle-wrapper button {
+        border: none;
+        padding: 8px 16px;
+        background: transparent;
+        color: #007bff;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s, color 0.3s;
+      }
+      .toggle-wrapper button.active {
+        background: #007bff;
+        color: #fff;
+      }
+      /* Improved Legend (Crime Count Index Box) */
+      .legend {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 10px 15px;
+        margin: 10px;
+        bottom: 180px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        line-height: 18px;
+        color: #333;
+        font-size: 14px;
+      }
+      .legend h4 {
+        margin: 0 0 5px;
+        color: #333;
+        font-weight: bold;
+      }
+      .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+      }
+      /* Info control styling */
+      .info {
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        min-width: 250px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        color: #333;
+        line-height: 1.5;
+      }
+      .info h4 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        color: #333;
+      }
+      .info p {
+        margin: 4px 0;
+      }
+      .crime-type-list {
+        margin-top: 8px;
+        padding-left: 20px;
+      }
+      .crime-type-list ul {
+        margin: 4px 0;
+        padding-left: 20px;
+      }
+      .crime-type-item {
+        margin: 2px 0;
+      }
+      .crime-type-count {
+        font-weight: bold;
+        margin-left: 5px;
+        color: #555;
+      }
+      /* Footer styling */
+      .footer {
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        width: 100%;
+        margin: 0;
+      }
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .footer h3 {
+        color: #3498db;
+        margin-bottom: 15px;
+      }
+      .footer p {
+        margin: 8px 0;
+        color: #ecf0f1;
+        line-height: 1.6;
+      }
+      .footer-info {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+      .footer-section {
+        flex: 1;
+        min-width: 250px;
+        margin: 10px;
+        padding: 0 15px;
+      }
+      .footer-divider {
+        border-top: 1px solid #34495e;
+        margin: 15px 0;
+      }
+    </style>
+  </head>
+  <body>
+    {% if error %}
+      <div class="error-message">
+        <h2>Error</h2>
+        <p>{{ error }}</p>
+      </div>
+    {% else %}
+      <!-- Modal for Map Instructions -->
+      <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+          <button class="modal-close" id="modalClose">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="modal-header">
+            <h2>About the Map</h2>
+          </div>
+          <div class="modal-body">
+            <p>
+              <strong>About the Map:</strong><br>
+              This interactive visualization displays crime statistics across different states and cities in India. The color intensity represents the crime density in each region.
+            </p>
+            <h3>How to Use</h3>
+            <ul>
+              <li><strong>Hover</strong> over states to view crime statistics</li>
+              <li><strong>Click</strong> on a state to zoom in</li>
+              <li><strong>Zoom in</strong> further to see city-level data</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Container with Toggle Control inside -->
+      <div class="map-container">
+        <div id="map"></div>
+        <!-- Toggle Control placed inside map container and centered at bottom -->
+        <div class="toggle-wrapper">
+          <button id="mapViewBtn" class="active">Map</button>
+          <button id="heatViewBtn">Heatmap</button>
+        </div>
+      </div>
+
+      <!-- Question Mark Button (positioned above the toggle control) -->
+      <button id="infoBtn" class="info-btn">
+        <i class="fas fa-question"></i>
+      </button>
+    {% endif %}
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var modal = document.getElementById("modal");
+        var closeBtn = document.getElementById("modalClose");
+        var infoBtn = document.getElementById("infoBtn");
+        var mapViewBtn = document.getElementById("mapViewBtn");
+        var heatViewBtn = document.getElementById("heatViewBtn");
+
+        // Auto-show the modal on page load
+        modal.classList.add("active");
+
+        // Clicking the question mark icon shows the modal
+        if (infoBtn) {
+          infoBtn.addEventListener("click", function () {
+            modal.classList.add("active");
+          });
+        }
+
+        // Clicking the close button hides the modal
+        if (closeBtn) {
+          closeBtn.addEventListener("click", function () {
+            modal.classList.remove("active");
+          });
+        }
+
+        // Toggle for Map view
+        mapViewBtn.addEventListener("click", function () {
+          if (!this.classList.contains("active")) {
+            this.classList.add("active");
+            heatViewBtn.classList.remove("active");
+            if (map.hasLayer(heatLayer)) {
+              map.removeLayer(heatLayer);
+            }
+            if (!map.hasLayer(geojsonLayer)) {
+              map.addLayer(geojsonLayer);
+            }
+          }
+        });
+
+        // Toggle for Heatmap view
+        heatViewBtn.addEventListener("click", function () {
+          if (!this.classList.contains("active")) {
+            this.classList.add("active");
+            mapViewBtn.classList.remove("active");
+            if (map.hasLayer(geojsonLayer)) {
+              map.removeLayer(geojsonLayer);
+            }
+            if (!map.hasLayer(heatLayer)) {
+              map.addLayer(heatLayer);
+            }
+          }
+        });
+      });
+    </script>
+
+    <!-- Map and Layer Script -->
+    <script>
+      // Get map data from Django
+      var mapData = {{ map_data|safe }};
+      var cityMarkers = L.layerGroup();
+      var currentZoom = 5;
+      var cityMarkersVisible = false;
+
+      // Initialize the map centered on India
+      var map = L.map('map', {
+        center: [22.3511, 78.6677],
+        zoom: 5,
+        minZoom: 4,
+        maxZoom: 10,
+        maxBounds: [[6.5, 68.0], [37.0, 97.0]]  // Limit to India's boundaries
+      });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Info control
+      var info = L.control({position: 'topright'});
+      info.onAdd = function(map) {
+        this._div = L.DomUtil.create('div', 'info');
+        this.update();
+        return this._div;
+      };
+      info.update = function(props, isCity) {
+        var content = '<h4>Crime Density</h4>';
+        if (props) {
+          if (isCity) {
+            content += '<p><b>' + props.name + ', ' + props.state + '</b></p>';
+          } else {
+            content += '<p><b>' + props.NAME_1 + '</b></p>';
+          }
+          if (props.crime_count || props.count) {
+            var count = isCity ? props.count : props.crime_count;
+            content += '<p><strong>Total Crimes:</strong> ' + count + '</p>';
+            content += '<div class="crime-type-list"><strong>Crime Types:</strong>';
+            content += '<ul>';
+            var crimeTypes = Object.entries(props.crime_types).sort((a, b) => b[1] - a[1]);
+            crimeTypes.forEach(function([type, count]) {
+              content += '<li class="crime-type-item">' + type + ': <span class="crime-type-count">' + count + '</span></li>';
+            });
+            content += '</ul></div>';
+          } else {
+            content += '<p>No data available</p>';
+          }
+        } else {
+          content += '<p>Hover over a state or city</p>';
+        }
+        this._div.innerHTML = content;
+      };
+      info.addTo(map);
+
+      // Style function for states
+      function style(feature) {
+        return {
+          fillColor: feature.properties.fill_color || '#808080',
+          weight: 2,
+          opacity: 1,
+          color: 'white',
+          dashArray: '3',
+          fillOpacity: 0.7
+        };
+      }
+
+      // Create city markers for a state
+      function createCityMarkers(cities, state) {
+        cities.forEach(function(city) {
+          var size = Math.max(30, Math.min(50,
+            30 + (city.count - mapData.city_min_count) /
+            (mapData.city_max_count - mapData.city_min_count) * 20
+          ));
+
+          var marker = L.divIcon({
+            className: 'city-marker',
+            html: '<div style="width: ' + size + 'px; height: ' + size + 'px; background-color: ' + city.color + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: ' + (size * 0.3) + 'px;">' +
+                  city.count + '</div>',
+            iconSize: [size, size]
+          });
+
+          if (city.latitude && city.longitude &&
+              !isNaN(city.latitude) && !isNaN(city.longitude) &&
+              city.latitude >= 0 && city.longitude >= 0) {
+
+            var cityMarker = L.marker([city.latitude, city.longitude], { icon: marker });
+            cityMarker.on({
+              mouseover: function(e) {
+                this.setZIndexOffset(1000);
+                info.update({
+                  name: city.name,
+                  state: state,
+                  count: city.count,
+                  crime_types: city.crime_types
+                }, true);
+              },
+              mouseout: function(e) {
+                this.setZIndexOffset(0);
+                info.update();
+              }
+            });
+            cityMarkers.addLayer(cityMarker);
+          }
+        });
+      }
+
+      // Highlight state on hover
+      function highlightFeature(e) {
+        var layer = e.target;
+        layer.setStyle({
+          weight: 3,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 0.7
+        });
+        layer.bringToFront();
+        info.update(layer.feature.properties);
+      }
+
+      // Reset highlight
+      function resetHighlight(e) {
+        var layer = e.target;
+        geojsonLayer.resetStyle(layer);
+        info.update();
+      }
+
+      // Zoom to feature on click
+      function zoomToFeature(e) {
+        map.fitBounds(e.target.getBounds());
+      }
+
+      // Add listeners to state layers
+      function onEachFeature(feature, layer) {
+        layer.on({
+          mouseover: highlightFeature,
+          mouseout: resetHighlight,
+          click: zoomToFeature
+        });
+      }
+
+      // Add GeoJSON layer for state polygons
+      var geojsonLayer = L.geoJson(mapData.geojson, {
+        style: style,
+        onEachFeature: onEachFeature
+      }).addTo(map);
+
+      // Handle zoom events to display city markers
+      map.on('zoomend', function() {
+        var newZoom = map.getZoom();
+        if (newZoom > 6 && !cityMarkersVisible) {
+          cityMarkers.clearLayers();
+          mapData.geojson.features.forEach(function(feature) {
+            if (feature.properties.cities) {
+              createCityMarkers(feature.properties.cities, feature.properties.NAME_1);
+            }
+          });
+          map.addLayer(cityMarkers);
+          cityMarkersVisible = true;
+        } else if (newZoom <= 6 && cityMarkersVisible) {
+          map.removeLayer(cityMarkers);
+          cityMarkersVisible = false;
+        }
+        currentZoom = newZoom;
+      });
+
+      // Create heatmap layer using city-level data (do not add initially)
+      var heatPoints = [];
+      mapData.geojson.features.forEach(function(feature) {
+        if (feature.properties.cities) {
+          feature.properties.cities.forEach(function(city) {
+            if (city.latitude && city.longitude) {
+              heatPoints.push([city.latitude, city.longitude, city.count]);
+            }
+          });
+        }
+      });
+      var heatLayer = L.heatLayer(heatPoints, {
+        radius: 25,
+        blur: 15,
+        maxZoom: 10
+      });
+      
+      // Add legend (crime count index box) at bottom right
+      var legend = L.control({position: 'bottomright'});
+      legend.onAdd = function(map) {
+        var div = L.DomUtil.create('div', 'legend');
+        div.innerHTML = '<h4>Crime Count</h4>';
+        var grades = [
+          0,
+          Math.round(mapData.state_min_count),
+          Math.round((mapData.state_max_count + mapData.state_min_count) / 2),
+          Math.round(mapData.state_max_count)
+        ];
+        for (var i = 0; i < grades.length - 1; i++) {
+          div.innerHTML +=
+            '<i style="background:' +
+            get_color(grades[i + 1], mapData.state_min_count, mapData.state_max_count) +
+            '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+        div.innerHTML += '<i style="background: #808080"></i>No Data<br>';
+        return div;
+      };
+      legend.addTo(map);
+
+      // Color scale function
+      function get_color(count, min_count, max_count) {
+        var ratio = (count - min_count) / (max_count - min_count);
+        if (ratio <= 0.5) {
+          var r = Math.round(255 * (2 * ratio));
+          var g = 255;
+        } else {
+          var r = 255;
+          var g = Math.round(255 * (2 * (1 - ratio)));
+        }
+        return '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + '00';
+      }
+    </script>
+    
+
+  </body>
+</html>
+{% endblock content %}

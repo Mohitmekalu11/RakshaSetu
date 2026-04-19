@@ -1,0 +1,478 @@
+{
+    "Brahmand": {
+        "trend": {
+            "2018": 14,
+            "2019": 26,
+            "2020": 26,
+            "2021": 26,
+            "2022": 14,
+            "2023": 26,
+            "2024": 28,
+            "2025": 27,
+            "predicted": 34
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 3,
+            "Assault": 4,
+            "Fraud": 3,
+            "Theft": 3,
+            "Kidnapping": 4,
+            "Drug Offense": 4,
+            "Robbery": 4,
+            "Cheating": 5,
+            "Cybercrime": 3,
+            "Murder": 2,
+            "Burglary": 0
+        },
+        "safety_score": 37.04,
+        "crime_intensity": "High Risk"
+    },
+    "Charai": {
+        "trend": {
+            "2018": 40,
+            "2019": 26,
+            "2020": 25,
+            "2021": 34,
+            "2022": 23,
+            "2023": 15,
+            "2024": 21,
+            "2025": 32,
+            "predicted": 5
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 0,
+            "Assault": 1,
+            "Fraud": 0,
+            "Theft": 0,
+            "Kidnapping": 0,
+            "Drug Offense": 1,
+            "Robbery": 0,
+            "Cheating": 1,
+            "Cybercrime": 1,
+            "Murder": 1,
+            "Burglary": 0
+        },
+        "safety_score": 90.74,
+        "crime_intensity": "Low Risk"
+    },
+    "Dhokali": {
+        "trend": {
+            "2018": 35,
+            "2019": 27,
+            "2020": 29,
+            "2021": 22,
+            "2022": 26,
+            "2023": 34,
+            "2024": 19,
+            "2025": 21,
+            "predicted": 20
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 2,
+            "Assault": 1,
+            "Fraud": 2,
+            "Theft": 2,
+            "Kidnapping": 2,
+            "Drug Offense": 2,
+            "Robbery": 2,
+            "Cheating": 2,
+            "Cybercrime": 2,
+            "Murder": 3,
+            "Burglary": 0
+        },
+        "safety_score": 62.96,
+        "crime_intensity": "Medium Risk"
+    },
+    "Ghodbunder Road": {
+        "trend": {
+            "2018": 27,
+            "2019": 26,
+            "2020": 31,
+            "2021": 24,
+            "2022": 26,
+            "2023": 44,
+            "2024": 35,
+            "2025": 26,
+            "predicted": 45
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 7,
+            "Assault": 5,
+            "Fraud": 5,
+            "Theft": 5,
+            "Kidnapping": 4,
+            "Drug Offense": 2,
+            "Robbery": 3,
+            "Cheating": 5,
+            "Cybercrime": 4,
+            "Murder": 3,
+            "Burglary": 1
+        },
+        "safety_score": 16.67,
+        "crime_intensity": "High Risk"
+    },
+    "Kasarvadavali": {
+        "trend": {
+            "2018": 44,
+            "2019": 27,
+            "2020": 40,
+            "2021": 37,
+            "2022": 28,
+            "2023": 32,
+            "2024": 35,
+            "2025": 31,
+            "predicted": 31
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 2,
+            "Assault": 3,
+            "Fraud": 4,
+            "Theft": 3,
+            "Kidnapping": 3,
+            "Drug Offense": 4,
+            "Robbery": 3,
+            "Cheating": 3,
+            "Cybercrime": 2,
+            "Murder": 3,
+            "Burglary": 0
+        },
+        "safety_score": 42.59,
+        "crime_intensity": "Medium Risk"
+    },
+    "Kolshet": {
+        "trend": {
+            "2018": 27,
+            "2019": 36,
+            "2020": 29,
+            "2021": 24,
+            "2022": 28,
+            "2023": 36,
+            "2024": 31,
+            "2025": 34,
+            "predicted": 36
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 2,
+            "Assault": 5,
+            "Fraud": 4,
+            "Theft": 4,
+            "Kidnapping": 3,
+            "Drug Offense": 3,
+            "Robbery": 3,
+            "Cheating": 3,
+            "Cybercrime": 3,
+            "Murder": 5,
+            "Burglary": 1
+        },
+        "safety_score": 33.33,
+        "crime_intensity": "High Risk"
+    },
+    "Kopri": {
+        "trend": {
+            "2018": 21,
+            "2019": 19,
+            "2020": 32,
+            "2021": 28,
+            "2022": 21,
+            "2023": 29,
+            "2024": 22,
+            "2025": 29,
+            "predicted": 28
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 3,
+            "Assault": 3,
+            "Fraud": 2,
+            "Theft": 4,
+            "Kidnapping": 3,
+            "Drug Offense": 4,
+            "Robbery": 3,
+            "Cheating": 3,
+            "Cybercrime": 2,
+            "Murder": 2,
+            "Burglary": 0
+        },
+        "safety_score": 48.15,
+        "crime_intensity": "Medium Risk"
+    },
+    "Louis Wadi": {
+        "trend": {
+            "2018": 26,
+            "2019": 29,
+            "2020": 32,
+            "2021": 28,
+            "2022": 37,
+            "2023": 37,
+            "2024": 22,
+            "2025": 31,
+            "predicted": 28
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 4,
+            "Assault": 3,
+            "Fraud": 3,
+            "Theft": 3,
+            "Kidnapping": 2,
+            "Drug Offense": 2,
+            "Robbery": 3,
+            "Cheating": 4,
+            "Cybercrime": 2,
+            "Murder": 3,
+            "Burglary": 0
+        },
+        "safety_score": 48.15,
+        "crime_intensity": "Medium Risk"
+    },
+    "Majiwada": {
+        "trend": {
+            "2018": 25,
+            "2019": 29,
+            "2020": 36,
+            "2021": 41,
+            "2022": 31,
+            "2023": 29,
+            "2024": 30,
+            "2025": 35,
+            "predicted": 31
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 3,
+            "Assault": 4,
+            "Fraud": 5,
+            "Theft": 3,
+            "Kidnapping": 3,
+            "Drug Offense": 2,
+            "Robbery": 2,
+            "Cheating": 3,
+            "Cybercrime": 2,
+            "Murder": 4,
+            "Burglary": 1
+        },
+        "safety_score": 42.59,
+        "crime_intensity": "Medium Risk"
+    },
+    "Manpada": {
+        "trend": {
+            "2018": 30,
+            "2019": 37,
+            "2020": 41,
+            "2021": 30,
+            "2022": 37,
+            "2023": 38,
+            "2024": 38,
+            "2025": 33,
+            "predicted": 46
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 5,
+            "Assault": 5,
+            "Fraud": 5,
+            "Theft": 7,
+            "Kidnapping": 3,
+            "Drug Offense": 3,
+            "Robbery": 3,
+            "Cheating": 5,
+            "Cybercrime": 4,
+            "Murder": 6,
+            "Burglary": 1
+        },
+        "safety_score": 14.81,
+        "crime_intensity": "High Risk"
+    },
+    "Naupada": {
+        "trend": {
+            "2018": 19,
+            "2019": 21,
+            "2020": 39,
+            "2021": 29,
+            "2022": 38,
+            "2023": 37,
+            "2024": 32,
+            "2025": 31,
+            "predicted": 45
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 4,
+            "Assault": 6,
+            "Fraud": 6,
+            "Theft": 5,
+            "Kidnapping": 4,
+            "Drug Offense": 3,
+            "Robbery": 3,
+            "Cheating": 6,
+            "Cybercrime": 3,
+            "Murder": 3,
+            "Burglary": 1
+        },
+        "safety_score": 16.67,
+        "crime_intensity": "High Risk"
+    },
+    "Panchpakhadi": {
+        "trend": {
+            "2018": 19,
+            "2019": 24,
+            "2020": 37,
+            "2021": 29,
+            "2022": 37,
+            "2023": 35,
+            "2024": 35,
+            "2025": 23,
+            "predicted": 46
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 4,
+            "Assault": 6,
+            "Fraud": 6,
+            "Theft": 6,
+            "Kidnapping": 5,
+            "Drug Offense": 2,
+            "Robbery": 7,
+            "Cheating": 6,
+            "Cybercrime": 2,
+            "Murder": 4,
+            "Burglary": 0
+        },
+        "safety_score": 14.81,
+        "crime_intensity": "High Risk"
+    },
+    "Patlipada": {
+        "trend": {
+            "2018": 31,
+            "2019": 25,
+            "2020": 16,
+            "2021": 29,
+            "2022": 26,
+            "2023": 30,
+            "2024": 25,
+            "2025": 26,
+            "predicted": 16
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 2,
+            "Assault": 1,
+            "Fraud": 2,
+            "Theft": 1,
+            "Kidnapping": 2,
+            "Drug Offense": 2,
+            "Robbery": 1,
+            "Cheating": 2,
+            "Cybercrime": 1,
+            "Murder": 2,
+            "Burglary": 0
+        },
+        "safety_score": 70.37,
+        "crime_intensity": "Low Risk"
+    },
+    "Saket": {
+        "trend": {
+            "2018": 27,
+            "2019": 18,
+            "2020": 26,
+            "2021": 27,
+            "2022": 31,
+            "2023": 18,
+            "2024": 24,
+            "2025": 28,
+            "predicted": 19
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 2,
+            "Assault": 1,
+            "Fraud": 2,
+            "Theft": 1,
+            "Kidnapping": 2,
+            "Drug Offense": 2,
+            "Robbery": 2,
+            "Cheating": 2,
+            "Cybercrime": 2,
+            "Murder": 2,
+            "Burglary": 0
+        },
+        "safety_score": 64.81,
+        "crime_intensity": "Medium Risk"
+    },
+    "Teen Hath Naka": {
+        "trend": {
+            "2018": 24,
+            "2019": 31,
+            "2020": 34,
+            "2021": 29,
+            "2022": 29,
+            "2023": 36,
+            "2024": 35,
+            "2025": 28,
+            "predicted": 43
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 4,
+            "Assault": 5,
+            "Fraud": 5,
+            "Theft": 5,
+            "Kidnapping": 5,
+            "Drug Offense": 5,
+            "Robbery": 4,
+            "Cheating": 4,
+            "Cybercrime": 2,
+            "Murder": 4,
+            "Burglary": 1
+        },
+        "safety_score": 20.37,
+        "crime_intensity": "High Risk"
+    },
+    "Vartak Nagar": {
+        "trend": {
+            "2018": 22,
+            "2019": 19,
+            "2020": 36,
+            "2021": 42,
+            "2022": 32,
+            "2023": 49,
+            "2024": 27,
+            "2025": 20,
+            "predicted": 37
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 3,
+            "Assault": 4,
+            "Fraud": 3,
+            "Theft": 5,
+            "Kidnapping": 4,
+            "Drug Offense": 3,
+            "Robbery": 4,
+            "Cheating": 3,
+            "Cybercrime": 3,
+            "Murder": 5,
+            "Burglary": 1
+        },
+        "safety_score": 31.48,
+        "crime_intensity": "High Risk"
+    },
+    "Wagle Estate": {
+        "trend": {
+            "2018": 25,
+            "2019": 22,
+            "2020": 43,
+            "2021": 30,
+            "2022": 29,
+            "2023": 46,
+            "2024": 37,
+            "2025": 26,
+            "predicted": 54
+        },
+        "predicted_crimes": {
+            "Domestic Violence": 5,
+            "Assault": 5,
+            "Fraud": 4,
+            "Theft": 8,
+            "Kidnapping": 6,
+            "Drug Offense": 6,
+            "Robbery": 2,
+            "Cheating": 6,
+            "Cybercrime": 5,
+            "Murder": 6,
+            "Burglary": 2
+        },
+        "safety_score": 0.0,
+        "crime_intensity": "High Risk"
+    }
+}

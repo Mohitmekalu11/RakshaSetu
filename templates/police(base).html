@@ -1,0 +1,477 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Police Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Global Reset & Base Typography */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: rgb(229, 229, 229);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Layout Container */
+        .container {
+            display: flex;
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -260px; /* Initially off-screen */
+            min-height: 100vh;
+            width: 260px;
+            background: linear-gradient(135deg, #0d1b2a, rgb(43, 81, 151));
+            color: #fbc531;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 3px 0 12px rgba(0,0,0,0.4);
+            transition: transform 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        /* Expanded Sidebar State */
+        .sidebar.expanded {
+            transform: translateX(260px); /* Slides into view */
+        }
+        
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .sidebar .logo img {
+            width: 200px;
+            height: 50px;
+           
+            margin-right: 20px;
+        }
+        
+        .sidebar .divider {
+            border-top: 1px solid rgba(251, 197, 49, 0.8);
+            margin: 20px 0;
+        }
+
+        .nav {
+            list-style: none;
+            padding-left: 0;
+            flex-grow: 1;
+        }
+
+        .nav li { margin: 18px 0; }
+        
+        .nav li a {
+            text-decoration: none;
+            color: #fbc531;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.2s;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav li a i { margin-right: 12px; font-size: 20px; }
+        
+        .nav li a:hover, .nav li.active a {
+            background: #fbc531;
+            color: #0d1b2a;
+            transform: scale(1.03);
+        }
+        
+        .sidebar p {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background: rgba(113, 205, 248, 0.27);
+            overflow-y: auto;
+            animation: fadeIn 1s ease-out;
+            transition: margin-left 0.5s ease-in-out;
+            margin-left: 0; /* Initial state, no margin */
+        }
+
+        .main-content.expanded {
+            margin-left: 260px; /* Shift content to the right when sidebar is expanded */
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            z-index: 1001;
+            cursor: pointer;
+            width: 40px;
+            height: 60px;
+            background: linear-gradient(90deg, #0d1b2a, rgb(43, 81, 151));
+            border: none;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.5s ease-in-out;
+        }
+
+        .menu-toggle i {
+            font-size: 1.5rem;
+            color: #fbc531;
+            transition: transform 0.5s;
+        }
+
+        .main-content.expanded .menu-toggle {
+            left: 260px;
+        }
+        
+        .main-content.expanded .menu-toggle i {
+            transform: rotate(180deg);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            height: 160px;
+            margin-bottom: 40px;
+            padding: 0 25px;
+            border: 2px solid #0d1b2a;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(223, 32, 32, 0.88), rgba(22, 67, 150, 0.9));
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            animation: slideInDown 0.8s ease-out;
+            overflow: hidden;
+        }
+
+        /* Container for header content */
+        .header-content {
+            text-align: center;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.93);
+            z-index: 2;
+            animation: textFadeIn 1s ease-out;
+        }
+
+        @keyframes textFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header Images */
+        .header-image {
+            width: 200px;
+            height: 190px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            object-fit: contain;
+            z-index: 1;
+        }
+        
+        .header-image-left { left: 10px; }
+        .header-image-right { right: 10px; }
+
+        .dashboard-header:hover .header-image {
+            transform: translateY(-50%) scale(1.1);
+            opacity: 0.9;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Assigned Crime Reports Title */
+        .reports-title {
+            text-align: center;
+            font-size: 24px;
+            color: rgba(10, 22, 34, 0.96);
+            margin: 40px 0 30px;
+            position: relative;
+        }
+
+        .reports-title::after {
+            content: "";
+            width: 260px;
+            height: 4px;
+            background: rgba(13, 27, 42, 0.88);
+            display: block;
+            margin: 10px auto 0;
+            border-radius: 2px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        /* Report Cards Container */
+        .report-list {
+            list-style: none;
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        /* Report Card */
+        .report {
+            background: #fff;
+            border-left: 5px solid #0d1b2a;
+            border-radius: 10px;
+            padding: 20px 25px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+            position: relative;
+        }
+        
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .report:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(66, 64, 182, 0.6);
+        }
+
+        .report-header {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .report-header h4 {
+            font-size: 20px;
+            color: #0d1b2a;
+        }
+
+        .report-header p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .report-body p {
+            margin: 10px 0;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .report-footer {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .report-footer ul {
+            list-style: none;
+            font-size: 14px;
+            color: #0d1b2a;
+            padding-left: 0;
+        }
+
+        .report-footer li { margin-bottom: 3px; }
+
+        /* Severity Badge with Tooltip */
+        .severity-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            animation: popUp 0.6s ease-out;
+            cursor: default;
+            transition: transform 0.2s;
+        }
+
+        .severity-badge:hover { transform: scale(1.1); }
+        
+        @keyframes popUp {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* Colors for Severity Levels */
+        .severity-badge.low { background: #27ae60; }
+        .severity-badge.medium { background: #f1c40f; }
+        .severity-badge.high { background: #e74c3c; }
+
+        /* Enhanced Tooltip for Severity Badge */
+        .severity-badge:hover::after {
+            content: "Incident Severity Index";
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: #0d1b2a;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: tooltipFadeIn 0.3s forwards;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        @keyframes tooltipFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            color: #fff;
+            margin: 5px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover { transform: scale(1.03); }
+
+        .btn.view { background: linear-gradient(135deg, #0d1b2a, rgb(43, 81, 151)); }
+        .btn.update { background: linear-gradient(135deg, #1e5128, #2c7a7b); }
+
+        .report form select {
+            padding: 8px 10px;
+            width: 100%;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        
+        .report form select:focus { border-color: #0d1b2a; }
+
+        /* Alerts */
+        .alert {
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            border-radius: 6px;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        .alert-disapproved { background: #e74c3c; color: #fff; }
+        .alert-pending { background: #e67e22; color: #fff; }
+        
+        /* SweetAlert2 Overrides */
+        .swal2-popup { font-size: 16px; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="logo">
+                    <img src="{% static 'logo_rs.png' %}" alt="Logo">
+                </div>
+                <hr class="divider">
+                <ul class="nav">
+                    <li><a href="{% url 'police_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="{% url 'police_performance' %}"><i class="fas fa-chart-line"></i> Officer Performance</a></li>
+                    <li><a href="{% url 'monthly_crime_predictions' %}"><i class="fas fa-robot"></i> Crime Predictions</a></li>
+                    <li><a href="{% url 'officer_feedbacks' %}" ><i class="fas fa-clipboard-check"></i> View My Feedbacks</a></li>
+                    <li><a href="{% url 'officer_dashboard' %}" ><i class="fas fa-bell"></i> View My Alerts</a></li>
+                    <li>
+                        <a href="{% url 'crime_news' %}">
+                            <i class="fas fa-newspaper"></i> News Section
+                        </a>
+                    </li>
+        
+                    <li>
+                        <a href="{% url 'dashboard' %}">
+                            <i class="fas fa-chart-line"></i> Forecasting Report
+                        </a>
+                    </li>
+                    
+                    <li><a href="{% url 'index' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            {% block content %}
+            {% endblock content %}
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const menuToggle = document.getElementById('menu-toggle');
+    
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('expanded');
+                mainContent.classList.toggle('expanded');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police Dashboard - Crime Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #004085;
+            color: white;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .solved {
+            background: green;
+        }
+
+        .ongoing {
+            background: orange;
+        }
+
+        .unsolved {
+            background: red;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        video {
+            width: 200px;
+            height: 120px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h2>Police Dashboard - Crime Cases</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Crime Type</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Video</th>
+                <th>Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody id="case-list">
+            <!-- Cases will be added here dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        function fetchApprovedReports() {
+            fetch('/api/get_approved_reports/')
+                .then(response => response.json())
+                .then(data => {
+                    let caseList = document.getElementById("case-list");
+                    caseList.innerHTML = ""; // Clear previous content
+
+                    data.forEach(report => {
+                        let row = `
+                            <tr>
+                                <td>${report.crime_type}</td>
+                                <td>${report.description}</td>
+                                <td>Lat: ${report.latitude}, Lng: ${report.longitude}</td>
+                                <td>
+                                    <video controls>
+                                        <source src="${report.video_url}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </td>
+                                <td>${report.status}</td>
+                                <td>
+                                    <button class="solved" onclick="updateCaseStatus(${report.id}, 'Solved')">Solved</button>
+                                    <button class="ongoing" onclick="updateCaseStatus(${report.id}, 'Ongoing')">Ongoing</button>
+                                    <button class="unsolved" onclick="updateCaseStatus(${report.id}, 'Unsolved')">Unsolved</button>
+                                </td>
+                            </tr>
+                        `;
+                        caseList.innerHTML += row;
+                    });
+                });
+        }
+
+        function updateCaseStatus(reportId, status) {
+            fetch(`/api/update_case_status/${reportId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()  // CSRF token for security
+                },
+                body: JSON.stringify({ status: status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                fetchApprovedReports(); // Refresh cases after updating
+            });
+        }
+
+        function getCSRFToken() {
+            let csrfToken = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+            return csrfToken ? csrfToken.split('=')[1] : '';
+        }
+
+        // Fetch cases when the page loads
+        fetchApprovedReports();
+    </script>
+    <h2>Assigned Cases</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Crime Type</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Update Status</th>
+    </tr>
+    {% for case in assigned_cases %}
+    <tr>
+        <td>{{ case.id }}</td>
+        <td>{{ case.crime_type }}</td>
+        <td>{{ case.description }}</td>
+        <td id="status-{{ case.id }}">{{ case.status }}</td>
+        <td>
+            <select id="status-update-{{ case.id }}">
+                <option value="In Progress">In Progress</option>
+                <option value="Solved">Solved</option>
+            </select>
+            <button onclick="updateStatus({{ case.id }})">Update</button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    function updateStatus(caseId) {
+        let newStatus = document.getElementById(`status-update-${caseId}`).value;
+
+        fetch(`/api/update_status/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+            body: JSON.stringify({ report_id: caseId, status: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            document.getElementById(`status-${caseId}`).innerText = newStatus;
+        });
+    }
+</script>
+
+
+</body>
+</html>
