@@ -99,11 +99,12 @@ WSGI_APPLICATION = 'Skillsphere.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        os.environ.get("DATABASE_URL")
+    )
 }
 
 
@@ -193,11 +194,6 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 RAW_CSV = os.path.join(BASE_DIR, "home", "thane_crime_data.csv")
 
-import dj_database_url
-
-DATABASES = {
-    'default': dj-database-url.parse('postgresql://rakshasetu_db_user:bqoEPalRQJcIQeU5aTgpD2pfn4WatLdX@dpg-d7i7ndjeo5us73drsibg-a/rakshasetu_db')
-}
 
 # settings.py
 
