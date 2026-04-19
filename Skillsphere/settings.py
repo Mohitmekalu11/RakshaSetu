@@ -193,7 +193,11 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 RAW_CSV = os.path.join(BASE_DIR, "home", "thane_crime_data.csv")
 
+import dj_database_url
 
+DATABASES = {
+    'default': dj-database-url.parse('postgresql://rakshasetu_db_user:bqoEPalRQJcIQeU5aTgpD2pfn4WatLdX@dpg-d7i7ndjeo5us73drsibg-a/rakshasetu_db')
+}
 
 # settings.py
 
