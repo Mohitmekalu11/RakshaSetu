@@ -305,6 +305,9 @@ path("news/", views.crime_news, name="crime_news"),
     
 #     path('work/', views.work, name="work"),
  path('run-migrations/', views.run_migrations, name='run_migrations'),
+ path('create-superuser/', views.create_superuser, name='create_superuser'),
+ 
+ 
     path('', views.index, name="index"),
     path('contact_pg/', views.contact_pg, name="contact_pg"),
     path('forgotpg/', views.forgotpg, name="forgotpg"),
