@@ -1,12 +1,12 @@
 # home/tasks.py
 import os
 import logging
-from celery import shared_task
+# from celery import shared_task
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from .models import CrimeReport, CrimePhoto
 from .ml_utils import predict_severity
-from .utils_pkg.deepfake_detector import is_fake_image, is_fake_video
+# from .utils_pkg.deepfake_detector import is_fake_image, is_fake_video
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ TEMP_DIR = "temp"
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 
-@shared_task
+# @shared_task
 def analyze_crime_report(report_id):
     """
     Celery task to:
@@ -40,7 +40,7 @@ def analyze_crime_report(report_id):
             report.save()
 
 
-@shared_task
+# @shared_task
 def verify_media_ai(report_id):
     """
     Celery task to:
