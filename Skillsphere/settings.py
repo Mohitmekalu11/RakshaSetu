@@ -59,12 +59,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-CSRF_TRUSTED_ORIGINS = [
-    "https://RakshaSetu.onrender.com"
-]
+CSRF_TRUSTED_ORIGINS = ['https://rakshasetu-1-97xm.onrender.com']
 
 ROOT_URLCONF = 'Skillsphere.urls'
 
