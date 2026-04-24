@@ -7548,30 +7548,3 @@ def api_quality_check(request, report_id):
     return JsonResponse({'review': review})
 
 
-from django.http import HttpResponse
-from django.core.management import call_command
-import io
-
-def run_migrations(request):
-    # Remove this view after first use!
-    secret = request.GET.get('secret', '')
-    if secret != 'rakshasetu2024':
-        return HttpResponse('Forbidden', status=403)
-    
-    out = io.StringIO()
-    call_command('migrate', stdout=out)
-    return HttpResponse(out.getvalue(), content_type='text/plain')
-
-def create_superuser(request):
-    secret = request.GET.get('secret', '')
-    if secret != 'rakshasetu2024':
-        return HttpResponse('Forbidden', status=403)
-    
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    
-    if not User.objects.filter(username='admin').exists():
-        User.objects.create_superuser('admin', 'admin@example.com', 'Admin@1234')
-        return HttpResponse('Superuser created! username: admin, password: Admin@1234')
-    else:
-        return HttpResponse('Superuser already exists!')

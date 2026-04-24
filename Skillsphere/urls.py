@@ -304,8 +304,7 @@ path("news/", views.crime_news, name="crime_news"),
 #     path('hire/', views.hire, name="hire"),
     
 #     path('work/', views.work, name="work"),
- path('run-migrations/', views.run_migrations, name='run_migrations'),
- path('create-superuser/', views.create_superuser, name='create_superuser'),
+
  
  
     path('', views.index, name="index"),
