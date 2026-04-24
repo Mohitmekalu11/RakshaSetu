@@ -194,15 +194,16 @@ RAW_CSV = os.path.join(BASE_DIR, "home", "thane_crime_data.csv")
 
 
 
-# settings.py
+# settings.pyASGI_APPLICATION 
 
 INSTALLED_APPS += ['channels']
-ASGI_APPLICATION = 'CrimeCast.asgi.application'  
+ASGI_APPLICATION = 'Skillsphere.asgi.application'  
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',  
     }
 }
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 ALLOWED_HOSTS = ['*']
