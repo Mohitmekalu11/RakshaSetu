@@ -7552,10 +7552,20 @@ def load_fixtures(request):
     secret = request.GET.get('secret', '')
     if secret != 'rakshasetu2024':
         return HttpResponse('Forbidden', status=403)
+    
     from django.core.management import call_command
-    import io
+    from django.conf import settings
+    import io, os
+    
     out = io.StringIO()
-    call_command('loaddata', 'fixtures/police_stations.json', stdout=out)
-    call_command('loaddata', 'fixtures/wards.json', stdout=out)
-    return HttpResponse(out.getvalue() or 'Fixtures loaded successfully!',
-                       content_type='text/plain')
+    
+    police_path = os.path.join(settings.BASE_DIR, 'fixtures', 'police_stations.json')
+    wards_path = os.path.join(settings.BASE_DIR, 'fixtures', 'wards.json')
+    
+    try:
+        call_command('loaddata', police_path, stdout=out)
+        call_command('loaddata', wards_path, stdout=out)
+        return HttpResponse(out.getvalue() or 'Fixtures loaded successfully!',
+                           content_type='text/plain')
+    except Exception as e:
+        return HttpResponse(f'Error: {str(e)}', content_type='text/plain')
