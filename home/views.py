@@ -931,16 +931,25 @@ def signup_police(request):
             )
 
             # ——— Decode and save liveness video ———
-            header, data = live_video_b64.split(';base64,')
-            ext = header.split('/')[-1]
-            video_data = base64.b64decode(data)
-            profile.liveness_video.save(f"{username}_live.{ext}", ContentFile(video_data), save=False)
+            # ——— Decode and save liveness video ———
+            try:
+                if live_video_b64 and ';base64,' in live_video_b64:
+                    header, data = live_video_b64.split(';base64,')
+                    ext = header.split('/')[-1]
+                    video_data = base64.b64decode(data)
+                    profile.liveness_video.save(f"{username}_live.{ext}", ContentFile(video_data), save=False)
+            except Exception as video_err:
+                print(f"Liveness video save skipped: {video_err}")
 
             # ——— Decode and save liveness frame ———
-            header, data = live_frame_b64.split(';base64,')
-            ext = header.split('/')[-1]
-            img_data = base64.b64decode(data)
-            profile.liveness_frame.save(f"{username}_frame.{ext}", ContentFile(img_data), save=False)
+            try:
+                if live_frame_b64 and ';base64,' in live_frame_b64:
+                    header, data = live_frame_b64.split(';base64,')
+                    ext = header.split('/')[-1]
+                    img_data = base64.b64decode(data)
+                    profile.liveness_frame.save(f"{username}_frame.{ext}", ContentFile(img_data), save=False)
+            except Exception as frame_err:
+                print(f"Liveness frame save skipped: {frame_err}")
 
             # ——— Final save ———
             profile.save()
@@ -953,8 +962,8 @@ def signup_police(request):
         except PoliceStation.DoesNotExist:
             messages.error(request, "Invalid police station selected.")
         except Exception as e:
-            print("Police Signup Error:", e)
-            messages.error(request, f"An error occurred during signup. Please try again. {str(e)}")
+            import traceback
+            messages.error(request, f"Error: {str(e)} | {traceback.format_exc()[-500:]}")
 
     return render(request, 'signup_police.html', {"stations": stations})
 
