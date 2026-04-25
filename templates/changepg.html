@@ -6,6 +6,21 @@
     <title>Login</title>
     {% load static %}
     <script src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+    <link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RakshaSetu">
+<link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/static/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW failed:', err));
+    });
+  }
+</script>
     <link rel="stylesheet" href="{% static 'css/changepg.css' %}">
     <style>
         * {
