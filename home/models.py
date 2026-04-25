@@ -38,7 +38,7 @@ class userProfile(models.Model):
     forgot_password_token = models.CharField(max_length=255, blank=True, null=True)
     bio = models.TextField(max_length=500, blank=True)
     about = models.TextField(blank=True, null=True)
-    contact = models.CharField(max_length=10, blank=True, null=True)
+    contact = models.CharField(max_length=100, blank=True, null=True)
     mail = models.EmailField(blank=True, null=True)
     
     current_latitude   = models.DecimalField(max_digits=10, decimal_places=7, null=True, blank=True)
@@ -69,7 +69,9 @@ class userProfile(models.Model):
     location = models.CharField(max_length=30, blank=True)
     profile_image = models.ImageField(upload_to='profile_images/', blank=True)
 
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, null=True, blank=True)
+
+
 
     # Police-specific fields
     badge_id = models.CharField(max_length=50, blank=True, null=True)
@@ -103,7 +105,7 @@ class userProfile(models.Model):
     
     
     # Extra fields for police registration (optional for citizens)
-    phone = models.CharField(max_length=10, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
     id_card = models.ImageField(upload_to='id_cards/', blank=True,null=True)
     
     liveness_video  = models.FileField(upload_to='liveness_videos/', blank=True, null=True)
