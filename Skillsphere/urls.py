@@ -304,7 +304,7 @@ path("news/", views.crime_news, name="crime_news"),
 #     path('hire/', views.hire, name="hire"),
     
 #     path('work/', views.work, name="work"),
-path('load-fixtures/', views.load_fixtures, name='load_fixtures'),
+
  
  
     path('', views.index, name="index"),
