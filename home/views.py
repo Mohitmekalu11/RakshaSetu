@@ -954,7 +954,7 @@ def signup_police(request):
             messages.error(request, "Invalid police station selected.")
         except Exception as e:
             print("Police Signup Error:", e)
-            messages.error(request, "An error occurred during signup. Please try again.")
+            messages.error(request, f"An error occurred during signup. Please try again. {str(e)}")
 
     return render(request, 'signup_police.html', {"stations": stations})
 
