@@ -92,8 +92,8 @@ class userProfile(models.Model):
     )
 
         
-    experience_level = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES, blank=True, null=True)
-    specialty = models.CharField(max_length=50, choices=SPECIALTY_CHOICES, blank=True, null=True)
+    experience_level = models.CharField(max_length=50, blank=True, null=True)
+    specialty = models.CharField(max_length=100, blank=True, null=True)
 
     rank = models.CharField(max_length=50, blank=True, null=True)
 
