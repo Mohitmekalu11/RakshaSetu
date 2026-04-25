@@ -7547,25 +7547,62 @@ def api_quality_check(request, report_id):
     review = analyze_completed_report(inv_report)
     return JsonResponse({'review': review})
 
-
 def load_fixtures(request):
     secret = request.GET.get('secret', '')
     if secret != 'rakshasetu2024':
         return HttpResponse('Forbidden', status=403)
     
-    from django.core.management import call_command
     from django.conf import settings
-    import io, os
-    
-    out = io.StringIO()
-    
-    police_path = os.path.join(settings.BASE_DIR, 'fixtures', 'police_stations.json')
-    wards_path = os.path.join(settings.BASE_DIR, 'fixtures', 'wards.json')
-    
+    from home.models import PoliceStation, Ward
+    import json, os
+
     try:
-        call_command('loaddata', police_path, stdout=out)
-        call_command('loaddata', wards_path, stdout=out)
-        return HttpResponse(out.getvalue() or 'Fixtures loaded successfully!',
-                           content_type='text/plain')
+        # Load Police Stations
+        police_path = os.path.join(settings.BASE_DIR, 'fixtures', 'police_stations.json')
+        with open(police_path, 'r', encoding='utf-8') as f:
+            stations = json.load(f)
+        
+        station_count = 0
+        for s in stations:
+            PoliceStation.objects.get_or_create(
+                id=s['id'],
+                defaults={
+                    'name': s['name'],
+                    'address': s.get('address', ''),
+                    'phone': s.get('phone', ''),
+                    'wards': s.get('wards', ''),
+                    'latitude': s.get('latitude'),
+                    'longitude': s.get('longitude'),
+                }
+            )
+            station_count += 1
+
+        # Load Wards
+        wards_path = os.path.join(settings.BASE_DIR, 'fixtures', 'wards.json')
+        with open(wards_path, 'r', encoding='utf-8') as f:
+            wards = json.load(f)
+        
+        ward_count = 0
+        for w in wards:
+            Ward.objects.get_or_create(
+                id=w['id'],
+                defaults={
+                    'lgd_name': w['lgd_name'],
+                    'lgd_code': w.get('lgd_code'),
+                    'townname': w.get('townname', 'Thane'),
+                    'state': w.get('state', 'Maharashtra'),
+                    'st_area': w.get('st_area'),
+                    'st_length': w.get('st_length'),
+                    'centroid_latitude': w.get('centroid_latitude'),
+                    'centroid_longitude': w.get('centroid_longitude'),
+                }
+            )
+            ward_count += 1
+
+        return HttpResponse(
+            f'Done! Loaded {station_count} police stations and {ward_count} wards.',
+            content_type='text/plain'
+        )
+
     except Exception as e:
         return HttpResponse(f'Error: {str(e)}', content_type='text/plain')
