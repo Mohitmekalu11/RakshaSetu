@@ -7548,12 +7548,3 @@ def api_quality_check(request, report_id):
     return JsonResponse({'review': review})
 
 
-def run_migrations(request):
-    secret = request.GET.get('secret', '')
-    if secret != 'rakshasetu2024':
-        return HttpResponse('Forbidden', status=403)
-    from django.core.management import call_command
-    import io
-    out = io.StringIO()
-    call_command('migrate', '--fake', stdout=out)
-    return HttpResponse(out.getvalue() or 'Done!', content_type='text/plain')
