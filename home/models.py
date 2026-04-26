@@ -105,11 +105,11 @@ class userProfile(models.Model):
     
     
     # Extra fields for police registration (optional for citizens)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    id_card = models.ImageField(upload_to='id_cards/', blank=True,null=True)
+    phone = models.FileField(max_length=20, blank=True, null=True)
+    id_card = models.FileField(upload_to='id_cards/', blank=True,null=True)
     
     liveness_video  = models.FileField(upload_to='liveness_videos/', blank=True, null=True)
-    liveness_frame  = models.ImageField(upload_to='liveness_frames/', blank=True, null=True)
+    liveness_frame  = models.FileField(upload_to='liveness_frames/', blank=True, null=True)
     
     
 
@@ -377,7 +377,7 @@ class CrimePhoto(models.Model):
     crime_report = models.ForeignKey(
         CrimeReport, on_delete=models.CASCADE, related_name='photos'
     )
-    photos = models.ImageField(upload_to='photos/')
+    photos = models.FileField(upload_to='photos/')
 
     # 🔹 AI / Deepfake Detection Fields for photos
     is_ai_generated = models.BooleanField(default=False, help_text="True if detected as AI-generated")
@@ -927,7 +927,7 @@ class Suspect(models.Model):
         ward        = models.CharField(max_length=100)   # matches ward lgd_name
         fir_number  = models.CharField(max_length=50, blank=True)
         last_seen   = models.TextField(blank=True)
-        photo       = models.ImageField(upload_to='suspects/', blank=True, null=True)
+        photo       = models.FileField(upload_to='suspects/', blank=True, null=True)
         added_at    = models.DateTimeField(auto_now_add=True)
  
         def __str__(self):
