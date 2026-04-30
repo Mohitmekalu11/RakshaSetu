@@ -3,235 +3,670 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
-
-    <title>CrimeCast</title>
-    <link rel="manifest" href="/static/manifest.json">
-<meta name="theme-color" content="#1a1a2e">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="RakshaSetu">
-<link rel="apple-touch-icon" href="/static/icons/icon-192.png">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/static/sw.js')
-        .then(reg => console.log('SW registered'))
-        .catch(err => console.log('SW failed:', err));
-    });
-  }
-</script>
+    <title>Join RakshaSetu — Choose Your Role</title>
     {% load static %}
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    <script src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="RakshaSetu">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(reg => console.log('SW registered'))
+                    .catch(err => console.log('SW failed:', err));
+            });
         }
+    </script>
+    <style>
+        :root {
+            --bg: #07090f;
+            --card-bg: rgba(255,255,255,0.03);
+            --card-border: rgba(255,255,255,0.07);
+            --text: #e8edf5;
+            --text-muted: rgba(232,237,245,0.45);
+            --citizen: #63b3ed;
+            --citizen-glow: rgba(99,179,237,0.15);
+            --police: #f6ad55;
+            --police-glow: rgba(246,173,85,0.15);
+            --sho: #9f7aea;
+            --sho-glow: rgba(159,122,234,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+        }
+
         body {
+            min-height: 100vh;
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background layers */
+        .bg-image {
+            position: fixed;
+            inset: 0;
             background-image: url("{% static 'img1.png' %}");
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            color: white;
-            text-align: center;
+            opacity: 0.08;
+            z-index: 0;
         }
-        /* Popup Message Styles */
-        .popup-message {
-            display: none; /* Initially hidden */
+
+        .bg-gradient {
             position: fixed;
-            left: 11s5px;
-            top: 20px;
-            transform: translateX(-50%);
-            background-color: #fff;
-            color: black;
-            font-weight: 500;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 1000;
+            inset: 0;
+            z-index: 1;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 40%, rgba(99,179,237,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 70% at 85% 60%, rgba(159,122,234,0.05) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 50% 100%, rgba(246,173,85,0.04) 0%, transparent 60%);
+        }
+
+        /* Grid lines */
+        .grid-lines {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.03;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* Particles */
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
             overflow: hidden;
-            animation: moveFromTop 0.5s ease forwards;
         }
 
-        @keyframes moveFromTop {
-            0% {
-                top: -100px; /* Start above the screen */
-                opacity: 0;
-            }
-            100% {
-                top: 20px; /* Final position */
-                opacity: 1;
-            }
-        }
-
-        .popup-message::after {
-            content: '';
+        .particle {
             position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 5px;
-            background: green;
-            animation: anim 4s linear forwards;
+            border-radius: 50%;
+            animation: float-up linear infinite;
+            opacity: 0;
         }
 
-        @keyframes anim {
-            100% {
-                width: 0;
-            }
+        @keyframes float-up {
+            0% { transform: translateY(110vh); opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 0.3; }
+            100% { transform: translateY(-10vh); opacity: 0; }
         }
 
-        /* Header Styles */
-        header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 50px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        /* Main content */
+        .main {
             position: relative;
-        }
-
-        .SKILLSPHERE_LOGO {
-            width: 450px; 
-            height: auto;
-            filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.7));
-            margin-bottom: 40px;
-        }
-
-        header p {
-            font-size: 28px;
-            font-style: italic;
-            position: absolute;
-            bottom: -20px;
-            right: -10px;  
-        }
-
-        /* Button Container Styles */
-        .button-container {
+            z-index: 10;
+            width: 100%;
+            max-width: 1000px;
+            padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
-            z-index: 1; /* Ensure it's above background */
         }
 
-        .button-container button {
-            width: 270px;
-            height: 120px;
-            text-transform: capitalize;
-            background: linear-gradient(135deg, #6dd5fa, #0c9aba);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 22px;
+        /* Logo + header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fade-down 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        @keyframes fade-down {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-img {
+            height: 60px;
+            width: auto;
+            filter: drop-shadow(0 0 20px rgba(99,179,237,0.3));
+            margin-bottom: 1.25rem;
+        }
+
+        .header-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--citizen);
+            opacity: 0.8;
+            margin-bottom: 0.6rem;
+        }
+
+        .header-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--text);
+        }
+
+        .header-title span {
+            background: linear-gradient(135deg, #63b3ed, #9f7aea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-sub {
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Divider line */
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(99,179,237,0.5), transparent);
+            margin: 1.25rem auto 0;
+        }
+
+        /* Cards grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            width: 100%;
+        }
+
+        @media (max-width: 720px) {
+            .cards-grid { grid-template-columns: 1fr; max-width: 380px; }
+        }
+
+        /* Role card */
+        .role-card {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem 1.5rem 1.75rem;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s ease;
+            overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.35s ease,
+                        border-color 0.3s ease,
+                        background 0.3s ease;
+            backdrop-filter: blur(20px);
+            animation: card-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+            text-decoration: none;
+        }
+
+        .role-card:nth-child(1) { animation-delay: 0.15s; }
+        .role-card:nth-child(2) { animation-delay: 0.25s; }
+        .role-card:nth-child(3) { animation-delay: 0.35s; }
+
+        @keyframes card-in {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card accent line top */
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Glow blob */
+        .role-card::after {
+            content: '';
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            top: -40px;
+            right: -40px;
+            filter: blur(40px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        /* Citizen card */
+        .card-citizen:hover,
+        .card-citizen:focus-within {
+            border-color: rgba(99,179,237,0.35);
+            background: rgba(99,179,237,0.04);
+            box-shadow: 0 20px 60px rgba(99,179,237,0.1), 0 4px 20px rgba(0,0,0,0.3);
+            transform: translateY(-6px);
+        }
+        .card-citizen::before { background: linear-gradient(90deg, transparent, rgba(99,179,237,0.5), transparent); }
+        .card-citizen:hover::before { opacity: 1; }
+        .card-citizen::after { background: var(--citizen); }
+        .card-citizen:hover::after { opacity: 0.08; }
+
+        /* Police card */
+        .card-police:hover,
+        .card-police:focus-within {
+            border-color: rgba(246,173,85,0.35);
+            background: rgba(246,173,85,0.04);
+            box-shadow: 0 20px 60px rgba(246,173,85,0.1), 0 4px 20px rgba(0,0,0,0.3);
+            transform: translateY(-6px);
+        }
+        .card-police::before { background: linear-gradient(90deg, transparent, rgba(246,173,85,0.5), transparent); }
+        .card-police:hover::before { opacity: 1; }
+        .card-police::after { background: var(--police); }
+        .card-police:hover::after { opacity: 0.08; }
+
+        /* SHO card */
+        .card-sho:hover,
+        .card-sho:focus-within {
+            border-color: rgba(159,122,234,0.35);
+            background: rgba(159,122,234,0.04);
+            box-shadow: 0 20px 60px rgba(159,122,234,0.1), 0 4px 20px rgba(0,0,0,0.3);
+            transform: translateY(-6px);
+        }
+        .card-sho::before { background: linear-gradient(90deg, transparent, rgba(159,122,234,0.5), transparent); }
+        .card-sho:hover::before { opacity: 1; }
+        .card-sho::after { background: var(--sho); }
+        .card-sho:hover::after { opacity: 0.08; }
+
+        /* Icon wrap */
+        .card-icon-wrap {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
             position: relative;
+            z-index: 1;
+        }
+
+        .card-citizen .card-icon-wrap {
+            background: var(--citizen-glow);
+            border: 1px solid rgba(99,179,237,0.2);
+        }
+        .card-police .card-icon-wrap {
+            background: var(--police-glow);
+            border: 1px solid rgba(246,173,85,0.2);
+        }
+        .card-sho .card-icon-wrap {
+            background: var(--sho-glow);
+            border: 1px solid rgba(159,122,234,0.2);
+        }
+
+        .card-icon-wrap ion-icon {
+            font-size: 28px;
+        }
+        .card-citizen .card-icon-wrap ion-icon { color: var(--citizen); }
+        .card-police .card-icon-wrap ion-icon { color: var(--police); }
+        .card-sho .card-icon-wrap ion-icon { color: var(--sho); }
+
+        /* Card content */
+        .card-badge {
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+            position: relative;
+            z-index: 1;
+        }
+        .card-citizen .card-badge { color: var(--citizen); }
+        .card-police .card-badge { color: var(--police); }
+        .card-sho .card-badge { color: var(--sho); }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 0.6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Features list */
+        .card-features {
+            list-style: none;
+            margin-bottom: 1.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-features li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            padding: 3px 0;
+        }
+
+        .card-features li ion-icon {
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .card-citizen .card-features li ion-icon { color: var(--citizen); }
+        .card-police .card-features li ion-icon { color: var(--police); }
+        .card-sho .card-features li ion-icon { color: var(--sho); }
+
+        /* CTA button */
+        .card-btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
             overflow: hidden;
         }
 
-        .button-container button::before {
+        .card-btn::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            transition: height 0.3s ease;
+            inset: 0;
+            background: rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        .button-container button:hover,
-        .button-container button:focus,
-        .button-container button:active {
-            background: linear-gradient(135deg, #35b6d2, #6dd5fa);
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
-            transform: scale(1.05);
+        .card-btn:hover::before { opacity: 1; }
+
+        .card-btn ion-icon {
+            font-size: 16px;
+            transition: transform 0.3s ease;
         }
 
-        /* Footer Styles */
-        footer {
-            margin-top: 50px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        .card-btn:hover ion-icon { transform: translateX(3px); }
+
+        .card-citizen .card-btn {
+            background: linear-gradient(135deg, #63b3ed, #4299e1);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(99,179,237,0.25);
+        }
+        .card-citizen .card-btn:hover {
+            box-shadow: 0 6px 24px rgba(99,179,237,0.4);
+            transform: translateY(-1px);
         }
 
-        footer p {
-            font-size: 18px;
+        .card-police .card-btn {
+            background: linear-gradient(135deg, #f6ad55, #ed8936);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(246,173,85,0.25);
+        }
+        .card-police .card-btn:hover {
+            box-shadow: 0 6px 24px rgba(246,173,85,0.4);
+            transform: translateY(-1px);
         }
 
-        /* Popup Icon Styling */
-        .popup-message ion-icon {
-            color: green; /* Set icon color to green */
-            vertical-align: middle; /* Align the icon vertically with the text */
-            margin-right: 8px; /* Add some space between the icon and the message */
-            font-size: 1.5em; /* Increase the icon size if needed */
+        .card-sho .card-btn {
+            background: linear-gradient(135deg, #9f7aea, #805ad5);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(159,122,234,0.25);
         }
-        header p {
-            font-size: 24px; /* Adjust font size */
-            font-style: italic;
-            font-weight: bold; /* Optionally make it bold */
+        .card-sho .card-btn:hover {
+            box-shadow: 0 6px 24px rgba(159,122,234,0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Already have account */
+        .login-nudge {
+            margin-top: 2.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            animation: fade-in 1s ease 0.6s both;
+        }
+
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+        .login-nudge a {
+            color: var(--citizen);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .login-nudge a:hover { opacity: 0.75; }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 10;
+            margin-top: 2.5rem;
+            font-size: 0.75rem;
+            color: rgba(232,237,245,0.2);
+            letter-spacing: 0.05em;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-80px);
+            z-index: 1000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            min-width: 300px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            backdrop-filter: blur(16px);
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;
+            opacity: 0;
+            background: rgba(104,211,145,0.12);
+            border: 1px solid rgba(104,211,145,0.3);
+            color: #68d391;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast ion-icon { font-size: 18px; }
+        .toast-msg { flex: 1; color: var(--text); }
+
+        .toast-progress {
             position: absolute;
-            bottom: -30px;  /* Adjust to control the space between the logo and text */
-            right: 10px;  /* Adjust to move it slightly to the right */
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Keep the shadow for better visibility */
-            line-height: 1.4; /* Adjust line height for better spacing */
+            bottom: 0; left: 0;
+            height: 2px;
+            background: #68d391;
+            border-radius: 0 0 12px 12px;
+            animation: shrink 4s linear forwards;
         }
-        
+
+        @keyframes shrink { from { width: 100%; } to { width: 0%; } }
     </style>
 </head>
 <body>
-    <!-- Popup Message Element -->
-    <div class="popup-message" id="popup-message"></div>
 
-    <!-- Header with Logo -->
-    <header class="logo">
-        <img src="{% static 'logo_rs.png' %}" alt="SKILLSPHERE_LOGO" class="SKILLSPHERE_LOGO">
-        <p >~ Predicting crime, ensuring safety. </p>
-    </header>
+    <div class="bg-image"></div>
+    <div class="bg-gradient"></div>
+    <div class="grid-lines"></div>
+    <div class="particles" id="particles"></div>
 
-    <!-- Form to submit the role -->
-    <form method="POST">
-        {% csrf_token %}
-        <div class="button-container">
-            <!-- When clicked, set role as 'Citizen' -->
-            <button type="submit" name="role" value="citizen">Join as a Citizen!</button>
-            <!-- When clicked, set role as 'police' -->
-            <button type="submit" name="role" value="police">Join as a Police Officer!</button>
-            <button type="submit" name="role" value="sho">Join as a SHO!</button>
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        <span class="toast-msg" id="toast-msg"></span>
+        <div class="toast-progress"></div>
+    </div>
+
+    <main class="main">
+
+        <!-- Header -->
+        <div class="header">
+            <img src="{% static 'logo_rs.png' %}" alt="RakshaSetu" class="logo-img">
+            <div class="header-label">RakshaSetu — Safety Bridge</div>
+            <h1 class="header-title">Choose Your <span>Role</span></h1>
+            <p class="header-sub">~ Bridging citizens & law enforcement, in real time.</p>
+            <div class="divider"></div>
         </div>
-    </form>
 
-    <!-- Footer Section -->
-    <footer>
-        <p>&copy; 2025 CRIMECAST. All rights reserved.</p>
-    </footer>
+        <!-- Role cards -->
+        <form method="POST" id="role-form" style="width:100%">
+            {% csrf_token %}
+            <div class="cards-grid">
 
-    <!-- JavaScript to Handle Popup Message -->
+                <!-- Citizen -->
+                <div class="role-card card-citizen" onclick="submitRole('citizen')" tabindex="0" role="button" onkeypress="if(event.key==='Enter')submitRole('citizen')">
+                    <div class="card-icon-wrap">
+                        <ion-icon name="people-outline"></ion-icon>
+                    </div>
+                    <div class="card-badge">For the Public</div>
+                    <div class="card-title">Citizen</div>
+                    <p class="card-desc">Report crimes, track safety alerts, and connect with law enforcement in your area.</p>
+                    <ul class="card-features">
+                        <li><ion-icon name="checkmark-outline"></ion-icon> Report crimes on live map</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> SOS emergency alerts</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> Real-time case tracking</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> Safe route recommendations</li>
+                    </ul>
+                    <button type="button" class="card-btn" onclick="submitRole('citizen')">
+                        Join as Citizen
+                        <ion-icon name="arrow-forward-outline"></ion-icon>
+                    </button>
+                    <input type="hidden" name="role" id="role-input" value="">
+                </div>
+
+                <!-- Police Officer -->
+                <div class="role-card card-police" onclick="submitRole('police')" tabindex="0" role="button" onkeypress="if(event.key==='Enter')submitRole('police')">
+                    <div class="card-icon-wrap">
+                        <ion-icon name="shield-outline"></ion-icon>
+                    </div>
+                    <div class="card-badge">Law Enforcement</div>
+                    <div class="card-title">Police Officer</div>
+                    <p class="card-desc">Respond to incidents, manage investigations, and use AI-powered case tools.</p>
+                    <ul class="card-features">
+                        <li><ion-icon name="checkmark-outline"></ion-icon> Real-time incident dispatch</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> AI investigation reports</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> Case management tools</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> SOS response system</li>
+                    </ul>
+                    <button type="button" class="card-btn" onclick="submitRole('police')">
+                        Join as Officer
+                        <ion-icon name="arrow-forward-outline"></ion-icon>
+                    </button>
+                </div>
+
+                <!-- SHO -->
+                <div class="role-card card-sho" onclick="submitRole('sho')" tabindex="0" role="button" onkeypress="if(event.key==='Enter')submitRole('sho')">
+                    <div class="card-icon-wrap">
+                        <ion-icon name="ribbon-outline"></ion-icon>
+                    </div>
+                    <div class="card-badge">Command Level</div>
+                    <div class="card-title">SHO</div>
+                    <p class="card-desc">Oversee station operations, review cases, and access AI threat intelligence briefings.</p>
+                    <ul class="card-features">
+                        <li><ion-icon name="checkmark-outline"></ion-icon> Full case review workflow</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> AI threat intelligence</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> Officer management</li>
+                        <li><ion-icon name="checkmark-outline"></ion-icon> Station analytics</li>
+                    </ul>
+                    <button type="button" class="card-btn" onclick="submitRole('sho')">
+                        Join as SHO
+                        <ion-icon name="arrow-forward-outline"></ion-icon>
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+        <p class="login-nudge">
+            Already have an account?
+            <a href="/login/">Sign in here →</a>
+        </p>
+
+    </main>
+
+    <footer class="footer">© 2025 RakshaSetu — CrimeCast. All rights reserved.</footer>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const successMessage = "{{ success_message }}";
+        // ── Particles ──────────────────────────────────────────────
+        const container = document.getElementById('particles');
+        const colors = ['#63b3ed', '#f6ad55', '#9f7aea', '#68d391'];
+        for (let i = 0; i < 35; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 3 + 1;
+            p.style.cssText = `
+                left: ${Math.random() * 100}%;
+                width: ${size}px;
+                height: ${size}px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                animation-duration: ${Math.random() * 14 + 8}s;
+                animation-delay: ${Math.random() * 12}s;
+                opacity: 0;
+            `;
+            container.appendChild(p);
+        }
 
-            if (successMessage) {
-                const popupMessage = document.querySelector('.popup-message');
-                popupMessage.innerHTML = `<ion-icon name="checkmark-circle"></ion-icon> ${successMessage}`;
-                popupMessage.style.display = 'block';
+        // ── Role submit ────────────────────────────────────────────
+        function submitRole(role) {
+            document.getElementById('role-input').value = role;
+            document.getElementById('role-form').submit();
+        }
 
-                // Hide the popup after 5 seconds
-                setTimeout(function () {
-                    popupMessage.style.display = 'none';
-                }, 5000);
-            }
-        });
+        // ── Toast ──────────────────────────────────────────────────
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4500);
+        }
+
+        // ── Django success message ─────────────────────────────────
+        const successMessage = "{{ success_message }}";
+        if (successMessage && successMessage !== "None" && successMessage.trim() !== "") {
+            setTimeout(() => showToast(successMessage), 400);
+        }
     </script>
 </body>
 </html>

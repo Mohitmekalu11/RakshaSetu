@@ -725,31 +725,6 @@
     <img src="{% static 'policewomen.png' %}" alt="Officer Badge" class="header-image header-image-right">
   </div>
 
-  <!-- ── LIFECYCLE PROGRESS STRIP ────────────────────────────── -->
-  <div class="lifecycle-strip">
-    <div class="lc-label">Case Lifecycle Status</div>
-    <div class="lc-steps">
-      <div class="lc-step done">
-        <div class="lc-dot">✓</div>
-        <div class="lc-step-label">Assigned</div>
-      </div>
-      <div class="lc-line done"></div>
-      <div class="lc-step {% if metrics.writing_count > 0 %}active{% elif metrics.submitted_count > 0 or metrics.resolved_count > 0 %}done{% endif %}">
-        <div class="lc-dot">2</div>
-        <div class="lc-step-label">Writing Report</div>
-      </div>
-      <div class="lc-line {% if metrics.submitted_count > 0 or metrics.resolved_count > 0 %}done{% endif %}"></div>
-      <div class="lc-step {% if metrics.submitted_count > 0 %}active{% elif metrics.resolved_count > 0 %}done{% endif %}">
-        <div class="lc-dot">3</div>
-        <div class="lc-step-label">Awaiting SHO</div>
-      </div>
-      <div class="lc-line {% if metrics.resolved_count > 0 %}done{% endif %}"></div>
-      <div class="lc-step {% if metrics.resolved_count > 0 %}done{% endif %}">
-        <div class="lc-dot">✓</div>
-        <div class="lc-step-label">Resolved</div>
-      </div>
-    </div>
-  </div>
 
   <!-- ── METRICS ROW ──────────────────────────────────────────── -->
   <div class="metrics-row">
